@@ -19,14 +19,26 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
 
     @Override
     public void Add(ProductSubscription p) {
-        String req = "INSERT INTO `ProductSubscription`(`client`, `product`, `type`, `subscriptionDate`, `expirationDate`, `status`) " +
-                "VALUES ('"+p.getClient()+"','"+p.getProduct()+"','"+p.getType()+"','"+p.getSubscriptionDate()+"','"+p.getExpirationDate()+"','"+p.getStatus()+"')";
-        try {
-            Statement st = cnx.createStatement();
-            st.executeUpdate(req);
-            System.out.println("ProduitSubscription ajoutee avec succes!");
+
+        String req = "INSERT INTO ProductSubscription " +
+                "(client, product, type, subscriptionDate, expirationDate, status) " +
+                "VALUES (?, ?, ?, ?, ?, ?)";
+
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+
+            ps.setInt(1, p.getClient());
+            ps.setInt(2, p.getProduct());
+            ps.setString(3, p.getType().name());   // ENUM safe
+            ps.setTimestamp(4, Timestamp.valueOf(p.getSubscriptionDate()));
+            ps.setTimestamp(5, Timestamp.valueOf(p.getExpirationDate()));
+            ps.setString(6, p.getStatus().name()); // ENUM safe
+
+            ps.executeUpdate();
+
+            System.out.println("ProductSubscription ajouté avec succès!");
+
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 
@@ -63,52 +75,54 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
     @Override
     public List<ProductSubscription> ReadAll() {
         List<ProductSubscription> products = new ArrayList<>();
-        String req = "SELECT * FROM `ProductSubscription`";
-        try {
-            Statement st = cnx.createStatement();
-            ResultSet res = st.executeQuery(req);
-            while (res.next()){
-                ProductSubscription ps =new ProductSubscription();
-                ps.setSubscriptionId(res.getInt(1));
-                ps.setSubscriptionId(res.getInt(2));
-                ps.setSubscriptionId(res.getInt(3));
-                ps.setType(SubscriptionType.valueOf(res.getString(4)));
-                ps.setSubscriptionDate(res.getTimestamp(5).toLocalDateTime());
-                ps.setExpirationDate(res.getTimestamp(6).toLocalDateTime());
-                ps.setStatus(SubscriptionStatus.valueOf(res.getString(7)));
+        String req = "SELECT * FROM ProductSubscription";
+
+        try (Statement st = cnx.createStatement();
+             ResultSet res = st.executeQuery(req)) {
+
+            while (res.next()) {
+                ProductSubscription ps = new ProductSubscription();
+                ps.setSubscriptionId(res.getInt("subscriptionId"));
+                ps.setClient(res.getInt("client"));
+                ps.setProduct(res.getInt("product"));
+                ps.setType(SubscriptionType.valueOf(res.getString("type")));
+                ps.setSubscriptionDate(res.getTimestamp("subscriptionDate").toLocalDateTime());
+                ps.setExpirationDate(res.getTimestamp("expirationDate").toLocalDateTime());
+                ps.setStatus(SubscriptionStatus.valueOf(res.getString("status")));
                 products.add(ps);
             }
 
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
+
         return products;
     }
 
     @Override
     public ProductSubscription ReadId(Integer id) {
-        String req = "SELECT * FROM `ProductSubscription`  WHERE  subscriptionId = ?";
-        try {
-            Statement st = cnx.createStatement();
-            PreparedStatement pst = cnx.prepareStatement(req);
-            pst.setInt(1, id);
-            ResultSet res = st.executeQuery(req);
-            while (res.next()){
-                ProductSubscription ps =new ProductSubscription();
-                ps.setSubscriptionId(res.getInt(1));
-                ps.setSubscriptionId(res.getInt(2));
-                ps.setSubscriptionId(res.getInt(3));
-                ps.setType(SubscriptionType.valueOf(res.getString(4)));
-                ps.setSubscriptionDate(res.getTimestamp(5).toLocalDateTime());
-                ps.setExpirationDate(res.getTimestamp(6).toLocalDateTime());
-                ps.setStatus(SubscriptionStatus.valueOf(res.getString(7)));
-                return ps;
-            }
+        String req = "SELECT * FROM ProductSubscription WHERE subscriptionId = ?";
 
+        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+            ps.setInt(1, id);
+
+            try (ResultSet res = ps.executeQuery()) {
+                if (res.next()) {
+                    ProductSubscription psObj = new ProductSubscription();
+                    psObj.setSubscriptionId(res.getInt("subscriptionId"));
+                    psObj.setClient(res.getInt("client"));
+                    psObj.setProduct(res.getInt("product"));
+                    psObj.setType(SubscriptionType.valueOf(res.getString("type")));
+                    psObj.setSubscriptionDate(res.getTimestamp("subscriptionDate").toLocalDateTime());
+                    psObj.setExpirationDate(res.getTimestamp("expirationDate").toLocalDateTime());
+                    psObj.setStatus(SubscriptionStatus.valueOf(res.getString("status")));
+                    return psObj;
+                }
+            }
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            e.printStackTrace();
         }
-        return new ProductSubscription();
+        return null;
     }
 
     public List<ProductSubscription> getParClient(int clientId) {
@@ -142,6 +156,7 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
 
         return products;
     }
+
 
 
 

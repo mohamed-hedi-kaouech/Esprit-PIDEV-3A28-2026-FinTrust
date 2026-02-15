@@ -38,9 +38,11 @@ CREATE TABLE `productsubscription` (
   KEY `fk_subscription_product` (`product`),
   CONSTRAINT `fk_subscription_product` FOREIGN KEY (`product`) 
     REFERENCES `product` (`productId`) 
-    ON DELETE CASCADE 
+    ON DELETE CASCADE
     ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci AUTO_INCREMENT=14;
+
+
 -- Create wallet table
 CREATE TABLE wallet (
     id_wallet INT PRIMARY KEY AUTO_INCREMENT,

@@ -119,4 +119,18 @@ public class Wallet {
 
         return idWallet == wallet.idWallet;
     }
+
+
+    public static String SQLTable(){
+        return """
+                CREATE TABLE wallet (
+                    id_wallet INT PRIMARY KEY AUTO_INCREMENT,
+                    nom_proprietaire VARCHAR(100) NOT NULL,
+                    solde DOUBLE NOT NULL,
+                    devise VARCHAR(10) NOT NULL,
+                    statut VARCHAR(20) NOT NULL,
+                    date_creation DATETIME NOT NULL
+                );
+                """;
+    }
 }

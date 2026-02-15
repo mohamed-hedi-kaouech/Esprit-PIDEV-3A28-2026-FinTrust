@@ -1,4 +1,4 @@
-package org.example.Model.Wallet.ClassWallet;
+package org.example.Model.Wallet;
 
 
 import java.time.LocalDateTime;
@@ -113,5 +113,19 @@ public class Transaction {
         Transaction that = (Transaction) o;
 
         return idTransaction == that.idTransaction;
+    }
+
+    public static String SQLTable(){
+        return """
+                CREATE TABLE transaction (
+                    id_transaction INT PRIMARY KEY AUTO_INCREMENT,
+                    montant DOUBLE NOT NULL,
+                    type VARCHAR(20) NOT NULL,
+                    date_transaction DATETIME NOT NULL,
+                    id_wallet INT NOT NULL,
+                    FOREIGN KEY (id_wallet) REFERENCES wallet(id_wallet)
+                        ON DELETE CASCADE
+                );
+                """;
     }
 }

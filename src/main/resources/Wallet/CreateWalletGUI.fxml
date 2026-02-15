@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
+<?import java.lang.String?>
 <AnchorPane prefHeight="600.0" prefWidth="800.0"
             stylesheets="/Styles/StyleWallet.css"
             xmlns="http://javafx.com/javafx/17"
