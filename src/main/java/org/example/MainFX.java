@@ -17,14 +17,21 @@ public class MainFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
+
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Product/CreateProductGUI.fxml")));
+            Parent root = FXMLLoader.load(
+                    Objects.requireNonNull(
+                            getClass().getResource("/Wallet/CreateWalletGUI.fxml")
+                    )
+            );
+
             Scene scene = new Scene(root);
-            primaryStage.setTitle("Product Manager");
+            primaryStage.setTitle("Wallet Manager");
             primaryStage.setScene(scene);
             primaryStage.show();
+
         } catch (IOException e) {
-            e.printStackTrace();throw new RuntimeException(e);
+            e.printStackTrace();
         }
     }
 }

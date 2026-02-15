@@ -3,7 +3,9 @@ package org.example.Controlleurs.WalletControlleur;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import org.example.Model.Wallet.Wallet;
+import org.example.Model.Wallet.ClassWallet.Wallet;
+import org.example.Model.Wallet.EnumWallet.WalletDevise;
+import org.example.Model.Wallet.EnumWallet.WalletStatut;
 import org.example.Service.WalletService.WalletService;
 
 public class WalletManagerGUI {
@@ -15,10 +17,17 @@ public class WalletManagerGUI {
     private TextField soldeField;
 
     @FXML
-    private ComboBox<String> deviseComboBox;
+    private ComboBox<WalletDevise> deviseComboBox;
 
     @FXML
-    private ComboBox<String> statutComboBox;
+    private ComboBox<WalletStatut> statutComboBox;
+
+    // ✅ IMPORTANT : remplir les ComboBox ici
+    @FXML
+    public void initialize() {
+        deviseComboBox.getItems().setAll(WalletDevise.values());
+        statutComboBox.getItems().setAll(WalletStatut.values());
+    }
 
     // ===== CREATE WALLET =====
     public void CreateWallet(ActionEvent actionEvent) {
@@ -30,6 +39,8 @@ public class WalletManagerGUI {
                 Wallet wallet = new Wallet();
                 wallet.setNomProprietaire(nomProprietaireField.getText());
                 wallet.setSolde(Double.parseDouble(soldeField.getText()));
+
+                // ✅ Maintenant on utilise les ENUM
                 wallet.setDevise(deviseComboBox.getValue());
                 wallet.setStatut(statutComboBox.getValue());
 

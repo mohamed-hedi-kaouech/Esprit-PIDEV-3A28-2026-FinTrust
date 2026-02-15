@@ -1,7 +1,7 @@
 package org.example.Service.WalletService;
 
 import org.example.Interfaces.InterfaceGlobal;
-import org.example.Model.Wallet.Transaction;
+import org.example.Model.Wallet.ClassWallet.Transaction;
 import org.example.Utils.MaConnexion;
 
 import java.sql.*;

@@ -59,4 +59,7 @@ CREATE TABLE transaction (
     FOREIGN KEY (id_wallet) REFERENCES wallet(id_wallet)
         ON DELETE CASCADE
 );
+ALTER TABLE wallet
+MODIFY COLUMN devise ENUM('TND', 'USD', 'EUR') NOT NULL,
+MODIFY COLUMN statut ENUM('DRAFT', 'ACTIVE', 'SUSPENDED', 'CLOSED') NOT NULL;
 
