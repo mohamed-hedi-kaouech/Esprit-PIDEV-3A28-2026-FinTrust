@@ -1,117 +1,50 @@
 package org.example.Model.Wallet.ClassWallet;
 
-
 import java.time.LocalDateTime;
 
 public class Transaction {
+    private int id_transaction;
+    private double montant;
+    private String type; // DEPOT, RETRAIT, TRANSFERT
+    private LocalDateTime date_transaction;
+    private int id_wallet;
 
-    // ===== Attributes =====
-    private int idTransaction;
-    private int walletId; // clé étrangère
-    private Double montant;
-    private String type; // DEPOT / RETRAIT
-    private String description;
-    private LocalDateTime dateTransaction;
-
-    // ===== Constructors =====
-
-    // Constructeur vide
+    // Constructeurs
     public Transaction() {
-        this.dateTransaction = LocalDateTime.now();
+        this.date_transaction = LocalDateTime.now();
     }
 
-    // Constructeur pour INSERT (sans id)
-    public Transaction(int walletId, Double montant, String type, String description) {
-        this.walletId = walletId;
+    public Transaction(double montant, String type, int id_wallet) {
         this.montant = montant;
         this.type = type;
-        this.description = description;
-        this.dateTransaction = LocalDateTime.now();
+        this.id_wallet = id_wallet;
+        this.date_transaction = LocalDateTime.now();
     }
 
-    // Constructeur pour SELECT / UPDATE
-    public Transaction(int idTransaction, int walletId, Double montant, String type, String description, LocalDateTime dateTransaction) {
-        this.idTransaction = idTransaction;
-        this.walletId = walletId;
-        this.montant = montant;
-        this.type = type;
-        this.description = description;
-        this.dateTransaction = dateTransaction;
-    }
+    // Getters et Setters
+    public int getId_transaction() { return id_transaction; }
+    public void setId_transaction(int id_transaction) { this.id_transaction = id_transaction; }
 
-    // ===== Getters & Setters =====
-
-    public int getIdTransaction() {
-        return idTransaction;
-    }
-
-    public void setIdTransaction(int idTransaction) {
-        this.idTransaction = idTransaction;
-    }
-
-    public int getWalletId() {
-        return walletId;
-    }
-
-    public void setWalletId(int walletId) {
-        this.walletId = walletId;
-    }
-
-    public Double getMontant() {
-        return montant;
-    }
-
-    public void setMontant(Double montant) {
+    public double getMontant() { return montant; }
+    public void setMontant(double montant) {
+        if (montant <= 0) throw new IllegalArgumentException("Le montant doit être > 0");
         this.montant = montant;
     }
 
-    public String getType() {
-        return type;
-    }
-
+    public String getType() { return type; }
     public void setType(String type) {
+        if (type == null || type.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le type est obligatoire");
+        }
         this.type = type;
     }
 
-    public String getDescription() {
-        return description;
-    }
+    public LocalDateTime getDate_transaction() { return date_transaction; }
+    public void setDate_transaction(LocalDateTime date_transaction) { this.date_transaction = date_transaction; }
 
-    public void setDescription(String description) {
-        this.description = description;
-    }
-
-    public LocalDateTime getDateTransaction() {
-        return dateTransaction;
-    }
-
-    public void setDateTransaction(LocalDateTime dateTransaction) {
-        this.dateTransaction = dateTransaction;
-    }
-
-    // ===== toString =====
-
-    @Override
-    public String toString() {
-        return "Transaction{" +
-                "idTransaction=" + idTransaction +
-                ", walletId=" + walletId +
-                ", montant=" + montant +
-                ", type='" + type + '\'' +
-                ", description='" + description + '\'' +
-                ", dateTransaction=" + dateTransaction +
-                '}';
-    }
-
-    // ===== equals basé sur id =====
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Transaction that = (Transaction) o;
-
-        return idTransaction == that.idTransaction;
+    public int getId_wallet() { return id_wallet; }
+    public void setId_wallet(int id_wallet) {
+        if (id_wallet <= 0) throw new IllegalArgumentException("L'ID du wallet est obligatoire");
+        this.id_wallet = id_wallet;
     }
 }

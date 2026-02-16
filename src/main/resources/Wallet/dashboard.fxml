@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane stylesheets="@../Styles/StyleWallet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.WalletControlleur.DashboardController">
+
+    <!-- Top: Menu Bar et Header -->
+    <top>
+        <VBox>
+            <MenuBar styleClass="menu-bar">
+                <menus>
+                    <Menu text="Fichier">
+                        <items>
+                            <MenuItem text="Rafraîchir" onAction="#handleRefresh" />
+                            <MenuItem text="Quitter" onAction="#handleQuitter" />
+                        </items>
+                    </Menu>
+                    <Menu text="Wallets">
+                        <items>
+                            <MenuItem text="Nouveau Wallet" onAction="#handleAddWallet" />
+                        </items>
+                    </Menu>
+                    <Menu text="Transactions">
+                        <items>
+                            <MenuItem text="Nouvelle Transaction" onAction="#handleNewTransaction" />
+                        </items>
+                    </Menu>
+                    <Menu text="Aide">
+                        <items>
+                            <MenuItem text="À propos" />
+                        </items>
+                    </Menu>
+                </menus>
+            </MenuBar>
+
+            <!-- Header FinTrust -->
+            <HBox styleClass="header-panel" alignment="CENTER_LEFT">
+                <children>
+                    <HBox fx:id="logoContainer" styleClass="logo-container" />
+                    <Region HBox.hgrow="ALWAYS" />
+
+                    <VBox alignment="CENTER_RIGHT" spacing="2">
+                        <Label fx:id="lblWelcome" text="Bonjour, Feryel" styleClass="welcome-label" />
+                        <Label fx:id="lblDate" styleClass="date-label" />
+                    </VBox>
+                </children>
+            </HBox>
+        </VBox>
+    </top>
+
+    <!-- Center: Main Content -->
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <HBox spacing="25" style="-fx-padding: 25 30;">
+                <!-- Sidebar FinTrust (plus claire) -->
+                <VBox styleClass="sidebar">
+                    <Label text="Assistant FinTrust" styleClass="sidebar-title" />
+
+                    <HBox styleClass="sidebar-item" style="-fx-background-color: #c2d6ff;">
+                        <Label text="🏠" styleClass="sidebar-item-icon" />
+                        <Label text="Accueil" styleClass="sidebar-text" style="-fx-font-weight: 600;" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="📱" styleClass="sidebar-item-icon" />
+                        <Label text="Accès Mobile" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="💳" styleClass="sidebar-item-icon" />
+                        <Label text="Produits" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="↗️" styleClass="sidebar-item-icon" />
+                        <Label text="Virements" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="📄" styleClass="sidebar-item-icon" />
+                        <Label text="Paiement factures" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="📱" styleClass="sidebar-item-icon" />
+                        <Label text="Recharges" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="💳" styleClass="sidebar-item-icon" />
+                        <Label text="Cartes" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="⚙️" styleClass="sidebar-item-icon" />
+                        <Label text="Opérations" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="📒" styleClass="sidebar-item-icon" />
+                        <Label text="Gestion chéquiers" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="📥" styleClass="sidebar-item-icon" />
+                        <Label text="Téléchargement" styleClass="sidebar-text" />
+                    </HBox>
+                    <HBox styleClass="sidebar-item">
+                        <Label text="📊" styleClass="sidebar-item-icon" />
+                        <Label text="Simulateurs" styleClass="sidebar-text" />
+                    </HBox>
+
+                    <Region VBox.vgrow="ALWAYS" />
+
+                    <Label text="11 résultats trouvés" style=" -fx-padding: 20 20 10 20; -fx-font-family: Inter; -fx-text-fill: #5f7d9c;" />
+                </VBox>
+
+                <!-- Main Content Area -->
+                <VBox HBox.hgrow="ALWAYS" spacing="20">
+                    <!-- Breadcrumb -->
+                    <HBox styleClass="breadcrumb">
+                        <Label text="Accueil" styleClass="breadcrumb-label" />
+                        <Label text="›" styleClass="breadcrumb-separator" />
+                        <Label text="Assistant FinTrust" styleClass="breadcrumb-current" />
+                    </HBox>
+
+                    <!-- Quick Stats Colorées -->
+                    <FlowPane styleClass="stats-grid" alignment="CENTER_LEFT">
+                        <!-- Solde Total -->
+                        <VBox styleClass="stat-card, stat-card-1">
+                            <Label text="Solde Total" styleClass="stat-label" />
+                            <HBox spacing="5" alignment="CENTER_LEFT">
+                                <Label fx:id="lblTotalBalance" text="1,217,599.00" styleClass="stat-value" />
+                                <Label text="TND" styleClass="stat-currency" />
+                            </HBox>
+                            <Label fx:id="lblMonthlyChange" text="+12.5%" styleClass="stat-trend, trend-positive" />
+                        </VBox>
+
+                        <!-- Wallets -->
+                        <VBox styleClass="stat-card, stat-card-2">
+                            <Label text="Wallets" styleClass="stat-label" />
+                            <Label fx:id="lblTotalWallets" text="9" styleClass="stat-value" />
+                            <Label text="Comptes actifs" styleClass="stat-label" />
+                        </VBox>
+
+                        <!-- Transactions -->
+                        <VBox styleClass="stat-card, stat-card-3">
+                            <Label text="Transactions" styleClass="stat-label" />
+                            <Label fx:id="lblTotalTransactions" text="24" styleClass="stat-value" />
+                            <Label text="Ce mois" styleClass="stat-label" />
+                        </VBox>
+                    </FlowPane>
+
+                    <!-- Mes Wallets -->
+                    <VBox>
+                        <HBox styleClass="section-header">
+                            <Label text="Mes Wallets" styleClass="section-title" />
+                            <Region HBox.hgrow="ALWAYS" />
+                            <Button text="+ Nouveau Wallet" onAction="#handleAddWallet" styleClass="button-primary" />
+                        </HBox>
+                        <Label text="Gérez et consultez tous vos comptes" styleClass="section-subtitle" />
+
+                        <!-- Grille des wallets -->
+                        <FlowPane fx:id="walletsContainer" styleClass="wallets-grid" />
+                    </VBox>
+
+                    <!-- Transactions et Graphique -->
+                    <HBox spacing="20">
+                        <VBox HBox.hgrow="ALWAYS" styleClass="transactions-panel">
+                            <Label text="Transactions Récentes" styleClass="chart-title" />
+                            <VBox fx:id="transactionsContainer" spacing="8" VBox.vgrow="ALWAYS" />
+                            <Button text="Voir toutes les transactions" styleClass="button-secondary" maxWidth="Infinity" />
+                        </VBox>
+
+                        <VBox HBox.hgrow="ALWAYS" styleClass="chart-panel">
+                            <Label text="Répartition par Devise" styleClass="chart-title" />
+                            <PieChart fx:id="pieChartWallets" VBox.vgrow="ALWAYS" />
+                        </VBox>
+                    </HBox>
+
+                    <!-- Footer -->
+                    <HBox alignment="CENTER_RIGHT">
+                        <Label fx:id="lblLastUpdate" text="Dernière mise à jour: 16/02/2026 15:30" styleClass="footer-label" />
+                    </HBox>
+                </VBox>
+            </HBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

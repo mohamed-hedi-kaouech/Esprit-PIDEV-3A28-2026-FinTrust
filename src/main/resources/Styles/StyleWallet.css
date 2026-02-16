@@ -1,51 +1,568 @@
+/* StyleWallet.css - Design FinTrust avec rectanges colorés */
+
+/* Import de polices Google Fonts */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
+
 .root {
-    -fx-background-color: linear-gradient(to bottom right, #f5f7fa, #c3cfe2);
+    -fx-font-family: 'Inter', 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    -fx-background-color: #f8fafd;
 }
 
-.header {
-    -fx-background-color: linear-gradient(to right, #4e73df, #224abe);
+/* ===== HEADER PLUS CLAIR ===== */
+.header-panel {
+    -fx-background-color: #1e3a8a;  /* Bleu plus clair */
+    -fx-padding: 0 30;
+    -fx-min-height: 70;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);
+}
+
+.logo-container {
+    -fx-alignment: center-left;
+    -fx-spacing: 15;
+}
+
+.logo-image {
+    -fx-fit-width: 40;
+    -fx-fit-height: 40;
+    -fx-preserve-ratio: true;
+}
+
+.logo-text {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 24px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+    -fx-letter-spacing: 0.5px;
+}
+
+.logo-subtext {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 11px;
+    -fx-font-weight: 400;
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-letter-spacing: 0.8px;
+}
+
+.welcome-label {
+    -fx-text-fill: white;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 400;
+    -fx-background-color: rgba(255,255,255,0.1);
+    -fx-padding: 8 18;
+    -fx-background-radius: 30;
+}
+
+.date-label {
+    -fx-text-fill: rgba(255,255,255,0.7);
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-font-weight: 300;
+}
+
+/* ===== MENU BAR ===== */
+.menu-bar {
+    -fx-background-color: white;
+    -fx-border-color: #eef2f6;
+    -fx-border-width: 0 0 1 0;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 500;
+}
+
+.menu-bar .menu {
+    -fx-padding: 10 20;
+}
+
+.menu-bar .menu:hover {
+    -fx-background-color: #f0f7ff;
+}
+
+.menu-bar .menu-item {
+    -fx-padding: 8 25;
+}
+
+/* ===== SIDEBAR ===== */
+.sidebar {
+    -fx-background-color: #f0f5fe;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.05), 10, 0, 0, 2);
+    -fx-padding: 25 0;
+    -fx-min-width: 280;
+    -fx-spacing: 5;
+    -fx-border-color: #e0e9f5;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+.sidebar-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0a2540;
+    -fx-padding: 0 20 20 20;
+}
+
+.sidebar-item {
+    -fx-padding: 12 20;
+    -fx-cursor: hand;
+    -fx-background-color: transparent;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #1e3a5f;
+}
+
+.sidebar-item:hover {
+    -fx-background-color: #d9e6ff;
+    -fx-text-fill: #0a2540;
+}
+
+.sidebar-item:selected {
+    -fx-background-color: #c2d6ff;
+    -fx-border-left-width: 4;
+    -fx-border-left-color: #0a2540;
+    -fx-font-weight: 600;
+    -fx-text-fill: #0a2540;
+}
+
+.sidebar-item-icon {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 18px;
+    -fx-text-fill: #1e3a5f;
+    -fx-min-width: 30;
+}
+
+.sidebar-item:selected .sidebar-item-icon {
+    -fx-text-fill: #0a2540;
+}
+
+/* ===== BREADCRUMB ===== */
+.breadcrumb {
+    -fx-alignment: center-left;
+    -fx-spacing: 5;
+    -fx-padding: 10 0 15 0;
+}
+
+.breadcrumb-label {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f7d9c;
+}
+
+.breadcrumb-separator {
+    -fx-text-fill: #a0b8d0;
+    -fx-font-size: 14px;
+}
+
+.breadcrumb-current {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #0a2540;
+}
+
+/* ===== STATISTIQUES AVEC RECTANGLES COLORÉS ===== */
+.stats-grid {
+    -fx-hgap: 20;
+    -fx-vgap: 0;
+    -fx-padding: 10 0;
+}
+
+.stat-card {
+    -fx-background-radius: 16;
     -fx-padding: 20;
-}
-
-.header-title {
-    -fx-text-fill: white;
-}
-
-.form-label {
-    -fx-font-weight: bold;
-    -fx-text-fill: #333;
-}
-
-.form-input {
-    -fx-pref-height: 40;
-    -fx-background-radius: 8;
-    -fx-border-radius: 8;
-    -fx-border-color: #ccc;
-    -fx-padding: 5 10;
-}
-
-.form-input:focused {
-    -fx-border-color: #4e73df;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
     -fx-border-width: 2;
+    -fx-border-radius: 16;
+    -fx-min-width: 200;
+    -fx-alignment: center-left;
 }
 
-.btn-primary {
-    -fx-background-color: #4e73df;
-    -fx-text-fill: white;
+/* Rectangle 1 - Bleu pour Solde Total */
+.stat-card-1 {
+    -fx-background-color: #e6f0ff;
+    -fx-border-color: #3b82f6;
+}
+
+.stat-card-1 .stat-value {
+    -fx-text-fill: #1e3a8a;
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+}
+
+/* Rectangle 2 - Vert pour Wallets */
+.stat-card-2 {
+    -fx-background-color: #e6f7e6;
+    -fx-border-color: #10b981;
+}
+
+.stat-card-2 .stat-value {
+    -fx-text-fill: #047857;
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+}
+
+/* Rectangle 3 - Orange pour Transactions */
+.stat-card-3 {
+    -fx-background-color: #fff2e6;
+    -fx-border-color: #f97316;
+}
+
+.stat-card-3 .stat-value {
+    -fx-text-fill: #c2410c;
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+}
+
+.stat-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 12, 0, 0, 4);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.stat-label {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 15px;
+    -fx-text-fill: #334155;
+    -fx-font-weight: 600;
+}
+
+.stat-value {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 28px;
+    -fx-font-weight: 700;
+}
+
+.stat-currency {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #64748b;
+    -fx-font-weight: 400;
+}
+
+.stat-trend {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-padding: 4 12;
     -fx-background-radius: 20;
-    -fx-font-weight: bold;
 }
 
-.btn-primary:hover {
-    -fx-background-color: #2e59d9;
+.trend-positive {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
 }
 
-.btn-secondary {
-    -fx-background-color: #858796;
+.trend-negative {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #b91c1c;
+}
+
+/* ===== BOUTON NOUVELLE TRANSACTION ===== */
+.new-transaction-button {
+    -fx-background-color: linear-gradient(to right, #1e3a8a, #3b82f6);
     -fx-text-fill: white;
-    -fx-background-radius: 20;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+    -fx-padding: 14 30;
+    -fx-background-radius: 50;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(30,58,138,0.3), 10, 0, 0, 3);
+    -fx-min-width: 220;
+    -fx-alignment: center;
 }
 
-.btn-secondary:hover {
-    -fx-background-color: #6c757d;
+.new-transaction-button:hover {
+    -fx-background-color: linear-gradient(to right, #2563eb, #1e3a8a);
+    -fx-effect: dropshadow(gaussian, rgba(30,58,138,0.5), 15, 0, 0, 6);
+    -fx-scale-x: 1.03;
+    -fx-scale-y: 1.03;
+}
+
+.button-icon {
+    -fx-font-size: 18px;
+    -fx-padding: 0 10 0 0;
+}
+
+/* ===== SECTIONS TITRES ===== */
+.section-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+    -fx-padding: 20 0 10 0;
+}
+
+.section-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 20px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0a2540;
+}
+
+.section-subtitle {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #5f7d9c;
+}
+
+/* ===== WALLETS GRID ===== */
+.wallets-grid {
+    -fx-hgap: 20;
+    -fx-vgap: 20;
+    -fx-padding: 10 0;
+}
+
+.wallet-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.05), 10, 0, 0, 3);
+    -fx-padding: 20;
+    -fx-min-width: 280;
+    -fx-pref-width: 300;
+    -fx-max-width: 320;
+    -fx-cursor: hand;
+    -fx-border-color: #e9f0f8;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+.wallet-card:hover {
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.12), 18, 0, 0, 8);
+    -fx-border-color: #0a2540;
+    -fx-border-width: 1.5;
+    -fx-translate-y: -3;
+}
+
+.wallet-card-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+    -fx-padding: 0 0 15 0;
+}
+
+.wallet-devise-badge {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #0a2540;
+    -fx-background-color: #e2edff;
+    -fx-padding: 4 12;
+    -fx-background-radius: 30;
+}
+
+/* ===== STATUS BADGES ===== */
+.wallet-status-badge {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 11px;
+    -fx-font-weight: 600;
+    -fx-padding: 4 12;
+    -fx-background-radius: 30;
+}
+
+.wallet-status-active {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+}
+
+.wallet-status-draft {
+    -fx-background-color: #fff3cd;
+    -fx-text-fill: #856404;
+}
+
+.wallet-status-suspended {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #b91c1c;
+}
+
+.wallet-status-closed {
+    -fx-background-color: #e9ecf0;
+    -fx-text-fill: #4f6f8f;
+}
+
+.wallet-proprietaire {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0a2540;
+    -fx-padding: 5 0;
+}
+
+.wallet-solde-container {
+    -fx-alignment: baseline-left;
+    -fx-spacing: 5;
+    -fx-padding: 10 0;
+}
+
+.wallet-solde {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0a2540;
+}
+
+.wallet-devise {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #7f9bc0;
+}
+
+.wallet-date {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-text-fill: #8fa8c5;
+    -fx-padding: 12 0 0 0;
+    -fx-border-color: #e9f0f8;
+    -fx-border-width: 1 0 0 0;
+}
+
+/* ===== TRANSACTIONS ===== */
+.transactions-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.05), 10, 0, 0, 3);
+    -fx-border-color: #e9f0f8;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+.transaction-item {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-padding: 12 15;
+    -fx-border-color: #e9f0f8;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-cursor: hand;
+}
+
+.transaction-item:hover {
+    -fx-background-color: #f8fcff;
+    -fx-border-color: #9fb8d4;
+}
+
+.transaction-icon {
+    -fx-font-size: 16px;
+    -fx-min-width: 36;
+    -fx-min-height: 36;
+    -fx-background-radius: 50%;
+    -fx-alignment: center;
+    -fx-font-weight: 600;
+}
+
+.transaction-icon-depot {
+    -fx-background-color: #dcfce7;
+    -fx-text-fill: #166534;
+}
+
+.transaction-icon-retrait {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #b91c1c;
+}
+
+.transaction-icon-transfert {
+    -fx-background-color: #e2edff;
+    -fx-text-fill: #0a2540;
+}
+
+.transaction-description {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1e293b;
+}
+
+.transaction-date {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-text-fill: #5f7d9c;
+}
+
+.transaction-amount {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 16px;
+    -fx-font-weight: 700;
+}
+
+.transaction-amount-positive {
+    -fx-text-fill: #166534;
+}
+
+.transaction-amount-negative {
+    -fx-text-fill: #b91c1c;
+}
+
+/* ===== CHART ===== */
+.chart-panel {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.05), 10, 0, 0, 3);
+    -fx-border-color: #e9f0f8;
+    -fx-border-width: 1;
+    -fx-border-radius: 20;
+}
+
+.chart-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 18px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #0a2540;
+    -fx-padding: 0 0 15 0;
+}
+
+/* ===== BOUTONS ===== */
+.button-primary {
+    -fx-background-color: #0a2540;
+    -fx-text-fill: white;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 12 25;
+    -fx-background-radius: 40;
+    -fx-cursor: hand;
+}
+
+.button-primary:hover {
+    -fx-background-color: #14375c;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.button-secondary {
+    -fx-background-color: white;
+    -fx-text-fill: #0a2540;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-padding: 10 20;
+    -fx-background-radius: 40;
+    -fx-border-color: #0a2540;
+    -fx-border-width: 1.5;
+    -fx-border-radius: 40;
+    -fx-cursor: hand;
+}
+
+.button-secondary:hover {
+    -fx-background-color: #f0f7ff;
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* ===== FOOTER ===== */
+.footer-label {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-text-fill: #8fa8c5;
+    -fx-padding: 20 0 0 0;
+}
+
+/* ===== SCROLLPANE ===== */
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
 }
