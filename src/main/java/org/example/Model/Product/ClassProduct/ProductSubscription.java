@@ -155,5 +155,26 @@ public class ProductSubscription {
                 '}';
     }
 
+    public static String SQLTable() {
+        return """
+                CREATE TABLE IF NOT EXISTS productsubscription (
+                  subscriptionId INT NOT NULL AUTO_INCREMENT,
+                  client INT NOT NULL,
+                  product INT NOT NULL,
+                  type ENUM('MONTHLY', 'ANNUAL', 'TRANSACTION', 'ONE_TIME') NOT NULL,
+                  subscriptionDate DATE NOT NULL,
+                  expirationDate DATE NOT NULL,
+                  status ENUM('DRAFT', 'ACTIVE', 'SUSPENDED', 'CLOSED') NOT NULL,
+                  PRIMARY KEY (subscriptionId),
+                  KEY fk_subscription_product (product),
+                  CONSTRAINT fk_subscription_product
+                    FOREIGN KEY (product)
+                    REFERENCES product (productId)
+                    ON DELETE CASCADE
+                    ON UPDATE CASCADE
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                """;
+    }
+
 
 }

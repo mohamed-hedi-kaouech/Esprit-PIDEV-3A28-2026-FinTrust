@@ -3,6 +3,9 @@ package org.example.Model.Product.ClassProduct;
 import org.example.Model.Product.EnumProduct.ProductCategory;
 
 import java.sql.Date;
+import java.sql.DriverManager;
+import java.sql.SQLException;
+import java.sql.Statement;
 import java.time.LocalDateTime;
 
 public class Product {
@@ -77,6 +80,8 @@ public class Product {
         this.price = price;
     }
 
+
+
     @Override
     public String toString() {
         return "Product{" +
@@ -97,6 +102,35 @@ public class Product {
 
         return productId == product.productId;
     }
+
+    public static String SQLTable() {
+        return """
+                CREATE TABLE IF NOT EXISTS product (
+                  productId INT NOT NULL AUTO_INCREMENT,
+                  category ENUM(
+                    'COMPTE_COURANT',
+                    'COMPTE_EPARGNE',
+                    'COMPTE_PREMIUM',
+                    'COMPTE_JEUNE',
+                    'COMPTE_ENTREPRISE',
+                    'CARTE_DEBIT',
+                    'CARTE_CREDIT',
+                    'CARTE_PREMIUM',
+                    'CARTE_VIRTUELLE',
+                    'EPARGNE_CLASSIQUE',
+                    'EPARGNE_LOGEMENT',
+                    'DEPOT_A_TERME',
+                    'PLACEMENT_INVESTISSEMENT',
+                    'ASSURANCE_VIE',
+                    'ASSURANCE_HABITATION',
+                    'ASSURANCE_VOYAGE'
+                  ) NOT NULL DEFAULT 'COMPTE_COURANT',
+                  price DOUBLE NOT NULL,
+                  description VARCHAR(500) NOT NULL,
+                  createdAt DATE NOT NULL,
+                  PRIMARY KEY (productId)
+                ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+                """;}
 
 
 }

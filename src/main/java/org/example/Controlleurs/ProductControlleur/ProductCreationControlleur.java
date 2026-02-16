@@ -2,22 +2,74 @@ package org.example.Controlleurs.ProductControlleur;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.stage.Stage;
 import org.example.Model.Product.ClassProduct.Product;
-import org.example.Interfaces.InterfaceGlobal;
 import org.example.Model.Product.EnumProduct.ProductCategory;
 import org.example.Service.ProductService.ProductService;
 
-public class ProductManagerGUI {
+import java.io.IOException;
+import java.net.URL;
+import java.util.ResourceBundle;
+
+public class ProductCreationControlleur implements Initializable {
 
     // Form Fields
-    @FXML
-    private ComboBox<String> categoryComboBox;
-    @FXML
-    private TextField priceField;
-    @FXML
-    private TextArea descriptionArea;
+    @FXML private ComboBox<String> categoryComboBox;
+    @FXML private TextField priceField;
+    @FXML private TextArea descriptionArea;
+    @FXML private Label charCountLabel;
 
+
+
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) {
+        setupPriceFieldValidation();
+        setupDescriptionCounter();
+    }
+
+
+    @FXML
+    private void goBackToList(ActionEvent event) {
+
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Product/ListeProductGUI.fxml")
+            );
+
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Liste Produits");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    private void setupDescriptionCounter() {
+        descriptionArea.textProperty().addListener((observable, oldValue, newValue) -> {
+            int length = newValue.length();
+            charCountLabel.setText(length + "/500 caractères");
+
+            if (length > 500) {
+                descriptionArea.setText(oldValue);
+            }
+        });
+    }
+
+    private void setupPriceFieldValidation() {
+        priceField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!newValue.matches("\\d*\\.?\\d*")) {
+                priceField.setText(oldValue);
+            }
+        });
+    }
     public void CreateProduct(ActionEvent actionEvent) {
         if (validateInput()) {
             try {
@@ -91,4 +143,5 @@ public class ProductManagerGUI {
         priceField.clear();
         descriptionArea.clear();
     }
+
 }

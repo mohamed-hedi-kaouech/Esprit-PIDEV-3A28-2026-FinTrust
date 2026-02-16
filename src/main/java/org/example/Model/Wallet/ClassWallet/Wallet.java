@@ -61,4 +61,34 @@ public class Wallet {
     public String toString() {
         return nom_proprietaire + " - " + devise + " - " + solde;
     }
+<<<<<<< HEAD
 }
+=======
+
+    // ===== equals (basé sur id) =====
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+
+        Wallet wallet = (Wallet) o;
+
+        return idWallet == wallet.idWallet;
+    }
+
+
+    public static String SQLTable(){
+        return """
+                CREATE TABLE wallet (
+                    id_wallet INT PRIMARY KEY AUTO_INCREMENT,
+                    nom_proprietaire VARCHAR(100) NOT NULL,
+                    solde DOUBLE NOT NULL,
+                    devise VARCHAR(10) NOT NULL,
+                    statut VARCHAR(20) NOT NULL,
+                    date_creation DATETIME NOT NULL
+                );
+                """;
+    }
+}
+>>>>>>> 73e547e27955c8dd234e9be4bc09f7eef35e3643
