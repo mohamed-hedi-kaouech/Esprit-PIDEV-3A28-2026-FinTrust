@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+<?import java.lang.*?>
+<AnchorPane prefHeight="600.0" prefWidth="900.0"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.UserControlleur.EditUserController"
+            stylesheets="/Styles/StyleProduct.css">
+
+    <!-- Header Section -->
+    <VBox alignment="CENTER" prefHeight="80.0" prefWidth="900.0"
+          styleClass="header"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <HBox alignment="CENTER_LEFT" spacing="20.0">
+            <padding>
+                <Insets top="0.0" right="30.0" bottom="0.0" left="30.0"/>
+            </padding>
+
+            <Button text="⬅ Retour" onAction="#goBackToList" styleClass="btn-back" prefWidth="120.0">
+                <font>
+                    <Font name="System Bold" size="13"/>
+                </font>
+            </Button>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Label text="Modifier l'Utilisateur" styleClass="header-title">
+                <font>
+                    <Font name="System Bold" size="24"/>
+                </font>
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+    </VBox>
+
+    <!-- Main Form Section -->
+    <ScrollPane fitToWidth="true" layoutY="80.0" prefHeight="520.0"
+                AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                styleClass="form-scroll">
+
+        <VBox spacing="20.0" styleClass="form-container">
+            <padding>
+                <Insets top="40.0" right="60.0" bottom="40.0" left="60.0"/>
+            </padding>
+
+            <!-- Hidden User ID -->
+            <TextField fx:id="userIdField" managed="false" visible="false"/>
+
+            <!-- Nom -->
+            <VBox spacing="5.0">
+                <Label text="Nom *" styleClass="form-label"/>
+                <TextField fx:id="txtNom" promptText="Entrez le nom" styleClass="form-input"/>
+            </VBox>
+
+            <!-- Prénom -->
+            <VBox spacing="5.0">
+                <Label text="Prénom *" styleClass="form-label"/>
+                <TextField fx:id="txtPrenom" promptText="Entrez le prénom" styleClass="form-input"/>
+            </VBox>
+
+            <!-- Email -->
+            <VBox spacing="5.0">
+                <Label text="Email *" styleClass="form-label"/>
+                <TextField fx:id="txtEmail" promptText="Entrez l'email" styleClass="form-input"/>
+            </VBox>
+
+            <!-- Numéro Téléphone -->
+            <VBox spacing="5.0">
+                <Label text="Numéro Téléphone *" styleClass="form-label"/>
+                <TextField fx:id="txtNumTel" promptText="Entrez le numéro" styleClass="form-input"/>
+            </VBox>
+
+            <!-- Role -->
+            <VBox spacing="5.0">
+                <Label text="Rôle *" styleClass="form-label"/>
+                <ComboBox fx:id="roleComboBox" promptText="Sélectionner un rôle" styleClass="form-input">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="ADMIN"/>
+                            <String fx:value="MANAGER"/>
+                            <String fx:value="CLIENT"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+
+            <!-- Statut KYC -->
+            <VBox spacing="5.0">
+                <Label text="Statut KYC *" styleClass="form-label"/>
+                <ComboBox fx:id="kycStatusComboBox" promptText="Sélectionner le statut KYC" styleClass="form-input">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="PENDING"/>
+                            <String fx:value="VERIFIED"/>
+                            <String fx:value="REJECTED"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+            </VBox>
+
+            <!-- Date Création -->
+            <VBox spacing="5.0">
+                <Label text="Date de Création" styleClass="form-label"/>
+                <DatePicker fx:id="createdAtPicker" disable="true" styleClass="form-input"/>
+                <Label text="La date de création ne peut pas être modifiée" styleClass="help-text"/>
+            </VBox>
+
+            <!-- Buttons -->
+            <HBox spacing="20.0" alignment="CENTER">
+                <Button fx:id="updateButton" text="Modifier" onAction="#handleUpdate" prefWidth="180"
+                        styleClass="btn-primary"/>
+                <Button fx:id="cancelButton" text="Annuler" onAction="#handleCancel" prefWidth="180"
+                        styleClass="btn-secondary"/>
+            </HBox>
+
+        </VBox>
+    </ScrollPane>
+
+</AnchorPane>

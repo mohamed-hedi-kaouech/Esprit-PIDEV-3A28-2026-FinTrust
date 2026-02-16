@@ -6,10 +6,14 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/MenuStyle.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.MenuGUIController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/MenuStyle.css"
+            xmlns="http://javafx.com/javafx/17.0.12"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.MenuGUIController">
 
     <!-- Background Container -->
-    <VBox styleClass="main-container" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+    <VBox styleClass="main-container" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+          AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
         <!-- Header Section -->
         <VBox styleClass="header-section" alignment="CENTER">
@@ -53,31 +57,31 @@
                 <Insets top="30.0" bottom="40.0" left="60.0" right="60.0" />
             </padding>
 
-            <!-- Row 1: Product, Budget, Loan -->
+            <!-- Row 1: Users, Products, Budget, Loan -->
             <HBox spacing="30.0" alignment="CENTER">
                 <padding>
                     <Insets bottom="30.0" />
                 </padding>
 
-                <!-- Product Card -->
-                <VBox styleClass="menu-card" onMouseClicked="#goToProduct" alignment="CENTER" spacing="15.0">
+                <!-- Users Card -->
+                <VBox styleClass="menu-card" onMouseClicked="#goToUsers" alignment="CENTER" spacing="15.0">
                     <padding>
                         <Insets top="30.0" bottom="30.0" left="25.0" right="25.0" />
                     </padding>
 
-                    <Label text="📦" styleClass="card-icon">
+                    <Label text="👥" styleClass="card-icon">
                         <font>
                             <Font size="48.0" />
                         </font>
                     </Label>
 
-                    <Label text="Gestion Produits" styleClass="card-title">
+                    <Label text="Gestion Utilisateurs" styleClass="card-title">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
                     </Label>
 
-                    <Label text="Gérer les produits bancaires" styleClass="card-description" wrapText="true" textAlignment="CENTER">
+                    <Label text="Gérer les utilisateurs du système" styleClass="card-description" wrapText="true" textAlignment="CENTER">
                         <font>
                             <Font size="13.0" />
                         </font>
@@ -85,6 +89,34 @@
 
                     <Region VBox.vgrow="ALWAYS" minHeight="10.0" />
 
+                    <Button text="Accéder →" styleClass="card-button" onAction="#goToUsers">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Button>
+                </VBox>
+                <!-- Product Card -->
+                <VBox styleClass="menu-card" onMouseClicked="#goToProduct" alignment="CENTER" spacing="15.0">
+                    <padding>
+                        <Insets top="30.0" bottom="30.0" left="25.0" right="25.0" />
+                    </padding>
+                    <Label text="📦" styleClass="card-icon">
+                        <font>
+                            <Font size="48.0" />
+                        </font>
+                    </Label>
+                    <Label text="Gestion Produits" styleClass="card-title">
+                        <font>
+                            <Font name="System Bold" size="18.0" />
+                        </font>
+                    </Label>
+                    <Label text="Gérer les produits bancaires" styleClass="card-description" wrapText="true"
+                           textAlignment="CENTER">
+                        <font>
+                            <Font size="13.0" />
+                        </font>
+                    </Label>
+                    <Region VBox.vgrow="ALWAYS" minHeight="10.0" />
                     <Button text="Accéder →" styleClass="card-button" onAction="#goToProduct">
                         <font>
                             <Font name="System Bold" size="12.0" />
@@ -97,27 +129,23 @@
                     <padding>
                         <Insets top="30.0" bottom="30.0" left="25.0" right="25.0" />
                     </padding>
-
                     <Label text="💰" styleClass="card-icon">
                         <font>
                             <Font size="48.0" />
                         </font>
                     </Label>
-
                     <Label text="Gestion Budget" styleClass="card-title">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
                     </Label>
-
-                    <Label text="Gérer les budgets et finances" styleClass="card-description" wrapText="true" textAlignment="CENTER">
+                    <Label text="Gérer les budgets et finances" styleClass="card-description" wrapText="true"
+                           textAlignment="CENTER">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </Label>
-
                     <Region VBox.vgrow="ALWAYS" minHeight="10.0" />
-
                     <Button text="Accéder →" styleClass="card-button" onAction="#goToBudget">
                         <font>
                             <Font name="System Bold" size="12.0" />
@@ -130,27 +158,23 @@
                     <padding>
                         <Insets top="30.0" bottom="30.0" left="25.0" right="25.0" />
                     </padding>
-
                     <Label text="🏦" styleClass="card-icon">
                         <font>
                             <Font size="48.0" />
                         </font>
                     </Label>
-
                     <Label text="Gestion Prêts" styleClass="card-title">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
                     </Label>
-
-                    <Label text="Gérer les demandes de prêt" styleClass="card-description" wrapText="true" textAlignment="CENTER">
+                    <Label text="Gérer les demandes de prêt" styleClass="card-description" wrapText="true"
+                           textAlignment="CENTER">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </Label>
-
                     <Region VBox.vgrow="ALWAYS" minHeight="10.0" />
-
                     <Button text="Accéder →" styleClass="card-button" onAction="#goToLoan">
                         <font>
                             <Font name="System Bold" size="12.0" />
@@ -161,33 +185,28 @@
 
             <!-- Row 2: Wallet, Publication -->
             <HBox spacing="30.0" alignment="CENTER">
-
                 <!-- Wallet Card -->
                 <VBox styleClass="menu-card" onMouseClicked="#goToWallet" alignment="CENTER" spacing="15.0">
                     <padding>
                         <Insets top="30.0" bottom="30.0" left="25.0" right="25.0" />
                     </padding>
-
                     <Label text="👛" styleClass="card-icon">
                         <font>
                             <Font size="48.0" />
                         </font>
                     </Label>
-
                     <Label text="Gestion Portefeuille" styleClass="card-title">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
                     </Label>
-
-                    <Label text="Gérer les portefeuilles clients" styleClass="card-description" wrapText="true" textAlignment="CENTER">
+                    <Label text="Gérer les portefeuilles clients" styleClass="card-description" wrapText="true"
+                           textAlignment="CENTER">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </Label>
-
                     <Region VBox.vgrow="ALWAYS" minHeight="10.0" />
-
                     <Button text="Accéder →" styleClass="card-button" onAction="#goToWallet">
                         <font>
                             <Font name="System Bold" size="12.0" />
@@ -200,27 +219,23 @@
                     <padding>
                         <Insets top="30.0" bottom="30.0" left="25.0" right="25.0" />
                     </padding>
-
                     <Label text="📰" styleClass="card-icon">
                         <font>
                             <Font size="48.0" />
                         </font>
                     </Label>
-
                     <Label text="Gestion Publications" styleClass="card-title">
                         <font>
                             <Font name="System Bold" size="18.0" />
                         </font>
                     </Label>
-
-                    <Label text="Gérer les publications et actualités" styleClass="card-description" wrapText="true" textAlignment="CENTER">
+                    <Label text="Gérer les publications et actualités" styleClass="card-description" wrapText="true"
+                           textAlignment="CENTER">
                         <font>
                             <Font size="13.0" />
                         </font>
                     </Label>
-
                     <Region VBox.vgrow="ALWAYS" minHeight="10.0" />
-
                     <Button text="Accéder →" styleClass="card-button" onAction="#goToPublication">
                         <font>
                             <Font name="System Bold" size="12.0" />
@@ -234,5 +249,4 @@
         </VBox>
 
     </VBox>
-
 </AnchorPane>
