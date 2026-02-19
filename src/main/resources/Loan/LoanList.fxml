@@ -50,7 +50,7 @@
                 <TableColumn fx:id="colRemaining" text="Restant" prefWidth="150"/>
                 <TableColumn fx:id="colUpdate" text="Modifier" prefWidth="110"/>
                 <TableColumn fx:id="colDelete" text="Supprimer" prefWidth="110"/>
-                <TableColumn fx:id="colRepayments" text="Remboursements" prefWidth="160"/>
+                <TableColumn fx:id="colRepayments" text="Repayments" prefWidth="160"/>
             </columns>
 
             <columnResizePolicy>

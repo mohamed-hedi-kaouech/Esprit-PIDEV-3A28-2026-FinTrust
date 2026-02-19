@@ -1,4 +1,5 @@
-package org.example.Controlleurs.LoanControlleur;
+
+/*package org.example.Controlleurs.LoanControlleur;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -308,3 +309,4 @@ public class LoanManagerGUI implements Initializable {
         alert.showAndWait();
     }
 }
+*/

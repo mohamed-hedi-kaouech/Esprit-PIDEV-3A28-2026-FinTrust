@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane prefWidth="1100" prefHeight="720"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.userViewControll">
+
+    <VBox spacing="30"
+          alignment="TOP_CENTER"
+          AnchorPane.topAnchor="30"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="50">
+
+        <!-- ================= TITLE ================= -->
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Label text="Mes Prêts"
+                   styleClass="page-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Nouveau prêt"
+                    styleClass="btn-primary"
+                    onAction="#handleNewLoan"/>
+        </HBox>
+
+        <!-- ================= TABLE CONTAINER ================= -->
+        <VBox styleClass="header-container"
+              spacing="15">
+
+            <TableView fx:id="loanTable"
+                       prefHeight="550">
+
+                <columnResizePolicy>
+                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+                </columnResizePolicy>
+
+                <columns>
+                    <TableColumn fx:id="colType" text="Type" prefWidth="120"/>
+                    <TableColumn fx:id="colAmount" text="Montant" prefWidth="130"/>
+                    <TableColumn fx:id="colDuration" text="Durée" prefWidth="100"/>
+                    <TableColumn fx:id="colRate" text="Taux (%)" prefWidth="100"/>
+                    <TableColumn fx:id="colRemaining" text="Capital restant" prefWidth="150"/>
+                    <TableColumn fx:id="colStatus" text="Statut" prefWidth="120"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="120"/>
+                </columns>
+
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+
+</AnchorPane>

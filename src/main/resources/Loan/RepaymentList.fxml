@@ -31,10 +31,6 @@
                    styleClass="page-title"/>
 
             <Region HBox.hgrow="ALWAYS"/>
-
-            <Button text="➕ Ajouter"
-                    styleClass="btn-primary"
-                    onAction="#goToAddRepayment"/>
         </HBox>
 
         <!-- TABLE -->

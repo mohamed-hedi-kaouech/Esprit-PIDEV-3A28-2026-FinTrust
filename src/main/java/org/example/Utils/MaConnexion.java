@@ -29,7 +29,7 @@ public class MaConnexion {
         try {
             cnx = DriverManager.getConnection(URL, USR, PWD);
             System.out.println("Connexion Etablie avec succes!");
-            loadDatabase();
+           /* loadDatabase();*/
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -45,7 +45,7 @@ public class MaConnexion {
         return instance;
     }
 
-
+/*
     public void loadDatabase() {
 
         try {
@@ -80,4 +80,5 @@ public class MaConnexion {
             e.printStackTrace();
         }
     }
+    */
 }

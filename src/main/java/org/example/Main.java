@@ -21,25 +21,24 @@ import org.example.Service.ProductService.ProductSubscriptionService;
 // click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
     public static void main(String[] args) {
-//        LoanService ls = new LoanService();
-//        Loan l= new Loan(30000,12,4,0);
-//        Loan l2= new Loan(30000,14,5,0);
-       /*
+        /*
+       LoanService ls = new LoanService();
+       Loan l= new Loan(30000,12,4,0);
+       Loan l2= new Loan(30000,14,5,0);
         ls.Add(l);
         ls.Add(l2);
         System.out.println(ls.ReadAll());
-        */
-        /*
+
         System.out.println(ls.ReadId(1));
         Loan l3= new Loan(3,35000,16,LoanStatus.ACTIVE,3.5,500.5);
         ls.Update(l3);
         System.out.println(ls.ReadAll());
-        *
-         /*
+
+
         ls.Delete(1);
         System.out.println(ls.ReadAll());
-          */
-//        RepaymentService rs = new RepaymentService();
+
+        RepaymentService rs = new RepaymentService();
 //
 //        Loan loan = ls.ReadId(3);
 //
@@ -70,6 +69,7 @@ public class Main {
 
         sps.Add(PS);
 
-
+*/
     }
+
 }

@@ -1,0 +1,87 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane prefWidth="1000" prefHeight="700"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.LoanPreviewController">
+
+    <VBox spacing="30"
+          alignment="TOP_CENTER"
+          AnchorPane.topAnchor="30"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="50">
+
+        <!-- TITRE -->
+        <Label text="Aperçu du prêt"
+               styleClass="page-title"/>
+
+        <!-- RÉSUMÉ -->
+        <HBox spacing="40"
+              alignment="CENTER"
+              styleClass="header-container">
+
+            <VBox alignment="CENTER">
+                <Label text="Type"/>
+                <Label fx:id="typeLabel"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Montant"/>
+                <Label fx:id="amountLabel"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Durée"/>
+                <Label fx:id="durationLabel"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Taux"/>
+                <Label fx:id="rateLabel"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Mensualité"/>
+                <Label fx:id="monthlyLabel"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Coût total"/>
+                <Label fx:id="totalLabel"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- TABLE PLAN D'AMORTISSEMENT -->
+        <TableView fx:id="repaymentTable"
+                   prefHeight="400"
+                   styleClass="table-view">
+
+            <columns>
+                <TableColumn fx:id="colMonth" text="Mois" prefWidth="80"/>
+                <TableColumn fx:id="colStarting" text="Capital début" prefWidth="150"/>
+                <TableColumn fx:id="colCapital" text="Capital remboursé" prefWidth="150"/>
+                <TableColumn fx:id="colInterest" text="Intérêt" prefWidth="120"/>
+                <TableColumn fx:id="colRemaining" text="Capital restant" prefWidth="150"/>
+            </columns>
+
+        </TableView>
+
+        <!-- BOUTONS -->
+        <HBox spacing="20" alignment="CENTER">
+            <Button text="Confirmer"
+                    styleClass="btn-primary"
+                    onAction="#handleConfirm"/>
+
+            <Button text="Annuler"
+                    styleClass="btn-delete"
+                    onAction="#handleBack"/>
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>

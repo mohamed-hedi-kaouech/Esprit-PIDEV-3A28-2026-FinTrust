@@ -10,7 +10,6 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import javafx.util.Callback;
 import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
 import org.example.Service.LoanService.RepaymentService;
@@ -20,21 +19,20 @@ import java.util.Optional;
 public class RepaymentListController {
 
     @FXML private TableView<Repayment> repaymentTable;
-    @FXML private TableColumn<Repayment, Integer> colNumber;
+    @FXML private TableColumn<Repayment, Integer> colMonth;
     @FXML private TableColumn<Repayment, Double> colAmount;
     @FXML private TableColumn<Repayment, Double> colCapital;
     @FXML private TableColumn<Repayment, Double> colInterest;
     @FXML private TableColumn<Repayment, RepaymentStatus> colStatus;
     @FXML private TableColumn<Repayment, Void> colPay;
-    @FXML private TableColumn<Repayment, Void> colDelete;
 
-    private RepaymentService service = new RepaymentService();
-    private ObservableList<Repayment> repaymentList = FXCollections.observableArrayList();
+    private final RepaymentService service = new RepaymentService();
+    private final ObservableList<Repayment> repaymentList = FXCollections.observableArrayList();
 
     private int loanId;
 
     // ======================
-    // Called from LoanManager
+    // SET LOAN
     // ======================
     public void setLoanId(int loanId) {
         this.loanId = loanId;
@@ -51,11 +49,11 @@ public class RepaymentListController {
     }
 
     // ======================
-    // Setup Columns
+    // SETUP TABLE
     // ======================
     private void setupColumns() {
 
-        colNumber.setCellValueFactory(new PropertyValueFactory<>("number"));
+        colMonth.setCellValueFactory(new PropertyValueFactory<>("month"));
         colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
         colCapital.setCellValueFactory(new PropertyValueFactory<>("capitalPart"));
         colInterest.setCellValueFactory(new PropertyValueFactory<>("interestPart"));
@@ -98,11 +96,10 @@ public class RepaymentListController {
     }
 
     // ======================
-    // Setup Buttons
+    // PAY BUTTON
     // ======================
     private void setupButtons() {
 
-        // PAY BUTTON
         colPay.setCellFactory(param -> new TableCell<>() {
 
             private final Button btn = new Button("Payer");
@@ -130,32 +127,10 @@ public class RepaymentListController {
                 }
             }
         });
-
-        // DELETE BUTTON
-        colDelete.setCellFactory(param -> new TableCell<>() {
-
-            private final Button btn = new Button("Supprimer");
-
-            {
-                btn.getStyleClass().add("btn-delete");
-
-                btn.setOnAction(e -> {
-                    Repayment r = getTableView().getItems().get(getIndex());
-                    handleDelete(r);
-                });
-            }
-
-            @Override
-            protected void updateItem(Void item, boolean empty) {
-                super.updateItem(item, empty);
-                setGraphic(empty ? null : btn);
-                setAlignment(Pos.CENTER);
-            }
-        });
     }
 
     // ======================
-    // Load Data
+    // LOAD DATA
     // ======================
     private void loadData() {
         repaymentList.setAll(service.getByLoan(loanId));
@@ -163,13 +138,18 @@ public class RepaymentListController {
     }
 
     // ======================
-    // PAY
+    // HANDLE PAY
     // ======================
     private void handlePay(Repayment r) {
 
+        if (r.getStatus() == RepaymentStatus.PAID) {
+            showError("Cette échéance est déjà payée.");
+            return;
+        }
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Marquer paiement n°" + r.getNumber());
+        confirm.setHeaderText("Paiement échéance n° " + r.getMonth());
         confirm.setContentText("Confirmer le paiement ?");
 
         Optional<ButtonType> result = confirm.showAndWait();
@@ -181,50 +161,7 @@ public class RepaymentListController {
     }
 
     // ======================
-    // DELETE
-    // ======================
-    private void handleDelete(Repayment r) {
-
-        if (r.getStatus() == RepaymentStatus.PAID) {
-            showError("Impossible de supprimer un paiement déjà payé.");
-            return;
-        }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Supprimer remboursement n°" + r.getNumber());
-
-        Optional<ButtonType> result = confirm.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            service.Delete(r.getRepayId());
-            loadData();
-        }
-    }
-    @FXML
-    private void goToAddRepayment() {
-
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/Loan/CreateRepayment.fxml")
-            );
-
-            Parent root = loader.load();
-
-            CreateRepaymentController controller = loader.getController();
-            controller.setLoanId(loanId);
-
-            Stage stage = (Stage) repaymentTable.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Ajouter remboursement");
-
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }
-
-    // ======================
-    // BACK TO LOAN LIST
+    // BACK
     // ======================
     @FXML
     private void handleBack() {
