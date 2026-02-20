@@ -131,4 +131,24 @@ public class userViewControll {
             e.printStackTrace();
         }
     }
+
+    @FXML
+    private void handleBack() {
+
+        try {
+
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/MenuGUI.fxml")
+            );
+
+            Stage stage = (Stage) loanTable.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mes prêts");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+
+
 }

@@ -119,6 +119,23 @@ public class SimulatorController {
             showError("Erreur lors de la simulation.");
         }
     }
+    @FXML
+    private void handleBack() {
+
+        try {
+
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Loan/LoanListUser.fxml")
+            );
+
+            Stage stage = (Stage) amountField.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Mes prêts");
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
 
     @FXML
     private void selectHousing() {

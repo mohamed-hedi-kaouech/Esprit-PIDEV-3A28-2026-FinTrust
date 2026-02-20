@@ -239,8 +239,8 @@
 /* ================= LOAN CARDS ================= */
 
 .loan-card {
-    -fx-pref-width: 220;
-    -fx-pref-height: 160;
+    -fx-pref-width: 420;
+    -fx-pref-height: 260;
     -fx-background-radius: 20;
     -fx-cursor: hand;
     -fx-alignment: center;

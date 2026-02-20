@@ -24,6 +24,13 @@
             <Button text="Nouveau prêt"
                     styleClass="btn-primary"
                     onAction="#handleNewLoan"/>
+
+                <Button text="Retour"
+                        styleClass="btn-back"
+                        onAction="#handleBack"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
         </HBox>
 
         <!-- ================= TABLE CONTAINER ================= -->

@@ -54,7 +54,9 @@ public class RepaymentListController {
     private void setupColumns() {
 
         colMonth.setCellValueFactory(new PropertyValueFactory<>("month"));
-        colAmount.setCellValueFactory(new PropertyValueFactory<>("amount"));
+
+        // FIXED PROPERTY NAME
+        colAmount.setCellValueFactory(new PropertyValueFactory<>("monthlyPayment"));
         colCapital.setCellValueFactory(new PropertyValueFactory<>("capitalPart"));
         colInterest.setCellValueFactory(new PropertyValueFactory<>("interestPart"));
         colStatus.setCellValueFactory(new PropertyValueFactory<>("status"));
@@ -63,6 +65,12 @@ public class RepaymentListController {
         colCapital.setCellFactory(col -> formatMoneyCell());
         colInterest.setCellFactory(col -> formatMoneyCell());
 
+        colAmount.setStyle("-fx-alignment: CENTER-RIGHT;");
+        colCapital.setStyle("-fx-alignment: CENTER-RIGHT;");
+        colInterest.setStyle("-fx-alignment: CENTER-RIGHT;");
+        colMonth.setStyle("-fx-alignment: CENTER;");
+
+        // CLEAN STATUS STYLE USING CSS CLASSES
         colStatus.setCellFactory(col -> new TableCell<>() {
             @Override
             protected void updateItem(RepaymentStatus status, boolean empty) {
@@ -70,15 +78,20 @@ public class RepaymentListController {
 
                 if (empty || status == null) {
                     setText(null);
-                    setStyle("");
+                    setGraphic(null);
                 } else {
-                    setText(status.name());
+                    Label badge = new Label(status.name());
+
+                    badge.getStyleClass().clear();
 
                     if (status == RepaymentStatus.PAID) {
-                        setStyle("-fx-background-color:#e8f5e9; -fx-text-fill:#2e7d32;");
+                        badge.getStyleClass().add("status-completed");
                     } else {
-                        setStyle("-fx-background-color:#fff3e0; -fx-text-fill:#e65100;");
+                        badge.getStyleClass().add("status-pending");
                     }
+
+                    setGraphic(badge);
+                    setText(null);
                 }
             }
         });
@@ -155,8 +168,12 @@ public class RepaymentListController {
         Optional<ButtonType> result = confirm.showAndWait();
 
         if (result.isPresent() && result.get() == ButtonType.OK) {
+
             service.markAsPaid(r.getRepayId());
-            loadData();
+
+            // Update local object instead of full reload
+            r.setStatus(RepaymentStatus.PAID);
+            repaymentTable.refresh();
         }
     }
 
@@ -168,12 +185,12 @@ public class RepaymentListController {
 
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Loan/LoanList.fxml")
+                    getClass().getResource("/Loan/LoanListUser.fxml")
             );
 
             Stage stage = (Stage) repaymentTable.getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Liste des prêts");
+            stage.setTitle("Mes prêts");
 
         } catch (Exception e) {
             e.printStackTrace();
