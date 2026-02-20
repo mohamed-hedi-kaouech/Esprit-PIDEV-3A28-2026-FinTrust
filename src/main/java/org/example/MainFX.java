@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import java.util.Objects;
 
 public class MainFX extends Application {
 
@@ -12,7 +13,8 @@ public class MainFX extends Application {
     public void start(Stage primaryStage) {
         try {
             // Charge le fichier FXML du dashboard
-            Parent root = FXMLLoader.load(getClass().getResource("/Wallet/dashboard.fxml"));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(
+                    getClass().getResource("/Wallet/dashboard.fxml")));
 
             Scene scene = new Scene(root);
 
@@ -34,26 +36,4 @@ public class MainFX extends Application {
     public static void main(String[] args) {
         launch(args);
     }
-<<<<<<< HEAD
 }
-=======
-
-    @Override
-    public void start(Stage primaryStage) {
-
-        try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MenuGUI.fxml")));
-            Scene scene = new Scene(root);
-            primaryStage.setTitle("Manager");
-            primaryStage.setMinWidth(900);
-            primaryStage.setMinHeight(600);
-            primaryStage.setScene(scene);
-            primaryStage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-}
->>>>>>> 73e547e27955c8dd234e9be4bc09f7eef35e3643

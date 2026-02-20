@@ -1,7 +1,7 @@
 package org.example.Service.WalletService;
 
-import org.example.Model.Wallet.ClassWallet.Transaction;  // CORRIGÉ
-import org.example.Model.Wallet.ClassWallet.Wallet;      // CORRIGÉ
+import org.example.Model.Wallet.ClassWallet.Transaction;
+import org.example.Model.Wallet.ClassWallet.Wallet;
 import org.example.Utils.MaConnexion;
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -13,7 +13,6 @@ public class TransactionService {
     private WalletService walletService;
 
     public TransactionService() {
-        // Utilisation de MaConnexion pour obtenir la connexion
         connection = MaConnexion.getInstance().getCnx();
         walletService = new WalletService();
     }

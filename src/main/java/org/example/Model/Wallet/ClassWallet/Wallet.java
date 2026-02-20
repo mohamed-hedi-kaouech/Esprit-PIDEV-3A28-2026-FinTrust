@@ -1,94 +1,149 @@
-package org.example.Model.Wallet.ClassWallet;
+package org.example.Model.Wallet.ClassWallet; // Correction: tout en minuscules
 
-// CORRECTION: Ajout de "Wallet" dans le chemin
-import org.example.Model.Wallet.EnumWallet.WalletDevise;
+import org.example.Model.Wallet.EnumWallet.WalletDevise; // Correction du chemin
 import org.example.Model.Wallet.EnumWallet.WalletStatut;
 import java.time.LocalDateTime;
+import java.util.Objects;
 
 public class Wallet {
-    private int id_wallet;
-    private String nom_proprietaire;
+    private int idWallet;           // camelCase pour Java
+    private String nomProprietaire;  // camelCase
     private double solde;
     private WalletDevise devise;
     private WalletStatut statut;
-    private LocalDateTime date_creation;
+    private LocalDateTime dateCreation; // camelCase
 
     // Constructeurs
     public Wallet() {
-        this.date_creation = LocalDateTime.now();
+        this.dateCreation = LocalDateTime.now();
         this.statut = WalletStatut.DRAFT;
     }
 
-    public Wallet(String nom_proprietaire, double solde, WalletDevise devise) {
-        this.nom_proprietaire = nom_proprietaire;
+    public Wallet(String nomProprietaire, double solde, WalletDevise devise) {
+        setNomProprietaire(nomProprietaire); // Utilisation du setter avec validation
         this.solde = solde;
-        this.devise = devise;
+        setDevise(devise); // Utilisation du setter avec validation
         this.statut = WalletStatut.DRAFT;
-        this.date_creation = LocalDateTime.now();
+        this.dateCreation = LocalDateTime.now();
     }
 
     // Getters et Setters
-    public int getId_wallet() { return id_wallet; }
-    public void setId_wallet(int id_wallet) { this.id_wallet = id_wallet; }
-
-    public String getNom_proprietaire() { return nom_proprietaire; }
-    public void setNom_proprietaire(String nom_proprietaire) {
-        if (nom_proprietaire == null || nom_proprietaire.trim().isEmpty()) {
-            throw new IllegalArgumentException("Le nom du propriétaire est obligatoire");
-        }
-        this.nom_proprietaire = nom_proprietaire;
+    public int getIdWallet() {
+        return idWallet;
     }
 
-    public double getSolde() { return solde; }
+    public void setIdWallet(int idWallet) {
+        this.idWallet = idWallet;
+    }
+
+    // Pour compatibilité avec l'ancien code
+    @Deprecated
+    public int getId_wallet() {
+        return idWallet;
+    }
+
+    @Deprecated
+    public void setId_wallet(int id_wallet) {
+        this.idWallet = id_wallet;
+    }
+
+    public String getNomProprietaire() {
+        return nomProprietaire;
+    }
+
+    public void setNomProprietaire(String nomProprietaire) {
+        if (nomProprietaire == null || nomProprietaire.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du propriétaire est obligatoire");
+        }
+        this.nomProprietaire = nomProprietaire;
+    }
+
+    @Deprecated
+    public String getNom_proprietaire() {
+        return nomProprietaire;
+    }
+
+    @Deprecated
+    public void setNom_proprietaire(String nom_proprietaire) {
+        setNomProprietaire(nom_proprietaire);
+    }
+
+    public double getSolde() {
+        return solde;
+    }
+
     public void setSolde(double solde) {
-        if (solde < 0) throw new IllegalArgumentException("Le solde ne peut pas être négatif");
+        if (solde < 0) {
+            throw new IllegalArgumentException("Le solde ne peut pas être négatif");
+        }
         this.solde = solde;
     }
 
-    public WalletDevise getDevise() { return devise; }
+    public WalletDevise getDevise() {
+        return devise;
+    }
+
     public void setDevise(WalletDevise devise) {
-        if (devise == null) throw new IllegalArgumentException("La devise est obligatoire");
+        if (devise == null) {
+            throw new IllegalArgumentException("La devise est obligatoire");
+        }
         this.devise = devise;
     }
 
-    public WalletStatut getStatut() { return statut; }
-    public void setStatut(WalletStatut statut) { this.statut = statut; }
+    public WalletStatut getStatut() {
+        return statut;
+    }
 
-    public LocalDateTime getDate_creation() { return date_creation; }
-    public void setDate_creation(LocalDateTime date_creation) { this.date_creation = date_creation; }
+    public void setStatut(WalletStatut statut) {
+        this.statut = statut;
+    }
+
+    public LocalDateTime getDateCreation() {
+        return dateCreation;
+    }
+
+    public void setDateCreation(LocalDateTime dateCreation) {
+        this.dateCreation = dateCreation;
+    }
+
+    @Deprecated
+    public LocalDateTime getDate_creation() {
+        return dateCreation;
+    }
+
+    @Deprecated
+    public void setDate_creation(LocalDateTime date_creation) {
+        this.dateCreation = date_creation;
+    }
 
     @Override
     public String toString() {
-        return nom_proprietaire + " - " + devise + " - " + solde;
+        return String.format("Wallet{id=%d, propriétaire='%s', solde=%.2f %s, statut=%s}",
+                idWallet, nomProprietaire, solde, devise, statut);
     }
-<<<<<<< HEAD
-}
-=======
-
-    // ===== equals (basé sur id) =====
 
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
-
         Wallet wallet = (Wallet) o;
-
         return idWallet == wallet.idWallet;
     }
 
-
-    public static String SQLTable(){
+    @Override
+    public int hashCode() {
+        return Objects.hash(idWallet);
+    }
+    public static String getSQLCreateTable() {
         return """
-                CREATE TABLE wallet (
-                    id_wallet INT PRIMARY KEY AUTO_INCREMENT,
-                    nom_proprietaire VARCHAR(100) NOT NULL,
-                    solde DOUBLE NOT NULL,
-                    devise VARCHAR(10) NOT NULL,
-                    statut VARCHAR(20) NOT NULL,
-                    date_creation DATETIME NOT NULL
-                );
-                """;
+        CREATE TABLE IF NOT EXISTS wallet (
+            id_wallet INT PRIMARY KEY AUTO_INCREMENT,
+            nom_proprietaire VARCHAR(100) NOT NULL,
+            solde DOUBLE NOT NULL,
+            devise VARCHAR(10) NOT NULL,
+            statut VARCHAR(20) NOT NULL,
+            date_creation DATETIME NOT NULL
+        )
+    """;
     }
 }
->>>>>>> 73e547e27955c8dd234e9be4bc09f7eef35e3643
