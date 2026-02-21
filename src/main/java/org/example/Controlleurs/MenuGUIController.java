@@ -33,7 +33,7 @@ public class MenuGUIController implements Initializable {
     @FXML
     private void goToProduct() {
         try {
-            navigateToScene("/Product/Client/ClientListeProductGUI.fxml", "Gestion des Produits");
+            navigateToScene("/Product/Client/ClientMarketGUI.fxml", "Gestion des Produits");
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Produits.\n" + e.getMessage());

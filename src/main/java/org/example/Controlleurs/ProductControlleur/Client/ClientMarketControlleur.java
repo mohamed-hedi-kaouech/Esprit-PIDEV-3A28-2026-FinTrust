@@ -14,16 +14,22 @@ import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import okhttp3.OkHttpClient;
 import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.EnumProduct.SubscriptionType;
 import org.example.Service.ProductService.ProductService;
 import org.example.Service.ProductService.ProductSubscriptionService;
 
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 
 public class ClientMarketControlleur implements Initializable {
@@ -177,15 +183,64 @@ public class ClientMarketControlleur implements Initializable {
         result.ifPresent(subscriptionType -> {
             try {
                 PSS = new ProductSubscriptionService();
-                ProductSubscription productSubscription = new ProductSubscription(1,product.getProductId(),subscriptionType);
+                ProductSubscription productSubscription = new ProductSubscription(1, product.getProductId(), subscriptionType);
                 boolean success = PSS.add(productSubscription);
+
                 if (success) {
                     showAlert(Alert.AlertType.INFORMATION, "Succès",
                             "Abonnement " + subscriptionType.name() + " ajouté avec succès !");
+
+                    // Fire webhook asynchronously — never block the FX thread
+                    String productCategorie = product.getCategory().name();
+                    String productType      = subscriptionType.name();
+                    String price            = product.getPrice().toString();
+
+                    String jsonBody = String.format("""
+                        {
+                            "ProductCategorie": "%s",
+                            "ProductType": "%s",
+                            "Price": "%s"
+                        }
+                        """, productCategorie, productType, price);
+                    CompletableFuture.runAsync(() -> {
+                        String webhookUrl = "http://localhost:5680/webhook/775c96dd-935c-455d-a9d4-5cb84ff1ea8a";
+                        // Step 1: Test basic connectivity first
+                        try {
+                            java.net.Socket socket = new java.net.Socket();
+                            socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
+                            socket.close();
+                            OkHttpClient client = new OkHttpClient.Builder()
+                                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .build();
+
+                            okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                                    jsonBody,
+                                    okhttp3.MediaType.parse("application/json")
+                            );
+
+                            okhttp3.Request request = new okhttp3.Request.Builder()
+                                    .url(webhookUrl)
+                                    .post(body)
+                                    .build();
+
+                            try (okhttp3.Response response = client.newCall(request).execute()) {
+                                System.out.println("✅ Status: " + response.code());
+                                System.out.println("✅ Body: " + response.body().string());
+                            }
+
+                    } catch (Exception e) {
+                        System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                    });
+
                 } else {
                     showAlert(Alert.AlertType.ERROR, "Erreur",
                             "Échec de l'abonnement. Veuillez réessayer.");
                 }
+
             } catch (Exception e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue : " + e.getMessage());
             }
