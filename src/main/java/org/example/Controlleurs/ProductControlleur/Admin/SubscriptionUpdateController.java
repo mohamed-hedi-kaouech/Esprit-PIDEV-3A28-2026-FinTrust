@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Admin;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -7,8 +7,6 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.example.Model.Budget.Categorie;
-import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.EnumProduct.SubscriptionStatus;
 import org.example.Service.ProductService.ProductService;
@@ -18,9 +16,7 @@ import org.example.Model.Product.EnumProduct.SubscriptionType;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.format.DateTimeFormatter;
 import java.time.temporal.ChronoUnit;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -315,7 +311,7 @@ public class SubscriptionUpdateController implements Initializable {
     @FXML
     private void goBackToListe() {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Product/ListeSubProductGUI.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Product/Admin/ListeSubProductGUI.fxml"));
             Parent root = loader.load();
 
             Stage stage = (Stage) tfSubscriptionId.getScene().getWindow();

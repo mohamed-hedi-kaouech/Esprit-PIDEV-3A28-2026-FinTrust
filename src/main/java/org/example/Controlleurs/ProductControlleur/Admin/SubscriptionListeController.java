@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Admin;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,7 +8,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -23,9 +22,7 @@ import org.example.Service.ProductService.ProductSubscriptionService;
 
 import java.io.IOException;
 import java.net.URL;
-import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.time.temporal.ChronoUnit;
 import java.util.Optional;
 import java.util.ResourceBundle;
 
@@ -201,7 +198,7 @@ public class SubscriptionListeController implements Initializable {
 
     private void goToUpdate(ProductSubscription subscription) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Product/SubscriptionUpdate.fxml"));
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Product/Admin/SubscriptionUpdate.fxml"));
             Parent root = loader.load();
 
             SubscriptionUpdateController controller = loader.getController();

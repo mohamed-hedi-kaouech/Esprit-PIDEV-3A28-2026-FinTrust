@@ -1,20 +1,16 @@
 package org.example.Controlleurs;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
-import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MenuGUIController implements Initializable {
@@ -37,7 +33,7 @@ public class MenuGUIController implements Initializable {
     @FXML
     private void goToProduct() {
         try {
-            navigateToScene("/Product/ListeProductGUI.fxml", "Gestion des Produits");
+            navigateToScene("/Product/Client/ClientListeProductGUI.fxml", "Gestion des Produits");
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Produits.\n" + e.getMessage());

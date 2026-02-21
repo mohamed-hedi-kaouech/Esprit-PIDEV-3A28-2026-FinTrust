@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Admin;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -40,7 +40,7 @@ public class ProductCreationControlleur implements Initializable {
 
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/ListeProductGUI.fxml")
+                    getClass().getResource("/Product/Admin/ListeProductGUI.fxml")
             );
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();

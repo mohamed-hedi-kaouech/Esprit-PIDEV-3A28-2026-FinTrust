@@ -7,7 +7,7 @@
 
 <?import java.lang.String?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.Controlleurs.ProductControlleur.SubscriptionListeController"
+            fx:controller="org.example.Controlleurs.ProductControlleur.Admin.SubscriptionListeController"
             prefWidth="1100" prefHeight="700"
             stylesheets="/Styles/StyleProduct.css"
             styleClass="main-container">
