@@ -70,24 +70,10 @@ public class ListeProductControlleur implements Initializable {
     }
 
     @FXML
-    private void goToSub(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/Admin/ListeSubProductGUI.fxml")
-            );
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Manager");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-    @FXML
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/MenuGUI.fxml")
+                    getClass().getResource("/Product/MenuProductGUI.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

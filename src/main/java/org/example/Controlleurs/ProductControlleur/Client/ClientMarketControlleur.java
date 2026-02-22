@@ -2,18 +2,23 @@ package org.example.Controlleurs.ProductControlleur.Client;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 
 import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.Stage;
 import okhttp3.OkHttpClient;
 import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
@@ -21,6 +26,7 @@ import org.example.Model.Product.EnumProduct.SubscriptionType;
 import org.example.Service.ProductService.ProductService;
 import org.example.Service.ProductService.ProductSubscriptionService;
 
+import java.io.IOException;
 import java.net.URI;
 import java.net.URL;
 import java.net.http.HttpClient;
@@ -286,6 +292,21 @@ public class ClientMarketControlleur implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void goBackToMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Product/MenuProductGUI.fxml")
+            );
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Manager");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
 

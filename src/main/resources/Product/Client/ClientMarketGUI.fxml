@@ -15,7 +15,11 @@
         <padding>
             <Insets top="30.0" left="30.0" right="30.0" bottom="30.0" />
         </padding>
-
+        <Button text="⬅ Retour" onAction="#goBackToMenu" styleClass="btn-back">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Button>
         <!-- Header Section -->
         <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-container">
             <Label styleClass="page-title" text="Liste des Produits">

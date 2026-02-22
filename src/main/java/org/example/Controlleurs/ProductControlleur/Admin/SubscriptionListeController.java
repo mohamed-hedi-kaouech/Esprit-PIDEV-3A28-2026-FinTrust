@@ -3,11 +3,13 @@ package org.example.Controlleurs.ProductControlleur.Admin;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -178,24 +180,6 @@ public class SubscriptionListeController implements Initializable {
         applyFilters();
     }
 
-    @FXML
-    private void goToCreate() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Product/SubscriptionCreate.fxml"));
-            Parent root = loader.load();
-
-            Stage stage = (Stage) subscriptionListView.getScene().getWindow();
-            Scene scene = new Scene(root);
-
-            stage.setScene(scene);
-            stage.setTitle("Créer un Abonnement");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Erreur", "Impossible de charger la page de création.");
-        }
-    }
-
     private void goToUpdate(ProductSubscription subscription) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Product/Admin/SubscriptionUpdate.fxml"));
@@ -237,23 +221,7 @@ public class SubscriptionListeController implements Initializable {
         }
     }
 
-    @FXML
-    private void goBackToMenu() {
-        try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("/MenuGUI.fxml"));
-            Parent root = loader.load();
 
-            Stage stage = (Stage) subscriptionListView.getScene().getWindow();
-            Scene scene = new Scene(root);
-
-            stage.setScene(scene);
-            stage.setTitle("Système de Gestion Bancaire");
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-            showErrorAlert("Erreur", "Impossible de retourner au menu.");
-        }
-    }
 
     // Alert methods
     private void showSuccessAlert(String title, String message) {
@@ -270,6 +238,21 @@ public class SubscriptionListeController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    @FXML
+    private void goBackToMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Product/MenuProductGUI.fxml")
+            );
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Manager");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     // ==================== Custom ListView Cell ====================

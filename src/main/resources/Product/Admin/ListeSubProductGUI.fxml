@@ -93,13 +93,6 @@
             <padding>
                 <Insets top="15" right="30" bottom="15" left="30"/>
             </padding>
-
-            <Button text="➕ Nouvel Abonnement" onAction="#goToCreate" styleClass="btn-add">
-                <font>
-                    <Font name="System Bold" size="13.0" />
-                </font>
-            </Button>
-
             <Region HBox.hgrow="ALWAYS"/>
 
             <!-- Filter ComboBox -->

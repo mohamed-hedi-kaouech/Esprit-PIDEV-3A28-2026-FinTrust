@@ -36,11 +36,6 @@
                     <Font name="System Bold" size="13.0" />
                 </font>
             </Button>
-            <Button styleClass="btn-add" text="Liste Sub Produits" onAction="#goToSub" prefWidth="180.0">
-                <font>
-                    <Font name="System Bold" size="13.0" />
-                </font>
-            </Button>
         </HBox>
 
         <!-- List Section -->
