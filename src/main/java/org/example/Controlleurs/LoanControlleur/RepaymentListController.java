@@ -160,6 +160,12 @@ public class RepaymentListController {
             return;
         }
 
+        // 🔥 NEW VALIDATION
+        if (!service.canPayRepayment(r.getLoanId(), r.getMonth())) {
+            showError("Vous devez payer les échéances précédentes d'abord.");
+            return;
+        }
+
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
         confirm.setHeaderText("Paiement échéance n° " + r.getMonth());
@@ -170,10 +176,15 @@ public class RepaymentListController {
         if (result.isPresent() && result.get() == ButtonType.OK) {
 
             service.markAsPaid(r.getRepayId());
+            service.updateRemainingPrincipal(
+                    r.getLoanId(),
+                    r.getCapitalPart()
+            );
+            service.updateLoanStatusIfCompleted(
+                    r.getLoanId()
+            );
 
-            // Update local object instead of full reload
-            r.setStatus(RepaymentStatus.PAID);
-            repaymentTable.refresh();
+            loadData();
         }
     }
 
@@ -196,6 +207,8 @@ public class RepaymentListController {
             e.printStackTrace();
         }
     }
+
+
 
     private void showError(String msg) {
         Alert alert = new Alert(Alert.AlertType.ERROR);

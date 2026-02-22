@@ -192,6 +192,58 @@ public class RepaymentService implements InterfaceGlobal<Repayment> {
         }
     }
 
+    public void updateRemainingPrincipal(int loanId, double capitalPart) {
+
+        String sql = """
+        UPDATE loan
+        SET remaining_principal = remaining_principal - ?
+        WHERE loanId = ?
+    """;
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setDouble(1, capitalPart);
+            ps.setInt(2, loanId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur mise à jour capital restant", e);
+        }
+    }
+
+
+    public void updateLoanStatusIfCompleted(int loanId) {
+
+        try {
+
+            String checkSql = """
+            SELECT COUNT(*) FROM repayment
+            WHERE loanId = ? AND status = 'UNPAID'
+        """;
+
+            PreparedStatement psCheck = cnx.prepareStatement(checkSql);
+            psCheck.setInt(1, loanId);
+
+            ResultSet rs = psCheck.executeQuery();
+
+            if (rs.next() && rs.getInt(1) == 0) {
+
+                String updateSql = """
+                UPDATE loan
+                SET status = 'COMPLETED'
+                WHERE loanId = ?
+            """;
+
+                PreparedStatement psUpdate = cnx.prepareStatement(updateSql);
+                psUpdate.setInt(1, loanId);
+                psUpdate.executeUpdate();
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur mise à jour statut prêt", e);
+        }
+    }
+
     // ======================
     // MAPPER
     // ======================
@@ -210,5 +262,33 @@ public class RepaymentService implements InterfaceGlobal<Repayment> {
         r.setStatus(RepaymentStatus.valueOf(rs.getString("status")));
 
         return r;
+    }
+
+
+    public boolean canPayRepayment(int loanId, int month) {
+
+        String sql = """
+        SELECT COUNT(*) FROM repayment
+        WHERE loanId = ?
+        AND month < ?
+        AND status = 'UNPAID'
+    """;
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setInt(1, loanId);
+            ps.setInt(2, month);
+
+            ResultSet rs = ps.executeQuery();
+
+            if (rs.next()) {
+                return rs.getInt(1) == 0;
+            }
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur vérification paiement", e);
+        }
+
+        return false;
     }
 }

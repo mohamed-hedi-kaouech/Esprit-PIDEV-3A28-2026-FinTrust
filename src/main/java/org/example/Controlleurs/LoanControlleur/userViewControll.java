@@ -16,8 +16,6 @@ import java.util.List;
 public class userViewControll {
 
     @FXML private TableView<Loan> loanTable;
-
-    @FXML private TableColumn<Loan, Integer> colId;
     @FXML private TableColumn<Loan, String> colType;
     @FXML private TableColumn<Loan, Double> colAmount;
     @FXML private TableColumn<Loan, Integer> colDuration;
