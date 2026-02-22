@@ -1,10 +1,8 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Admin;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,7 +15,6 @@ import org.example.Service.ProductService.ProductService;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -107,7 +104,7 @@ public class ProductUpdateControlleur implements Initializable {
     private void goBackToList() {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/ListeProductGUI.fxml")
+                    getClass().getResource("/Product/Admin/ListeProductGUI.fxml")
             );
 
             Stage stage = (Stage) Stage.getWindows()
