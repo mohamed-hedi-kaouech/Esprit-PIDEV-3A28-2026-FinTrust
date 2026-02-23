@@ -3,13 +3,11 @@ package org.example.Controlleurs.BudgetControlleur;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -233,6 +231,25 @@ public class CategorieListeController implements Initializable {
         }
     }
 
+    // Open Item list filtered by category
+    private void openItemsForCategory(Categorie categorie) {
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Budget/ItemListGUI.fxml"));
+            Parent root = loader.load();
+
+            ItemListController controller = loader.getController();
+            controller.loadItemsForCategory(categorie);
+
+            Stage stage = (Stage) categorieListView.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Items de la catégorie: " + categorie.getNomCategorie());
+            stage.show();
+        } catch (IOException e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur", "Impossible d'ouvrir la liste des items pour cette catégorie.");
+        }
+    }
+
     // Alert methods
     private void showSuccessAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
@@ -248,21 +265,6 @@ public class CategorieListeController implements Initializable {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
-    }
-
-    public void goListeItem(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/Budget/ItemGUI.fxml")
-            );
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Liste Items");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
     }
 
     // ==================== Custom ListView Cell ====================
@@ -414,8 +416,14 @@ public class CategorieListeController implements Initializable {
 //                }
 
                 // Set button actions
-                updateButton.setOnAction(e -> goToUpdate(categorie));
-                deleteButton.setOnAction(e -> deleteCategorie(categorie));
+                    updateButton.setOnAction(e -> goToUpdate(categorie));
+                    deleteButton.setOnAction(e -> deleteCategorie(categorie));
+
+                    // Click on the card (except buttons) opens the items list for this category
+                    container.setOnMouseClicked(e -> {
+                        if (e.getTarget() instanceof Button) return;
+                        openItemsForCategory(categorie);
+                    });
 
                 setGraphic(container);
             }
