@@ -57,15 +57,21 @@ public class AdminUserFormController {
 
     @FXML
     private void handleCreateUser() {
-        SignupResult result = userService.createUserByAdmin(
-                SessionContext.getInstance().getCurrentUser(),
-                nomField.getText(),
-                emailField.getText(),
-                passwordField.getText(),
-                confirmPasswordField.getText(),
-                roleCombo.getValue(),
-                statusCombo.getValue()
-        );
+        SignupResult result;
+        try {
+            result = userService.createUserByAdmin(
+                    SessionContext.getInstance().getCurrentUser(),
+                    nomField.getText(),
+                    emailField.getText(),
+                    passwordField.getText(),
+                    confirmPasswordField.getText(),
+                    roleCombo.getValue(),
+                    statusCombo.getValue()
+            );
+        } catch (Exception e) {
+            setInfo("Erreur creation utilisateur: " + e.getMessage(), true);
+            return;
+        }
 
         if (!result.isSuccess()) {
             setInfo(result.getMessage(), true);

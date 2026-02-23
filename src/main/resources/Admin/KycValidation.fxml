@@ -58,7 +58,6 @@
                 <Button text="Refuser" onAction="#handleRefuse" styleClass="button-danger"/>
                 <Button text="Mettre en attente" onAction="#handlePending" styleClass="button-secondary"/>
                 <Button text="Telecharger Fichier" onAction="#handleDownloadFile" styleClass="button-secondary"/>
-                <Button text="Envoyer notification" onAction="#handleSendNotification" styleClass="button-secondary"/>
                 <Button text="Retour" onAction="#handleBack" styleClass="button-secondary"/>
                 <Button text="Rafraichir" onAction="#refreshList" styleClass="button-secondary"/>
             </HBox>

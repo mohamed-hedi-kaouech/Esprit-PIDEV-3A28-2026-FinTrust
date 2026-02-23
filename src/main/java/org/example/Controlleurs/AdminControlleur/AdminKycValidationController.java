@@ -7,7 +7,11 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.*;
+import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
+import javafx.scene.control.TextArea;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.Model.Kyc.KycFile;
@@ -56,7 +60,6 @@ public class AdminKycValidationController {
             return;
         }
 
-        // Table KYC
         kycIdCol.setCellValueFactory(d -> new SimpleIntegerProperty(d.getValue().getKycId()));
         clientCol.setCellValueFactory(d -> new SimpleStringProperty(safe(d.getValue().getNomComplet())));
         emailCol.setCellValueFactory(d -> new SimpleStringProperty(safe(d.getValue().getEmail())));
@@ -72,12 +75,10 @@ public class AdminKycValidationController {
                 d.getValue().getDateSubmission() == null ? "-" : d.getValue().getDateSubmission().format(DT)
         ));
 
-        // Table fichiers
         fileIdCol.setCellValueFactory(d -> new SimpleObjectProperty<>(d.getValue().getId()));
         fileNameCol.setCellValueFactory(d -> new SimpleStringProperty(safe(d.getValue().getFileName())));
         fileTypeCol.setCellValueFactory(d -> new SimpleStringProperty(safe(d.getValue().getFileType())));
 
-        // Selection KYC -> load files + commentaire
         kycTable.getSelectionModel().selectedItemProperty().addListener((obs, oldV, newV) -> {
             if (newV != null) {
                 loadFiles(newV.getKycId());
@@ -96,7 +97,7 @@ public class AdminKycValidationController {
         try {
             kycService.adminValidate(session.getCurrentUser(), row.getKycId());
             refreshList();
-            setInfo("KYC approuvé.", false);
+            setInfo("KYC approuve.", false);
         } catch (Exception e) {
             e.printStackTrace();
             setInfo("Erreur: " + e.getMessage(), true);
@@ -132,7 +133,7 @@ public class AdminKycValidationController {
         try {
             kycService.adminRefuse(session.getCurrentUser(), row.getKycId(), comment);
             refreshList();
-            setInfo("KYC refusé.", false);
+            setInfo("KYC refuse.", false);
         } catch (Exception e) {
             e.printStackTrace();
             setInfo("Erreur: " + e.getMessage(), true);
@@ -143,7 +144,7 @@ public class AdminKycValidationController {
     private void handleDownloadFile() {
         KycFile file = filesTable.getSelectionModel().getSelectedItem();
         if (file == null) {
-            setInfo("Sélectionnez un fichier.", true);
+            setInfo("Selectionnez un fichier.", true);
             return;
         }
 
@@ -156,10 +157,10 @@ public class AdminKycValidationController {
             if (dest == null) return;
 
             Files.write(dest.toPath(), dl.getFileData());
-            setInfo("Fichier téléchargé.", false);
+            setInfo("Fichier telecharge.", false);
         } catch (Exception e) {
             e.printStackTrace();
-            setInfo("Téléchargement impossible: " + e.getMessage(), true);
+            setInfo("Telechargement impossible: " + e.getMessage(), true);
         }
     }
 
@@ -173,43 +174,6 @@ public class AdminKycValidationController {
             e.printStackTrace();
             setInfo("Erreur chargement: " + e.getMessage(), true);
         }
-    }
-
-    @FXML
-    private void handleSendNotification() {
-        KycAdminRow row = selectedRow();
-        if (row == null) return;
-
-        TextInputDialog dialog = new TextInputDialog();
-        dialog.setTitle("Envoyer notification");
-        dialog.setHeaderText("Notification pour: " + row.getNomComplet() + " (" + row.getEmail() + ")");
-        dialog.setContentText("Message:");
-
-        dialog.showAndWait().ifPresent(message -> {
-            String msg = message == null ? "" : message.trim();
-            if (msg.isBlank()) {
-                setInfo("Message vide.", true);
-                return;
-            }
-
-            try {
-                // ✅ Version qui marche tout de suite: envoi EMAIL
-                // (assure-toi que EmailService existe)
-                org.example.Service.EmailService emailService = new org.example.Service.EmailService();
-                emailService.sendNotification(row.getEmail(), msg);
-
-                // ✅ PLUS TARD: enregistrer en DB pour affichage dans le compte client
-                // Exemple :
-                // NotificationService notif = new NotificationService();
-                // notif.createNotification(row.getUserId(), "KYC", msg);
-
-                setInfo("Notification envoyée (email).", false);
-
-            } catch (Exception e) {
-                e.printStackTrace();
-                setInfo("Erreur notification: " + e.getMessage(), true);
-            }
-        });
     }
 
     @FXML
@@ -241,15 +205,13 @@ public class AdminKycValidationController {
 
     private KycAdminRow selectedRow() {
         KycAdminRow row = kycTable.getSelectionModel().getSelectedItem();
-        if (row == null) setInfo("Sélectionnez une ligne KYC.", true);
+        if (row == null) setInfo("Selectionnez une ligne KYC.", true);
         return row;
     }
 
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
         try {
             URL fxmlUrl = getClass().getResource(fxmlPath);
-            System.out.println("NAVIGATE(KYC) -> " + fxmlPath + " => " + fxmlUrl);
-
             if (fxmlUrl == null) {
                 showAlert("Erreur", "FXML introuvable: " + fxmlPath);
                 return;
@@ -261,7 +223,6 @@ public class AdminKycValidationController {
             Scene scene = new Scene(root);
             if (stylesheetPath != null && !stylesheetPath.isBlank()) {
                 URL cssUrl = getClass().getResource(stylesheetPath);
-                System.out.println("CSS(KYC) -> " + stylesheetPath + " => " + cssUrl);
                 if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
             }
 

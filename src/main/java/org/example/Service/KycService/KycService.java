@@ -20,7 +20,7 @@ public class KycService {
     private static final int MAX_FILES_PER_SUBMISSION = 10;
     private static final Set<String> ALLOWED_MIME = Set.of("application/pdf", "image/jpeg", "image/png");
     private static final Set<String> ALLOWED_EXT = Set.of("pdf", "jpg", "jpeg", "png");
-    private static final Pattern CIN_PATTERN = Pattern.compile("^[A-Z0-9]{6,20}$");
+    private static final Pattern CIN_PATTERN = Pattern.compile("^\\d{8}$");
 
     private final KycRepository kycRepository;
 
@@ -78,7 +78,7 @@ public class KycService {
 
         String cin = normalizeCin(cinRaw);
         if (!CIN_PATTERN.matcher(cin).matches()) {
-            return KycSubmitResult.failure("CIN invalide (6 a 20 caracteres alphanumeriques).");
+            return KycSubmitResult.failure("CIN invalide (exactement 8 chiffres, sans lettres).");
         }
 
         String adresse = normalizeAdresse(adresseRaw);
@@ -205,7 +205,7 @@ public class KycService {
     }
 
     private static String normalizeCin(String cin) {
-        return cin == null ? "" : cin.trim().toUpperCase(Locale.ROOT);
+        return cin == null ? "" : cin.trim();
     }
 
     private static String normalizeAdresse(String adresse) {

@@ -11,11 +11,11 @@ import javafx.stage.Stage;
 import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
+import org.example.Service.AuditService.AuditService;
 import org.example.Service.UserService.LoginResult;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
-import java.io.IOException;
 import java.net.URL;
 
 public class AuthLoginController {
@@ -29,47 +29,86 @@ public class AuthLoginController {
     @FXML
     private Label messageLabel;
 
-    private final UserService userService = new UserService();
+    private UserService userService;
+    private AuditService auditService;
+
+    @FXML
+    private void initialize() {
+        try {
+            userService = new UserService();
+        } catch (Exception e) {
+            e.printStackTrace();
+            showMessage("Base de donnees indisponible. Verifiez MySQL (localhost:3306 / PIDEV).", true);
+        }
+        try {
+            auditService = new AuditService();
+        } catch (Exception ignored) {
+            auditService = null;
+        }
+    }
 
     @FXML
     private void handleLogin() {
-        String email = (emailField != null) ? emailField.getText() : "";
-        String password = (passwordField != null) ? passwordField.getText() : "";
+        String email = emailField != null ? emailField.getText() : "";
 
-        if (email.isBlank() || password.isBlank()) {
+        if (userService == null) {
+            auditLogin(null, email, false, "db_unavailable");
+            showMessage("Connexion impossible: base de donnees indisponible.", true);
+            return;
+        }
+
+        String password = passwordField != null ? passwordField.getText() : "";
+
+        if (email == null || email.isBlank() || password == null || password.isBlank()) {
+            auditLogin(null, email, false, "empty_credentials");
             showMessage("Veuillez saisir votre email et votre mot de passe.", true);
             return;
         }
 
-        LoginResult result = userService.login(email, password);
+        LoginResult result;
+        try {
+            result = userService.login(email, password);
+        } catch (Exception e) {
+            e.printStackTrace();
+            auditLogin(null, email, false, "login_exception");
+            showMessage("Erreur lors de la connexion: " + e.getMessage(), true);
+            return;
+        }
 
-        if (result == null || !result.isSuccess()) {
-            String msg = (result != null) ? result.getMessage() : "Erreur inconnue lors de la connexion.";
-            showMessage(msg, true);
+        if (result == null || !result.isSuccess() || result.getUser() == null) {
+            auditLogin(null, email, false, result != null ? result.getMessage() : "login_failed");
+            showMessage(result != null ? result.getMessage() : "Connexion impossible.", true);
             return;
         }
 
         User loggedUser = result.getUser();
-        if (loggedUser == null) {
-            showMessage("Erreur: utilisateur introuvable.", true);
-            return;
+        auditLogin(loggedUser.getId(), loggedUser.getEmail(), true, "ok");
+
+        SessionContext session = SessionContext.getInstance();
+        session.setCurrentUser(loggedUser);
+
+        if (loggedUser.getRole() == UserRole.CLIENT) {
+            KycStatus st = result.getKycStatus() != null ? result.getKycStatus() : KycStatus.EN_ATTENTE;
+            session.setCurrentKycStatus(st);
+            session.setCurrentKycComment(result.getKycComment());
+        } else {
+            session.setCurrentKycStatus(null);
+            session.setCurrentKycComment(null);
         }
 
-        // Session
-        SessionContext.getInstance().setCurrentUser(loggedUser);
-        SessionContext.getInstance().setCurrentKycStatus(result.getKycStatus());
-        SessionContext.getInstance().setCurrentKycComment(result.getKycComment());
-
-        // Navigation selon rôle/KYC
         if (loggedUser.getRole() == UserRole.ADMIN) {
             navigateTo("/Admin/UserDashboard.fxml", "Dashboard Admin", "/Styles/StyleWallet.css");
             return;
         }
 
-        if (result.getKycStatus() == KycStatus.APPROUVE) {
-            navigateTo("/Wallet/dashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
-        } else {
-            navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+        navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+    }
+
+    private void auditLogin(Integer userId, String email, boolean success, String reason) {
+        if (auditService == null) return;
+        try {
+            auditService.logLoginAttempt(userId, email, success, reason);
+        } catch (Exception ignored) {
         }
     }
 
@@ -80,36 +119,34 @@ public class AuthLoginController {
 
     @FXML
     private void goToPasswordReset() {
-        navigateTo("/Auth/PasswordReset.fxml", "Réinitialisation mot de passe", "/Styles/StyleWallet.css");
+        navigateTo("/Auth/PasswordReset.fxml", "Reinitialisation mot de passe", "/Styles/StyleWallet.css");
     }
 
     private void showMessage(String text, boolean isError) {
         if (messageLabel == null) return;
-
         messageLabel.setText(text == null ? "" : text);
-        messageLabel.setStyle(isError
-                ? "-fx-text-fill: #cc2e2e;"
-                : "-fx-text-fill: #1d6b34;");
+        messageLabel.setStyle(isError ? "-fx-text-fill: #cc2e2e;" : "-fx-text-fill: #1d6b34;");
     }
 
-    private void navigateTo(String fxml, String title, String stylesheet) {
+    private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
         try {
-            URL fxmlUrl = getClass().getResource(fxml);
+            URL fxmlUrl = getClass().getResource(fxmlPath);
             if (fxmlUrl == null) {
-                showMessage("FXML introuvable: " + fxml, true);
+                showMessage("FXML introuvable: " + fxmlPath, true);
+                System.err.println("FXML introuvable: " + fxmlPath);
                 return;
             }
 
-            Parent root = FXMLLoader.load(fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
             Scene scene = new Scene(root);
 
-            if (stylesheet != null && !stylesheet.isBlank()) {
-                URL cssUrl = getClass().getResource(stylesheet);
+            if (stylesheetPath != null && !stylesheetPath.isBlank()) {
+                URL cssUrl = getClass().getResource(stylesheetPath);
                 if (cssUrl != null) {
                     scene.getStylesheets().add(cssUrl.toExternalForm());
                 } else {
-                    // pas bloquant
-                    System.err.println("CSS introuvable: " + stylesheet);
+                    System.err.println("CSS introuvable: " + stylesheetPath);
                 }
             }
 
@@ -118,9 +155,12 @@ public class AuthLoginController {
             stage.setScene(scene);
             stage.show();
 
-        } catch (IOException e) {
-            showMessage("Erreur lors de la navigation: " + e.getMessage(), true);
+        } catch (Exception e) {
             e.printStackTrace();
+            Throwable root = e;
+            while (root.getCause() != null) root = root.getCause();
+            String details = root.getClass().getSimpleName() + (root.getMessage() != null ? (": " + root.getMessage()) : "");
+            showMessage("Erreur navigation: " + details, true);
         }
     }
 }

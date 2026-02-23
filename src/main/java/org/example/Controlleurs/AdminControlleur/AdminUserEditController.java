@@ -10,8 +10,6 @@ import org.example.Model.User.UserStatus;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
-import java.lang.reflect.Method;
-
 public class AdminUserEditController {
 
     @FXML private TextField nomField;
@@ -25,7 +23,6 @@ public class AdminUserEditController {
 
     @FXML
     private void initialize() {
-        // Remplir la combobox une seule fois
         statusComboBox.getItems().setAll(UserStatus.values());
     }
 
@@ -46,7 +43,7 @@ public class AdminUserEditController {
     @FXML
     private void handleSave() {
         if (userToEdit == null) {
-            setInfo("Aucun utilisateur à modifier.", true);
+            setInfo("Aucun utilisateur a modifier.", true);
             return;
         }
 
@@ -60,11 +57,10 @@ public class AdminUserEditController {
             return;
         }
         if (status == null) {
-            setInfo("Veuillez sélectionner un statut.", true);
+            setInfo("Veuillez selectionner un statut.", true);
             return;
         }
 
-        // Mettre à jour l'objet en mémoire
         userToEdit.setNom(nom);
         userToEdit.setEmail(email);
         userToEdit.setNumTel(tel);
@@ -72,22 +68,16 @@ public class AdminUserEditController {
 
         try {
             User admin = SessionContext.getInstance().getCurrentUser();
+            userService.updateUserByAdmin(
+                    admin,
+                    userToEdit.getId(),
+                    userToEdit.getNom(),
+                    userToEdit.getEmail(),
+                    userToEdit.getNumTel(),
+                    userToEdit.getStatus()
+            );
 
-            // 1) Essayer une vraie mise à jour complète si elle existe dans ton service
-            // Exemples possibles:
-            // - updateUser(User admin, User user)
-            // - updateUser(User user)
-            boolean updated = tryUpdateUserFully(admin, userToEdit);
-
-            // 2) Sinon, au minimum mettre à jour le statut (ce que tu faisais déjà)
-            if (!updated) {
-                userService.updateUserStatus(admin, userToEdit.getId(), userToEdit.getStatus());
-                setInfo("Statut mis à jour. (MàJ complète non trouvée dans UserService)", false);
-            } else {
-                setInfo("Utilisateur modifié avec succès.", false);
-            }
-
-            // Fermer après succès
+            setInfo("Utilisateur modifie avec succes.", false);
             closeWindow();
 
         } catch (Exception e) {
@@ -99,26 +89,6 @@ public class AdminUserEditController {
     @FXML
     private void handleCancel() {
         closeWindow();
-    }
-
-    private boolean tryUpdateUserFully(User admin, User user) {
-        try {
-            // updateUser(User admin, User user)
-            Method m = userService.getClass().getMethod("updateUser", admin.getClass(), User.class);
-            m.invoke(userService, admin, user);
-            return true;
-        } catch (Exception ignored) {
-        }
-
-        try {
-            // updateUser(User user)
-            Method m = userService.getClass().getMethod("updateUser", User.class);
-            m.invoke(userService, user);
-            return true;
-        } catch (Exception ignored) {
-        }
-
-        return false;
     }
 
     private void closeWindow() {

@@ -1,21 +1,22 @@
 package org.example.Utils;
 
+import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
-import org.example.Model.Kyc.KycStatus;
 
-public final class SessionContext {
-    private static final SessionContext INSTANCE = new SessionContext();
+public class SessionContext {
+
+    private static SessionContext instance;
 
     private User currentUser;
     private KycStatus currentKycStatus;
     private String currentKycComment;
 
-    private SessionContext() {
-    }
+    private SessionContext() {}
 
     public static SessionContext getInstance() {
-        return INSTANCE;
+        if (instance == null) instance = new SessionContext();
+        return instance;
     }
 
     public User getCurrentUser() {
@@ -50,15 +51,19 @@ public final class SessionContext {
         return currentUser != null && currentUser.getRole() == UserRole.ADMIN;
     }
 
+    public boolean isClient() {
+        return currentUser != null && currentUser.getRole() == UserRole.CLIENT;
+    }
+
     public boolean hasFullAccess() {
         if (isAdmin()) {
             return true;
         }
-        return currentUser != null && currentUser.getRole() == UserRole.CLIENT && currentKycStatus == KycStatus.APPROUVE;
+        return isClient() && currentKycStatus == KycStatus.APPROUVE;
     }
 
     public boolean hasLimitedAccess() {
-        return currentUser != null && currentUser.getRole() == UserRole.CLIENT && currentKycStatus != KycStatus.APPROUVE;
+        return isClient() && currentKycStatus != KycStatus.APPROUVE;
     }
 
     public void logout() {

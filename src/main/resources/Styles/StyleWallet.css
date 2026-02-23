@@ -332,6 +332,101 @@
     -fx-padding: 8 12;
 }
 
+/* ===== ADMIN DASHBOARD STATS ===== */
+.admin-stat-card {
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-border-width: 1.2;
+    -fx-padding: 14 16;
+    -fx-min-height: 96;
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.08), 10, 0, 0, 3);
+}
+
+.admin-stat-card-1 {
+    -fx-background-color: linear-gradient(to bottom right, #e8f0ff, #dce8ff);
+    -fx-border-color: #c5d8ff;
+}
+
+.admin-stat-card-2 {
+    -fx-background-color: linear-gradient(to bottom right, #d9e8ff, #c8dcff);
+    -fx-border-color: #aecdff;
+}
+
+.admin-stat-card-3 {
+    -fx-background-color: linear-gradient(to bottom right, #cde0ff, #bad2ff);
+    -fx-border-color: #9cbfff;
+}
+
+.admin-stat-title {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #335276;
+}
+
+.admin-stat-value {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 30px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0f2e5a;
+}
+
+.admin-pie-card {
+    -fx-background-color: linear-gradient(to bottom right, #f4f8ff, #e8f1ff);
+    -fx-background-radius: 18;
+    -fx-border-color: #d0def5;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 18;
+    -fx-padding: 10 12 8 12;
+    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.07), 10, 0, 0, 3);
+}
+
+.admin-pie-title {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #29496f;
+}
+
+.admin-status-pie {
+    -fx-pie-label-visible: true;
+    -fx-label-line-length: 10;
+    -fx-font-family: 'Inter';
+}
+
+.admin-status-pie .chart-legend {
+    -fx-background-color: transparent;
+}
+
+.export-block {
+    -fx-background-color: linear-gradient(to right, #eef5ff, #e3efff);
+    -fx-border-color: #c5d8f7;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 10 12;
+}
+
+.export-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 13px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #1e3a6a;
+}
+
+.export-label {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #274465;
+    -fx-padding: 0 4 0 8;
+}
+
+.export-btn {
+    -fx-min-width: 78;
+    -fx-font-weight: 700;
+}
+
 /* ===== WALLETS GRID ===== */
 .wallets-grid {
     -fx-hgap: 20;
@@ -717,4 +812,63 @@
     -fx-border-radius: 12;
     -fx-background-radius: 12;
     -fx-padding: 10 12;
+}
+
+/* ===== CHATBOT ===== */
+.chatbot-panel {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f6f9ff);
+}
+
+.chatbot-help-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #113c6d;
+}
+
+.chatbot-quick-btn {
+    -fx-background-color: #e7f0ff;
+    -fx-text-fill: #123f72;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+    -fx-background-radius: 20;
+    -fx-border-color: #bfd6fb;
+    -fx-border-radius: 20;
+    -fx-padding: 6 12;
+}
+
+.chatbot-quick-btn:hover {
+    -fx-background-color: #d8e7ff;
+}
+
+.chatbot-history {
+    -fx-background-color: #fcfeff;
+    -fx-border-color: #d4e3f7;
+}
+
+.chatbot-send-btn {
+    -fx-background-color: linear-gradient(to right, #17387d, #2b67e6);
+    -fx-text-fill: white;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 14px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 16;
+    -fx-padding: 11 22;
+    -fx-min-width: 130;
+    -fx-border-color: #0f2d63;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(15,45,99,0.32), 12, 0.15, 0, 3);
+}
+
+.chatbot-send-btn:hover {
+    -fx-background-color: linear-gradient(to right, #1d4aa6, #3a78ff);
+    -fx-effect: dropshadow(gaussian, rgba(25,74,166,0.45), 14, 0.2, 0, 4);
+}
+
+.chatbot-send-btn:pressed {
+    -fx-background-color: linear-gradient(to right, #12306f, #265ccd);
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(15,45,99,0.25), 8, 0.1, 0, 2);
 }

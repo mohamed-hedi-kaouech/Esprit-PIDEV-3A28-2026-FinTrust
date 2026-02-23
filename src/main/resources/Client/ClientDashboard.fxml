@@ -23,17 +23,34 @@
 
     <center>
         <VBox spacing="14" style="-fx-padding: 26;" styleClass="bank-card">
+
             <Label fx:id="welcomeLabel" text="Bienvenue" styleClass="section-title"/>
             <Label fx:id="kycStatusLabel" text="Statut KYC" styleClass="section-subtitle status-banner"/>
-            <Label fx:id="kycCommentLabel" text="Commentaire" styleClass="section-subtitle status-banner" wrapText="true"/>
+            <Label fx:id="kycCommentLabel" text="" styleClass="section-subtitle status-banner" wrapText="true"/>
 
-            <HBox spacing="12">
-                <Button text="Completer KYC" onAction="#goToKycForm" styleClass="button-primary"/>
-                <Button text="Modifier KYC" onAction="#goToKycForm" styleClass="button-secondary"/>
-                <Button text="Check Statut" onAction="#checkKycStatus" styleClass="button-secondary"/>
-                <Button fx:id="walletButton" text="Acceder au Dashboard Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
-                <Button text="Profil" onAction="#goToProfile" styleClass="button-primary"/>
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                <Label text="Notifications:" styleClass="form-label"/>
+                <Label fx:id="notifCountLabel" text="0" style="-fx-font-weight: 800;"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Voir historique" onAction="#goToNotifications" styleClass="button-secondary"/>
             </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                <Label text="🤖 Assistant intelligent:" styleClass="form-label"/>
+                <Label text="Besoin d'aide rapide sur votre compte ?" styleClass="section-subtitle"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="🤖 Ouvrir Assistant" onAction="#goToChatbot" styleClass="button-primary"/>
+            </HBox>
+
+            <HBox spacing="12" fillHeight="true">
+                <Button fx:id="profileButton" text="Profil" onAction="#goToProfile" styleClass="button-primary"/>
+                <Button fx:id="walletButton" text="Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
+                <Button text="KYC" onAction="#goToKycForm" styleClass="button-secondary"/>
+                <Button fx:id="loanButton" text="Loan" onAction="#goToLoan" styleClass="button-secondary"/>
+                <Button fx:id="budgetButton" text="Budget" onAction="#goToBudget" styleClass="button-secondary"/>
+                <Button fx:id="publicationButton" text="Publications" onAction="#goToPublications" styleClass="button-secondary"/>
+            </HBox>
+
         </VBox>
     </center>
 </BorderPane>

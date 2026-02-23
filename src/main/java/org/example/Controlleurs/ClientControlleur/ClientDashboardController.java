@@ -1,11 +1,3 @@
-    @FXML
-    private void goToProfile() {
-        if (session.getCurrentKycStatus() != KycStatus.APPROUVE) {
-            showError("Acces refuse", "Votre KYC doit etre approuve pour consulter/modifier votre profil.");
-            return;
-        }
-        navigateTo("/Client/ClientProfile.fxml", "Profil Client", "/Styles/StyleWallet.css");
-    }
 package org.example.Controlleurs.ClientControlleur;
 
 import javafx.fxml.FXML;
@@ -19,24 +11,28 @@ import javafx.stage.Stage;
 import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
+import org.example.Service.NotificationService.NotificationService;
 import org.example.Utils.SessionContext;
 
 import java.io.IOException;
+import java.net.URL;
 
 public class ClientDashboardController {
-    @FXML
-    private Label welcomeLabel;
 
-    @FXML
-    private Label kycStatusLabel;
+    @FXML private Label welcomeLabel;
+    @FXML private Label kycStatusLabel;
+    @FXML private Label kycCommentLabel;
 
-    @FXML
-    private Label kycCommentLabel;
+    @FXML private Label notifCountLabel;
 
-    @FXML
-    private Button walletButton;
+    @FXML private Button walletButton;
+    @FXML private Button profileButton;
+    @FXML private Button loanButton;
+    @FXML private Button budgetButton;
+    @FXML private Button publicationButton;
 
     private final SessionContext session = SessionContext.getInstance();
+    private final NotificationService notificationService = new NotificationService();
 
     @FXML
     private void initialize() {
@@ -46,24 +42,44 @@ public class ClientDashboardController {
             return;
         }
 
-        welcomeLabel.setText("Bienvenue " + user.getNom() + " " + user.getPrenom());
+        welcomeLabel.setText("Bienvenue " + safe(user.getNom()) + " " + safe(user.getPrenom()));
+
         KycStatus status = session.getCurrentKycStatus();
-        if (status == null) {
-            status = KycStatus.EN_ATTENTE;
-            session.setCurrentKycStatus(status);
-        }
+        if (status == null) status = KycStatus.EN_ATTENTE;
 
         kycStatusLabel.setText("Statut KYC: " + status.name());
+
         if (status == KycStatus.REFUSE) {
             String comment = session.getCurrentKycComment();
-            kycCommentLabel.setText(comment == null || comment.isBlank() ? "KYC refuse. Veuillez corriger les documents." : "Commentaire admin: " + comment);
+            kycCommentLabel.setText(
+                    (comment == null || comment.isBlank())
+                            ? "KYC refuse. Veuillez corriger les documents."
+                            : "Commentaire admin: " + comment
+            );
+        } else if (status == KycStatus.APPROUVE) {
+            kycCommentLabel.setText("Votre KYC est approuve. Acces complet disponible.");
         } else {
-            kycCommentLabel.setText(status == KycStatus.APPROUVE
-                    ? "Votre KYC est approuve. Acces complet disponible."
-                    : "Votre KYC est en attente. Acces limite a ce dashboard et au formulaire KYC.");
+            kycCommentLabel.setText("Votre KYC est en attente. Acces limite.");
         }
 
-        walletButton.setDisable(status != KycStatus.APPROUVE);
+        boolean allowed = (status == KycStatus.APPROUVE);
+        walletButton.setDisable(!allowed);
+        profileButton.setDisable(!allowed);
+        loanButton.setDisable(!allowed);
+        budgetButton.setDisable(!allowed);
+        publicationButton.setDisable(!allowed);
+
+        refreshNotifBadge();
+    }
+
+    private void refreshNotifBadge() {
+        try {
+            User user = session.getCurrentUser();
+            int count = notificationService.countUnread(user.getId());
+            notifCountLabel.setText(String.valueOf(count));
+        } catch (Exception e) {
+            notifCountLabel.setText("0");
+        }
     }
 
     @FXML
@@ -72,30 +88,53 @@ public class ClientDashboardController {
     }
 
     @FXML
-    private void goToWalletDashboard() {
-        if (session.getCurrentKycStatus() != KycStatus.APPROUVE) {
-            showError("Acces refuse", "Votre KYC doit etre approuve pour acceder au dashboard wallet.");
-            return;
-        }
-        navigateTo("/Wallet/dashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+    private void goToProfile() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Client/ClientProfile.fxml", "Profil Client", "/Styles/StyleWallet.css");
     }
 
-        @FXML
-        private void checkKycStatus() {
-            String status = SessionContext.getInstance().getCurrentKycStatus() != null ? SessionContext.getInstance().getCurrentKycStatus().name() : "-";
-            String comment = SessionContext.getInstance().getCurrentKycComment();
-            String message = "Statut KYC: " + status + "\n";
-            if (comment != null && !comment.isBlank()) {
-                message += "Commentaire admin: " + comment;
-            } else {
-                message += "Aucun commentaire admin.";
-            }
-            Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("Statut KYC");
-            alert.setHeaderText(null);
-            alert.setContentText(message);
-            alert.showAndWait();
+    @FXML
+    private void goToWalletDashboard() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToLoan() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Loan/LoanList.fxml", "Loans", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToBudget() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Budget/CategorieListeGUI.fxml", "Budget", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToPublications() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Publication/PublicationManagerGUI.fxml", "Publications", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToNotifications() {
+        navigateTo("/Client/Notifications.fxml", "Notifications", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToChatbot() {
+        navigateTo("/Client/ClientChatbot.fxml", "Assistant Client", "/Styles/StyleWallet.css");
+    }
+
+    private boolean ensureKycApprovedOrShow() {
+        if (session.getCurrentKycStatus() != KycStatus.APPROUVE) {
+            showError("Acces refuse", "Votre KYC doit etre approuve pour acceder a cette section.");
+            return false;
         }
+        return true;
+    }
+
     @FXML
     private void handleLogout() {
         session.logout();
@@ -104,17 +143,28 @@ public class ClientDashboardController {
 
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
-            Scene scene = new Scene(root);
-            if (stylesheetPath != null && !stylesheetPath.isBlank()) {
-                scene.getStylesheets().add(getClass().getResource(stylesheetPath).toExternalForm());
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                showError("Erreur", "FXML introuvable: " + fxmlPath);
+                return;
             }
+
+            Parent root = FXMLLoader.load(fxmlUrl);
+            Scene scene = new Scene(root);
+
+            if (stylesheetPath != null && !stylesheetPath.isBlank()) {
+                URL cssUrl = getClass().getResource(stylesheetPath);
+                if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
             Stage stage = (Stage) welcomeLabel.getScene().getWindow();
-            stage.setScene(scene);
             stage.setTitle(title);
+            stage.setScene(scene);
             stage.show();
+
         } catch (IOException e) {
             showError("Erreur", "Navigation impossible: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 
@@ -124,5 +174,9 @@ public class ClientDashboardController {
         alert.setHeaderText(null);
         alert.setContentText(message);
         alert.showAndWait();
+    }
+
+    private String safe(String s) {
+        return s == null ? "" : s;
     }
 }

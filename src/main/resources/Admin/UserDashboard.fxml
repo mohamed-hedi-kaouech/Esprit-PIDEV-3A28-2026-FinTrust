@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -20,6 +21,7 @@
                 <children>
                     <Label text="Administration Utilisateurs" styleClass="logo-text"/>
                     <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Analytics" onAction="#goToAnalyticsDashboard" styleClass="button-secondary"/>
                     <Button text="Validation KYC" onAction="#goToKycValidation" styleClass="button-secondary"/>
                     <Button text="Formulaire" onAction="#goToCreateUserForm" styleClass="button-secondary"/>
                     <Button text="Menu" onAction="#goToMenu" styleClass="button-secondary"/>
@@ -35,6 +37,30 @@
                 <Label text="Liste des utilisateurs" styleClass="section-title"/>
             </HBox>
             <Label text="Validation et suivi des statuts" styleClass="section-subtitle"/>
+
+            <HBox spacing="16" alignment="TOP_LEFT">
+                <VBox spacing="12" HBox.hgrow="ALWAYS">
+                    <HBox spacing="12">
+                        <VBox styleClass="admin-stat-card admin-stat-card-1" HBox.hgrow="ALWAYS">
+                            <Label text="Total utilisateurs" styleClass="admin-stat-title"/>
+                            <Label fx:id="totalUsersLabel" text="0" styleClass="admin-stat-value"/>
+                        </VBox>
+                        <VBox styleClass="admin-stat-card admin-stat-card-2" HBox.hgrow="ALWAYS">
+                            <Label text="Clients" styleClass="admin-stat-title"/>
+                            <Label fx:id="totalClientsLabel" text="0" styleClass="admin-stat-value"/>
+                        </VBox>
+                        <VBox styleClass="admin-stat-card admin-stat-card-3" HBox.hgrow="ALWAYS">
+                            <Label text="Admins" styleClass="admin-stat-title"/>
+                            <Label fx:id="totalAdminsLabel" text="0" styleClass="admin-stat-value"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <VBox styleClass="admin-pie-card">
+                    <Label text="Statut des comptes" styleClass="admin-pie-title"/>
+                    <PieChart fx:id="statusPieChart" prefWidth="290" prefHeight="220" legendVisible="true" labelsVisible="true" styleClass="admin-status-pie"/>
+                </VBox>
+            </HBox>
 
             <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
                 <columns>
@@ -58,6 +84,23 @@
                 <Button text="Modifier" onAction="#handleEditUser" styleClass="button-secondary"/>
                 <Button text="Supprimer" onAction="#handleDeleteUser" styleClass="button-danger"/>
             </HBox>
+
+            <VBox spacing="8" styleClass="export-block">
+                <Label text="Exports admin (Excel/PDF)" styleClass="export-title"/>
+                <HBox spacing="10" alignment="CENTER_LEFT">
+                    <Label text="Utilisateurs" styleClass="export-label"/>
+                    <Button text="Excel" onAction="#handleExportUsersExcel" styleClass="button-secondary export-btn"/>
+                    <Button text="PDF" onAction="#handleExportUsersPdf" styleClass="button-secondary export-btn"/>
+
+                    <Label text="Statistiques" styleClass="export-label"/>
+                    <Button text="Excel" onAction="#handleExportAnalyticsExcel" styleClass="button-secondary export-btn"/>
+                    <Button text="PDF" onAction="#handleExportAnalyticsPdf" styleClass="button-secondary export-btn"/>
+
+                    <Label text="Audit logs" styleClass="export-label"/>
+                    <Button text="Excel" onAction="#handleExportAuditExcel" styleClass="button-secondary export-btn"/>
+                    <Button text="PDF" onAction="#handleExportAuditPdf" styleClass="button-secondary export-btn"/>
+                </HBox>
+            </VBox>
 
             <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
 

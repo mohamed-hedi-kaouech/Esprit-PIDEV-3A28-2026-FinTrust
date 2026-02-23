@@ -1,6 +1,9 @@
 package org.example.Controlleurs.ClientControlleur;
 
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
@@ -8,52 +11,122 @@ import org.example.Model.User.User;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
+import java.net.URL;
+import java.util.regex.Pattern;
+
 public class ClientProfileController {
-    @FXML
-    private TextField nomField;
-    @FXML
-    private TextField emailField;
-    @FXML
-    private TextField numTelField;
-    @FXML
-    private Label infoLabel;
+
+    @FXML private TextField nomField;
+    @FXML private TextField emailField;
+    @FXML private TextField numTelField;
+    @FXML private Label infoLabel;
 
     private final UserService userService = new UserService();
+
+    private static final Pattern EMAIL_PATTERN =
+            Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
+    private static final Pattern PHONE_PATTERN =
+            Pattern.compile("^[0-9+\\-\\s]{8,20}$");
 
     @FXML
     private void initialize() {
         User user = SessionContext.getInstance().getCurrentUser();
-        if (user != null) {
-            nomField.setText(user.getNom());
-            emailField.setText(user.getEmail());
-            numTelField.setText(user.getNumTel());
+        if (user == null) {
+            setInfo("Utilisateur non connecte.", true);
+            return;
         }
+
+        if (nomField != null) nomField.setText(nullSafe(user.getNom()));
+        if (emailField != null) emailField.setText(nullSafe(user.getEmail()));
+        if (numTelField != null) numTelField.setText(nullSafe(user.getNumTel()));
     }
 
     @FXML
     private void handleEdit() {
-        User user = SessionContext.getInstance().getCurrentUser();
-        if (user == null) {
-            infoLabel.setText("Utilisateur non connecté.");
+        User current = SessionContext.getInstance().getCurrentUser();
+        if (current == null) {
+            setInfo("Utilisateur non connecte.", true);
             return;
         }
-        user.setNom(nomField.getText());
-        user.setEmail(emailField.getText());
-        user.setNumTel(numTelField.getText());
-        userService.updateUserProfile(user);
-        infoLabel.setText("Profil modifié avec succès.");
+
+        String nom = nomField != null ? nomField.getText().trim() : "";
+        String email = emailField != null ? emailField.getText().trim() : "";
+        String tel = numTelField != null ? numTelField.getText().trim() : "";
+
+        if (nom.length() < 2) {
+            setInfo("Nom invalide (min 2 caracteres).", true);
+            return;
+        }
+        if (!EMAIL_PATTERN.matcher(email).matches()) {
+            setInfo("Email invalide.", true);
+            return;
+        }
+        if (!PHONE_PATTERN.matcher(tel).matches()) {
+            setInfo("Telephone invalide.", true);
+            return;
+        }
+
+        try {
+            current.setNom(nom);
+            current.setEmail(email.toLowerCase());
+            current.setNumTel(tel);
+
+            userService.updateUserProfile(current);
+            SessionContext.getInstance().setCurrentUser(current);
+
+            setInfo("Profil modifie avec succes.", false);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            setInfo("Erreur modification profil: " + e.getMessage(), true);
+        }
     }
 
     @FXML
     private void goToDashboard() {
-        Stage stage = (Stage) nomField.getScene().getWindow();
-        org.example.Utils.FxUtils.navigate(stage, "/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+        navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
     }
 
     @FXML
     private void handleLogout() {
         SessionContext.getInstance().logout();
-        Stage stage = (Stage) nomField.getScene().getWindow();
-        org.example.Utils.FxUtils.navigate(stage, "/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+        navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+    }
+
+    private void setInfo(String msg, boolean isError) {
+        if (infoLabel == null) return;
+        infoLabel.setText(msg == null ? "" : msg);
+        infoLabel.setStyle(isError ? "-fx-text-fill: #b91c1c;" : "-fx-text-fill: #166534;");
+    }
+
+    private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
+        try {
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                setInfo("FXML introuvable: " + fxmlPath, true);
+                return;
+            }
+
+            Parent root = FXMLLoader.load(fxmlUrl);
+            Scene scene = new Scene(root);
+
+            if (stylesheetPath != null && !stylesheetPath.isBlank()) {
+                URL cssUrl = getClass().getResource(stylesheetPath);
+                if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+            }
+
+            Stage stage = (Stage) (nomField != null ? nomField.getScene().getWindow() : infoLabel.getScene().getWindow());
+            stage.setTitle(title);
+            stage.setScene(scene);
+            stage.show();
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            setInfo("Navigation impossible: " + e.getMessage(), true);
+        }
+    }
+
+    private String nullSafe(String s) {
+        return s == null ? "" : s;
     }
 }
