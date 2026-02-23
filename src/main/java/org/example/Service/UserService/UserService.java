@@ -174,11 +174,13 @@ public class UserService {
 
         try {
             emailService.sendWelcomeEmail(user.getEmail(), user.getNom());
+            return SignupResult.success("Inscription reussie. Email de bienvenue envoye a " + user.getEmail() + ".");
         } catch (Exception e) {
             e.printStackTrace();
+            return SignupResult.success(
+                    "Inscription reussie, mais l'email de bienvenue n'a pas ete envoye. Cause: " + shortMsg(e.getMessage())
+            );
         }
-
-        return SignupResult.success("Inscription reussie. Un email de bienvenue vous a ete envoye.");
     }
 
     public SignupResult createUserByAdmin(User actor,
@@ -240,22 +242,34 @@ public class UserService {
 
         try {
             emailService.sendWelcomeEmail(user.getEmail(), user.getNom());
-        } catch (Exception ignored) {
+            return SignupResult.success("Utilisateur cree avec succes. Email de bienvenue envoye a " + user.getEmail() + ".");
+        } catch (Exception e) {
+            return SignupResult.success("Utilisateur cree avec succes, mais email non envoye: " + shortMsg(e.getMessage()));
         }
-
-        return SignupResult.success("Utilisateur cree avec succes.");
     }
 
     public LoginResult login(String emailRaw, String rawPassword) {
-        String email = normalizeEmail(emailRaw);
+        String emailInput = normalizeEmail(emailRaw);
+        String email = emailInput;
         String password = rawPassword == null ? "" : rawPassword;
 
-        if ("admin".equalsIgnoreCase(email) && "admin".equals(password)) {
+        // Alias pratique: "admin" => cherche d'abord admin@pidev.local puis admin
+        if ("admin".equals(emailInput)) {
+            Optional<User> defaultAdmin = userRepository.findByEmail("admin@pidev.local");
+            if (defaultAdmin.isPresent()) {
+                email = "admin@pidev.local";
+            } else {
+                email = "admin";
+            }
+        }
+
+        if ("admin".equals(emailInput) && "admin".equals(password)) {
+            // Compatibilite ancienne logique: creer un admin simple s'il n'existe aucun admin.
             userRepository.seedDefaultAdminIfMissing("Admin", "admin", passwordHasher.hash("admin"));
             Optional<User> adminOpt = userRepository.findByEmail("admin");
-            return adminOpt
-                    .map(a -> LoginResult.success(a, "Connexion admin reussie."))
-                    .orElseGet(() -> LoginResult.failure("Impossible de creer l'admin."));
+            if (adminOpt.isPresent()) {
+                return LoginResult.success(adminOpt.get(), "Connexion admin reussie.");
+            }
         }
 
         if (email.isBlank() || password.isBlank()) return LoginResult.failure("Email ou mot de passe invalide.");
@@ -355,6 +369,12 @@ public class UserService {
 
     private static String normalizeEmail(String value) {
         return normalize(value).toLowerCase();
+    }
+
+    private static String shortMsg(String msg) {
+        String value = normalize(msg);
+        if (value.isBlank()) return "raison inconnue";
+        return value.length() > 160 ? value.substring(0, 160) + "..." : value;
     }
 
     private void safeAuditOtpRequest(Integer userId, String email, String channel, String requestId, boolean success, String reason) {

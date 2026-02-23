@@ -6,6 +6,7 @@
 <?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.layout.BorderPane?>
@@ -29,7 +30,14 @@
     </top>
 
     <center>
-        <VBox spacing="12" style="-fx-padding: 18 24;" styleClass="bank-card">
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
+        <VBox spacing="12" style="-fx-padding: 18 24;" styleClass="bank-card analytics-root">
+            <VBox spacing="3" styleClass="analytics-hero-card">
+                <Label text="Centre Analytics et Gamification" styleClass="analytics-hero-title"/>
+                <Label text="Suivi avance de l'activite, risque et engagement client" styleClass="analytics-hero-subtitle"/>
+            </VBox>
+
             <HBox spacing="10">
                 <VBox styleClass="admin-stat-card admin-stat-card-1" HBox.hgrow="ALWAYS">
                     <Label text="Actifs" styleClass="admin-stat-title"/>
@@ -57,7 +65,7 @@
 
                 <VBox styleClass="admin-pie-card" HBox.hgrow="ALWAYS">
                     <Label text="Heatmap logins par heure (30j)" styleClass="admin-pie-title"/>
-                    <BarChart fx:id="loginHourBarChart" prefHeight="250">
+                    <BarChart fx:id="loginHourBarChart" prefHeight="250" styleClass="analytics-chart">
                         <xAxis>
                             <CategoryAxis label="Heure"/>
                         </xAxis>
@@ -90,7 +98,7 @@
             <HBox spacing="12" VBox.vgrow="ALWAYS">
                 <VBox styleClass="admin-pie-card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                     <Label text="Top 10 echecs login" styleClass="admin-pie-title"/>
-                    <TableView fx:id="failedLoginTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="failedLoginTable" VBox.vgrow="ALWAYS" styleClass="analytics-table">
                         <columns>
                             <TableColumn fx:id="failedUserIdCol" text="ID" prefWidth="60"/>
                             <TableColumn fx:id="failedEmailCol" text="Email" prefWidth="220"/>
@@ -101,7 +109,7 @@
 
                 <VBox styleClass="admin-pie-card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
                     <Label text="Liste risque churn" styleClass="admin-pie-title"/>
-                    <TableView fx:id="churnRiskTable" VBox.vgrow="ALWAYS">
+                    <TableView fx:id="churnRiskTable" VBox.vgrow="ALWAYS" styleClass="analytics-table">
                         <columns>
                             <TableColumn fx:id="churnUserIdCol" text="ID" prefWidth="60"/>
                             <TableColumn fx:id="churnEmailCol" text="Email" prefWidth="220"/>
@@ -111,7 +119,88 @@
                 </VBox>
             </HBox>
 
+            <Label text="Gamification Utilisateurs" styleClass="section-title"/>
+            <HBox spacing="10">
+                <VBox styleClass="game-stat-card game-stat-card-main" HBox.hgrow="ALWAYS">
+                    <Label text="Points distribues" styleClass="game-stat-title"/>
+                    <Label fx:id="totalPointsLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+                <VBox styleClass="game-stat-card game-stat-card-main" HBox.hgrow="ALWAYS">
+                    <Label text="Badges attribues" styleClass="game-stat-title"/>
+                    <Label fx:id="totalBadgesLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+                <VBox styleClass="game-stat-card game-stat-card-main" HBox.hgrow="ALWAYS">
+                    <Label text="Challenges termines" styleClass="game-stat-title"/>
+                    <Label fx:id="challengesDoneLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+                <VBox styleClass="game-stat-card game-stat-card-main" HBox.hgrow="ALWAYS">
+                    <Label text="Challenges en attente" styleClass="game-stat-title"/>
+                    <Label fx:id="challengesPendingLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="10">
+                <VBox styleClass="game-stat-card game-level-bronze" HBox.hgrow="ALWAYS">
+                    <Label text="Bronze >=100" styleClass="game-stat-title"/>
+                    <Label fx:id="bronzeLevelLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+                <VBox styleClass="game-stat-card game-level-silver" HBox.hgrow="ALWAYS">
+                    <Label text="Silver >=300" styleClass="game-stat-title"/>
+                    <Label fx:id="silverLevelLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+                <VBox styleClass="game-stat-card game-level-gold" HBox.hgrow="ALWAYS">
+                    <Label text="Gold >=700" styleClass="game-stat-title"/>
+                    <Label fx:id="goldLevelLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+                <VBox styleClass="game-stat-card game-level-platinum" HBox.hgrow="ALWAYS">
+                    <Label text="Platinum >=1500" styleClass="game-stat-title"/>
+                    <Label fx:id="platinumLevelLabel" text="0" styleClass="game-stat-value"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="12" VBox.vgrow="ALWAYS">
+                <VBox styleClass="admin-pie-card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                    <Label text="Leaderboard Gamification" styleClass="admin-pie-title"/>
+                    <TableView fx:id="leaderboardTable" VBox.vgrow="ALWAYS" styleClass="analytics-table">
+                        <columns>
+                            <TableColumn fx:id="leaderboardRankCol" text="#" prefWidth="50"/>
+                            <TableColumn fx:id="leaderboardUserIdCol" text="User ID" prefWidth="70"/>
+                            <TableColumn fx:id="leaderboardEmailCol" text="Email" prefWidth="220"/>
+                            <TableColumn fx:id="leaderboardPointsCol" text="Points" prefWidth="80"/>
+                            <TableColumn fx:id="leaderboardLevelCol" text="Niveau" prefWidth="110"/>
+                            <TableColumn fx:id="leaderboardBadgesCol" text="Badges" prefWidth="80"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <VBox styleClass="admin-pie-card" HBox.hgrow="ALWAYS" VBox.vgrow="ALWAYS">
+                    <Label text="Challenges Securite" styleClass="admin-pie-title"/>
+                    <TableView fx:id="challengeTable" VBox.vgrow="ALWAYS" styleClass="analytics-table">
+                        <columns>
+                            <TableColumn fx:id="challengeUserIdCol" text="User ID" prefWidth="70"/>
+                            <TableColumn fx:id="challengeEmailCol" text="Email" prefWidth="190"/>
+                            <TableColumn fx:id="challengeTitleCol" text="Challenge" prefWidth="190"/>
+                            <TableColumn fx:id="challengeStatusCol" text="Status" prefWidth="90"/>
+                            <TableColumn fx:id="challengeProgressCol" text="Progress" prefWidth="80"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+            </HBox>
+
+            <VBox styleClass="admin-pie-card">
+                <Label text="Badges les plus populaires" styleClass="admin-pie-title"/>
+                <TableView fx:id="badgeTable" prefHeight="180" styleClass="analytics-table">
+                    <columns>
+                        <TableColumn fx:id="badgeCodeCol" text="Code" prefWidth="180"/>
+                        <TableColumn fx:id="badgeLabelCol" text="Badge" prefWidth="260"/>
+                        <TableColumn fx:id="badgeHoldersCol" text="Holders" prefWidth="110"/>
+                    </columns>
+                </TableView>
+            </VBox>
+
             <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
         </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

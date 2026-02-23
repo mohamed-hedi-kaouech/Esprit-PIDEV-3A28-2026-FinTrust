@@ -72,6 +72,7 @@ public class AdminUserDashboardController {
         });
 
         // ✅ Status combo
+        usersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         statusComboBox.getItems().setAll(UserStatus.values());
         usersTable.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
             if (n != null) statusComboBox.setValue(n.getStatus());
@@ -117,6 +118,11 @@ public class AdminUserDashboardController {
     @FXML
     private void goToAnalyticsDashboard() {
         navigateTo("/Admin/AnalyticsDashboard.fxml", "Data Analytics Dashboard", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToAdminTasks() {
+        navigateTo("/Admin/AdminTasks.fxml", "Admin Productivity / Ops", "/Styles/StyleWallet.css");
     }
 
     @FXML
@@ -405,7 +411,8 @@ public class AdminUserDashboardController {
                 return;
             }
 
-            Parent root = FXMLLoader.load(fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
             Scene scene = new Scene(root);
 
             if (stylesheet != null && !stylesheet.isBlank()) {
@@ -432,7 +439,8 @@ public class AdminUserDashboardController {
                 return;
             }
 
-            Parent root = FXMLLoader.load(fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
             Scene scene = new Scene(root);
 
             if (stylesheet != null && !stylesheet.isBlank()) {

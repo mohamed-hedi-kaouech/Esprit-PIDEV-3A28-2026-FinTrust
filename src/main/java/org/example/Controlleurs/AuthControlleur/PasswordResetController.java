@@ -72,6 +72,11 @@ public class PasswordResetController {
         navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
     }
 
+    @FXML
+    private void goToLogin() {
+        navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+    }
+
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
         try {
             URL fxmlUrl = getClass().getResource(fxmlPath);

@@ -56,7 +56,9 @@ public class AuthSignupController {
         }
 
         showMessage(result.getMessage(), false);
-        navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+        if (result.getMessage() != null && result.getMessage().toLowerCase().contains("email de bienvenue envoye")) {
+            navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+        }
     }
 
     @FXML

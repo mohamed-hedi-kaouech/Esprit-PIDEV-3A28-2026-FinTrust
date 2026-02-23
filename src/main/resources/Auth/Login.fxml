@@ -4,6 +4,7 @@
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
@@ -23,6 +24,8 @@
     </top>
 
     <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
         <VBox spacing="18" alignment="CENTER" style="-fx-padding: 40 24;" styleClass="bank-card" maxWidth="520">
             <HBox alignment="CENTER" styleClass="section-header">
                 <Label text="Se connecter" styleClass="section-title" />
@@ -39,5 +42,7 @@
             <Hyperlink text="Créer un compte" onAction="#goToSignup" style="-fx-text-fill: #1e3a8a; -fx-font-weight: 700;" />
               <Hyperlink text="Mot de passe oublié ?" onAction="#goToPasswordReset" style="-fx-text-fill: #2563eb; -fx-font-weight: 700;" />
         </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

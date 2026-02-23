@@ -55,13 +55,14 @@ public class EmailService {
         }
 
         String username = cfg("FINTRUST_SMTP_USERNAME");
-        String password = cfg("FINTRUST_SMTP_PASSWORD");
+        // Prefer app password when available (Gmail best practice)
+        String password = cfg("FINTRUST_SMTP_APP_PASSWORD");
         if (isBlank(password)) {
-            password = cfg("FINTRUST_SMTP_APP_PASSWORD");
+            password = cfg("FINTRUST_SMTP_PASSWORD");
         }
 
         if (isBlank(username) || isBlank(password)) {
-            throw new RuntimeException("SMTP non configure. Verifiez config.properties.");
+            throw new RuntimeException("SMTP non configure. Renseignez FINTRUST_SMTP_USERNAME et FINTRUST_SMTP_APP_PASSWORD.");
         }
 
         String host = cfg("FINTRUST_SMTP_HOST");
@@ -75,14 +76,22 @@ public class EmailService {
         if (isBlank(from)) from = username;
         if (isBlank(startTls)) startTls = "true";
 
+        // Gmail App Password is often copied with spaces: "abcd efgh ijkl mnop"
+        if (host.toLowerCase().contains("gmail")) {
+            password = password.replaceAll("\\s+", "");
+        }
+
         final String usernameFinal = username;
         final String passwordFinal = password;
 
         Properties props = new Properties();
         props.put("mail.smtp.auth", "true");
         props.put("mail.smtp.starttls.enable", startTls);
+        props.put("mail.smtp.starttls.required", "true");
         props.put("mail.smtp.host", host);
         props.put("mail.smtp.port", port);
+        props.put("mail.smtp.ssl.trust", host);
+        props.put("mail.smtp.auth.mechanisms", "LOGIN PLAIN");
         props.put("mail.smtp.connectiontimeout", "10000");
         props.put("mail.smtp.timeout", "10000");
         props.put("mail.smtp.writetimeout", "10000");
@@ -106,7 +115,7 @@ public class EmailService {
             message.setText(body == null ? "" : body, StandardCharsets.UTF_8.name());
             Transport.send(message);
         } catch (AuthenticationFailedException e) {
-            throw new RuntimeException("Authentification Gmail echouee. Utilisez un App Password.", e);
+            throw new RuntimeException("Authentification Gmail echouee (535). Utilisez un App Password valide et 2FA activee.", e);
         } catch (Exception e) {
             throw new RuntimeException("Erreur envoi email: " + e.getMessage(), e);
         }

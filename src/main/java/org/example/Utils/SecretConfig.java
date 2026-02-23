@@ -5,6 +5,7 @@ import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Enumeration;
 import java.util.Optional;
 import java.util.Properties;
 
@@ -62,8 +63,23 @@ public final class SecretConfig {
 
     private static void loadFile(Path path) {
         try (FileInputStream fis = new FileInputStream(path.toFile())) {
-            FILE_PROPS.load(fis);
+            Properties temp = new Properties();
+            temp.load(fis);
+            mergeNonBlank(temp);
         } catch (Exception ignored) {
+        }
+    }
+
+    private static void mergeNonBlank(Properties source) {
+        Enumeration<?> keys = source.propertyNames();
+        while (keys.hasMoreElements()) {
+            String key = String.valueOf(keys.nextElement());
+            String value = source.getProperty(key);
+            if (value == null) continue;
+            String trimmed = value.trim();
+            if (!trimmed.isEmpty()) {
+                FILE_PROPS.setProperty(key, trimmed);
+            }
         }
     }
 }

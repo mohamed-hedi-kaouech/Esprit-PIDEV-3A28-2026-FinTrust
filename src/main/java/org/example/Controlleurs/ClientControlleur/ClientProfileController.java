@@ -8,6 +8,8 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.Model.User.User;
+import org.example.Service.AnalyticsService.ClientGamificationSnapshot;
+import org.example.Service.AnalyticsService.GamificationService;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
@@ -19,9 +21,13 @@ public class ClientProfileController {
     @FXML private TextField nomField;
     @FXML private TextField emailField;
     @FXML private TextField numTelField;
+    @FXML private Label rewardLevelLabel;
+    @FXML private Label rewardPointsLabel;
+    @FXML private Label rewardMedalLabel;
     @FXML private Label infoLabel;
 
     private final UserService userService = new UserService();
+    private final GamificationService gamificationService = new GamificationService();
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
@@ -39,6 +45,20 @@ public class ClientProfileController {
         if (nomField != null) nomField.setText(nullSafe(user.getNom()));
         if (emailField != null) emailField.setText(nullSafe(user.getEmail()));
         if (numTelField != null) numTelField.setText(nullSafe(user.getNumTel()));
+        refreshRewards(user);
+    }
+
+    private void refreshRewards(User user) {
+        try {
+            ClientGamificationSnapshot snapshot = gamificationService.getClientSnapshot(user.getId());
+            if (rewardLevelLabel != null) rewardLevelLabel.setText(snapshot.level());
+            if (rewardPointsLabel != null) rewardPointsLabel.setText(snapshot.points() + " pts");
+            if (rewardMedalLabel != null) rewardMedalLabel.setText(snapshot.medalLabel());
+        } catch (Exception e) {
+            if (rewardLevelLabel != null) rewardLevelLabel.setText("STARTER");
+            if (rewardPointsLabel != null) rewardPointsLabel.setText("0 pts");
+            if (rewardMedalLabel != null) rewardMedalLabel.setText("Niveau Starter");
+        }
     }
 
     @FXML

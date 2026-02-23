@@ -15,6 +15,11 @@ import javafx.stage.Stage;
 import org.example.Service.AnalyticsService.AnalyticsService;
 import org.example.Service.AnalyticsService.ChurnRiskItem;
 import org.example.Service.AnalyticsService.FailedLoginUser;
+import org.example.Service.AnalyticsService.GamificationBadgeStat;
+import org.example.Service.AnalyticsService.GamificationChallengeItem;
+import org.example.Service.AnalyticsService.GamificationLeaderboardItem;
+import org.example.Service.AnalyticsService.GamificationService;
+import org.example.Service.AnalyticsService.GamificationSnapshot;
 import org.example.Service.AnalyticsService.HeatmapPoint;
 import org.example.Service.AnalyticsService.OtpAnalyticsSnapshot;
 import org.example.Service.AnalyticsService.UserScoreService;
@@ -34,6 +39,14 @@ public class AdminAnalyticsDashboardController {
     @FXML private Label otpRequestRateLabel;
     @FXML private Label otpValidationRateLabel;
     @FXML private Label avgOtpTimeLabel;
+    @FXML private Label totalPointsLabel;
+    @FXML private Label totalBadgesLabel;
+    @FXML private Label challengesDoneLabel;
+    @FXML private Label challengesPendingLabel;
+    @FXML private Label bronzeLevelLabel;
+    @FXML private Label silverLevelLabel;
+    @FXML private Label goldLevelLabel;
+    @FXML private Label platinumLevelLabel;
 
     @FXML private PieChart segmentPieChart;
     @FXML private BarChart<String, Number> loginHourBarChart;
@@ -47,15 +60,36 @@ public class AdminAnalyticsDashboardController {
     @FXML private TableColumn<FailedLoginUser, Integer> failedUserIdCol;
     @FXML private TableColumn<FailedLoginUser, String> failedEmailCol;
     @FXML private TableColumn<FailedLoginUser, Integer> failedCountCol;
+    @FXML private TableView<GamificationLeaderboardItem> leaderboardTable;
+    @FXML private TableColumn<GamificationLeaderboardItem, Integer> leaderboardRankCol;
+    @FXML private TableColumn<GamificationLeaderboardItem, Integer> leaderboardUserIdCol;
+    @FXML private TableColumn<GamificationLeaderboardItem, String> leaderboardEmailCol;
+    @FXML private TableColumn<GamificationLeaderboardItem, Integer> leaderboardPointsCol;
+    @FXML private TableColumn<GamificationLeaderboardItem, String> leaderboardLevelCol;
+    @FXML private TableColumn<GamificationLeaderboardItem, Integer> leaderboardBadgesCol;
+
+    @FXML private TableView<GamificationChallengeItem> challengeTable;
+    @FXML private TableColumn<GamificationChallengeItem, Integer> challengeUserIdCol;
+    @FXML private TableColumn<GamificationChallengeItem, String> challengeEmailCol;
+    @FXML private TableColumn<GamificationChallengeItem, String> challengeTitleCol;
+    @FXML private TableColumn<GamificationChallengeItem, String> challengeStatusCol;
+    @FXML private TableColumn<GamificationChallengeItem, Integer> challengeProgressCol;
+
+    @FXML private TableView<GamificationBadgeStat> badgeTable;
+    @FXML private TableColumn<GamificationBadgeStat, String> badgeCodeCol;
+    @FXML private TableColumn<GamificationBadgeStat, String> badgeLabelCol;
+    @FXML private TableColumn<GamificationBadgeStat, Integer> badgeHoldersCol;
 
     @FXML private Label infoLabel;
 
     private final AnalyticsService analyticsService = new AnalyticsService();
     private final UserScoreService userScoreService = new UserScoreService();
+    private final GamificationService gamificationService = new GamificationService();
 
     @FXML
     private void initialize() {
         bindTables();
+        bindGamificationTables();
         refreshAnalytics();
     }
 
@@ -77,6 +111,25 @@ public class AdminAnalyticsDashboardController {
         failedUserIdCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().userId()));
         failedEmailCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().email()));
         failedCountCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().failedLogins30Days()));
+    }
+
+    private void bindGamificationTables() {
+        leaderboardRankCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().rank()));
+        leaderboardUserIdCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().userId()));
+        leaderboardEmailCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().email()));
+        leaderboardPointsCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().points()));
+        leaderboardLevelCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().level()));
+        leaderboardBadgesCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().badgesCount()));
+
+        challengeUserIdCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().userId()));
+        challengeEmailCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().email()));
+        challengeTitleCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().challengeTitle()));
+        challengeStatusCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().status()));
+        challengeProgressCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().progress()));
+
+        badgeCodeCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().badgeCode()));
+        badgeLabelCol.setCellValueFactory(d -> new javafx.beans.property.SimpleStringProperty(d.getValue().badgeLabel()));
+        badgeHoldersCol.setCellValueFactory(d -> new javafx.beans.property.SimpleObjectProperty<>(d.getValue().holders()));
     }
 
     private void refreshAnalytics() {
@@ -117,8 +170,23 @@ public class AdminAnalyticsDashboardController {
             }
             loginHourBarChart.getData().setAll(series);
 
+            GamificationSnapshot g = gamificationService.refreshAndGetSnapshot();
+            totalPointsLabel.setText(String.valueOf(g.totalPointsDistributed()));
+            totalBadgesLabel.setText(String.valueOf(g.totalBadges()));
+            challengesDoneLabel.setText(String.valueOf(g.challengesCompleted()));
+            challengesPendingLabel.setText(String.valueOf(g.challengesPending()));
+
+            bronzeLevelLabel.setText(String.valueOf(g.bronzeCount()));
+            silverLevelLabel.setText(String.valueOf(g.silverCount()));
+            goldLevelLabel.setText(String.valueOf(g.goldCount()));
+            platinumLevelLabel.setText(String.valueOf(g.platinumCount()));
+
+            leaderboardTable.getItems().setAll(g.leaderboard());
+            challengeTable.getItems().setAll(g.challenges());
+            badgeTable.getItems().setAll(g.badgeStats());
+
             int highScore = userScoreService.computeHealthScores().size();
-            infoLabel.setText("Analytics mis a jour. Scores utilisateur calcules: " + highScore);
+            infoLabel.setText("Analytics + Gamification mis a jour. Scores utilisateur calcules: " + highScore);
             infoLabel.setStyle("-fx-text-fill: #1d6b34;");
         } catch (Exception e) {
             infoLabel.setText("Erreur analytics: " + e.getMessage());
@@ -137,7 +205,8 @@ public class AdminAnalyticsDashboardController {
                 return;
             }
 
-            Parent root = FXMLLoader.load(fxmlUrl);
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
+            Parent root = loader.load();
             Scene scene = new Scene(root);
             if (stylesheetPath != null && !stylesheetPath.isBlank()) {
                 URL cssUrl = getClass().getResource(stylesheetPath);

@@ -20,6 +20,7 @@ import org.example.Model.User.UserRole;
 import org.example.Service.KycService.KycAdminRow;
 import org.example.Service.KycService.KycFileDownload;
 import org.example.Service.KycService.KycService;
+import org.example.Service.QrService.AdminQrScanService;
 import org.example.Utils.SessionContext;
 
 import java.io.File;
@@ -49,6 +50,7 @@ public class AdminKycValidationController {
     @FXML private Label infoLabel;
 
     private final KycService kycService = new KycService();
+    private final AdminQrScanService qrScanService = new AdminQrScanService();
     private final SessionContext session = SessionContext.getInstance();
     private static final DateTimeFormatter DT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
 
@@ -177,6 +179,33 @@ public class AdminKycValidationController {
     }
 
     @FXML
+    private void handleScanQr() {
+        try {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Scanner un QR KYC (image)");
+            chooser.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("Images QR", "*.png", "*.jpg", "*.jpeg")
+            );
+            File image = chooser.showOpenDialog(getStage());
+            if (image == null) return;
+
+            String token = qrScanService.decodeTokenFromImage(image);
+            int userId = qrScanService.resolveUserIdAndConsume(token);
+
+            refreshList();
+            boolean selected = selectKycRowByUserId(userId);
+            if (!selected) {
+                setInfo("Token valide, mais aucun dossier KYC trouve pour userId=" + userId, true);
+                return;
+            }
+            setInfo("QR scanne avec succes. Dossier KYC charge.", false);
+        } catch (Exception e) {
+            e.printStackTrace();
+            setInfo("Scan QR impossible: " + e.getMessage(), true);
+        }
+    }
+
+    @FXML
     private void goToMenu() {
         navigateTo("/MenuGUI.fxml", "Menu Principal", "/Styles/MenuStyle.css");
     }
@@ -207,6 +236,22 @@ public class AdminKycValidationController {
         KycAdminRow row = kycTable.getSelectionModel().getSelectedItem();
         if (row == null) setInfo("Selectionnez une ligne KYC.", true);
         return row;
+    }
+
+    private boolean selectKycRowByUserId(int userId) {
+        List<KycAdminRow> rows = kycTable.getItems();
+        if (rows == null || rows.isEmpty()) return false;
+
+        for (KycAdminRow row : rows) {
+            if (row.getUserId() == userId) {
+                kycTable.getSelectionModel().select(row);
+                kycTable.scrollTo(row);
+                loadFiles(row.getKycId());
+                commentaireField.setText(row.getCommentaireAdmin() == null ? "" : row.getCommentaireAdmin());
+                return true;
+            }
+        }
+        return false;
     }
 
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {

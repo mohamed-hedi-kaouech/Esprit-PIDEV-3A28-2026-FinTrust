@@ -1,18 +1,17 @@
 package UserTests;
 
+import java.time.LocalDateTime;
+
 import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
 import org.example.Model.User.UserStatus;
+import org.example.Repository.KycRepository;
 import org.example.Service.KycService.KycService;
 import org.example.Service.KycService.KycStateResult;
-import org.example.Repository.KycRepository;
-import org.example.Repository.UserRepository;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
-
-import java.time.LocalDateTime;
 
 public class UserFullJourneyTest {
     @Test

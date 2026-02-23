@@ -2,6 +2,8 @@
 
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -22,6 +24,8 @@
     </top>
 
     <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
         <VBox spacing="14" style="-fx-padding: 26;" styleClass="bank-card">
 
             <Label fx:id="welcomeLabel" text="Bienvenue" styleClass="section-title"/>
@@ -34,6 +38,26 @@
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Voir historique" onAction="#goToNotifications" styleClass="button-secondary"/>
             </HBox>
+
+            <VBox spacing="8" styleClass="client-reward-panel">
+                <HBox alignment="CENTER_LEFT" spacing="10">
+                    <Label text="Recompenses FinTrust" styleClass="client-reward-title"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Label fx:id="rewardMedalLabel" text="Niveau Starter" styleClass="client-reward-medal"/>
+                </HBox>
+                <HBox spacing="14">
+                    <VBox styleClass="client-reward-chip">
+                        <Label text="Niveau" styleClass="client-reward-chip-title"/>
+                        <Label fx:id="rewardLevelLabel" text="STARTER" styleClass="client-reward-chip-value"/>
+                    </VBox>
+                    <VBox styleClass="client-reward-chip">
+                        <Label text="Points" styleClass="client-reward-chip-title"/>
+                        <Label fx:id="rewardPointsLabel" text="0 pts" styleClass="client-reward-chip-value"/>
+                    </VBox>
+                </HBox>
+                <Label text="Badges obtenus" styleClass="client-reward-subtitle"/>
+                <Label fx:id="rewardBadgesLabel" text="Aucun badge pour le moment" wrapText="true" styleClass="client-reward-badges"/>
+            </VBox>
 
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
                 <Label text="🤖 Assistant intelligent:" styleClass="form-label"/>
@@ -51,6 +75,21 @@
                 <Button fx:id="publicationButton" text="Publications" onAction="#goToPublications" styleClass="button-secondary"/>
             </HBox>
 
+            <HBox spacing="18" alignment="CENTER_LEFT" styleClass="status-banner">
+                <VBox spacing="8">
+                    <Label text="Votre QR KYC (auto-genere)" styleClass="form-label"/>
+                    <ImageView fx:id="qrImageView" fitWidth="220" fitHeight="220" preserveRatio="true"/>
+                    <Label fx:id="qrInfoLabel" text="" styleClass="section-subtitle" wrapText="true"/>
+                </VBox>
+                <Region HBox.hgrow="ALWAYS"/>
+                <VBox spacing="10" alignment="TOP_RIGHT">
+                    <Label text="Ce QR contient vos informations client + KYC." styleClass="section-subtitle" wrapText="true"/>
+                    <Button text="Regenerer QR" onAction="#handleRefreshQr" styleClass="button-secondary"/>
+                </VBox>
+            </HBox>
+
         </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>

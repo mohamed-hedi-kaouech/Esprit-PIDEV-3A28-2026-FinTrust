@@ -4,6 +4,7 @@
 <?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
@@ -29,6 +30,8 @@
     </top>
 
     <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
         <VBox spacing="12" style="-fx-padding: 22;" styleClass="bank-card">
             <Label fx:id="statusLabel" text="Statut KYC" styleClass="section-title"/>
             <Label fx:id="commentLabel" text="Commentaire" styleClass="section-subtitle status-banner" wrapText="true"/>
@@ -66,5 +69,7 @@
 
             <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
         </VBox>
+            </content>
+        </ScrollPane>
     </center>
 </BorderPane>
