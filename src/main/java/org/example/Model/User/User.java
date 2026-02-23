@@ -3,43 +3,33 @@ package org.example.Model.User;
 import java.time.LocalDateTime;
 
 public class User {
-
     private int id;
-    private int currentKycId;
     private String nom;
     private String prenom;
     private String email;
     private String numTel;
-    private String role;
-    private String password;
-    private String kycStatus;
+    private String passwordHash;
+    private UserRole role;
+    private UserStatus status;
     private LocalDateTime createdAt;
 
-    // ================== Constructeurs ==================
+    public User() {
+    }
 
-    /**
-     * Constructeur complet avec tous les attributs sauf l'id
-     * Id sera généré par la base de données
-     */
-    public User(int currentKycId, String nom, String prenom, String email, String numTel,
-                String role, String password, String kycStatus, LocalDateTime createdAt) {
-        this.currentKycId = currentKycId;
+    public User(String nom, String prenom, String email, String numTel, String passwordHash, UserRole role, UserStatus status, LocalDateTime createdAt) {
         this.nom = nom;
         this.prenom = prenom;
         this.email = email;
         this.numTel = numTel;
+        this.passwordHash = passwordHash;
         this.role = role;
-        this.password = password;
-        this.kycStatus = kycStatus;
+        this.status = status;
         this.createdAt = createdAt;
     }
 
-    /**
-     * Constructeur vide (utile pour JavaFX et les frameworks)
-     */
-    public User(String text, String txtPrenomText, String txtEmailText, String txtNumTelText, String txtRoleText, String txtPasswordText, String enAttente, LocalDateTime now) {}
-
-    // ================== Getters & Setters ==================
+    public User(String nom, String email, String passwordHash, UserRole role, UserStatus status, LocalDateTime createdAt) {
+        this(nom, "", email, "", passwordHash, role, status, createdAt);
+    }
 
     public int getId() {
         return id;
@@ -47,14 +37,6 @@ public class User {
 
     public void setId(int id) {
         this.id = id;
-    }
-
-    public int getCurrentKycId() {
-        return currentKycId;
-    }
-
-    public void setCurrentKycId(int currentKycId) {
-        this.currentKycId = currentKycId;
     }
 
     public String getNom() {
@@ -65,20 +47,20 @@ public class User {
         this.nom = nom;
     }
 
-    public String getPrenom() {
-        return prenom;
-    }
-
-    public void setPrenom(String prenom) {
-        this.prenom = prenom;
-    }
-
     public String getEmail() {
         return email;
     }
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPrenom() {
+        return prenom;
+    }
+
+    public void setPrenom(String prenom) {
+        this.prenom = prenom;
     }
 
     public String getNumTel() {
@@ -89,28 +71,28 @@ public class User {
         this.numTel = numTel;
     }
 
-    public String getRole() {
+    public String getPasswordHash() {
+        return passwordHash;
+    }
+
+    public void setPasswordHash(String passwordHash) {
+        this.passwordHash = passwordHash;
+    }
+
+    public UserRole getRole() {
         return role;
     }
 
-    public void setRole(String role) {
+    public void setRole(UserRole role) {
         this.role = role;
     }
 
-    public String getPassword() {
-        return password;
+    public UserStatus getStatus() {
+        return status;
     }
 
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
-    public String getKycStatus() {
-        return kycStatus;
-    }
-
-    public void setKycStatus(String kycStatus) {
-        this.kycStatus = kycStatus;
+    public void setStatus(UserStatus status) {
+        this.status = status;
     }
 
     public LocalDateTime getCreatedAt() {
@@ -121,21 +103,20 @@ public class User {
         this.createdAt = createdAt;
     }
 
-    // ================== toString ==================
-
-    @Override
-    public String toString() {
-        return "User{" +
-                "id=" + id +
-                ", currentKycId=" + currentKycId +
-                ", nom='" + nom + '\'' +
-                ", prenom='" + prenom + '\'' +
-                ", email='" + email + '\'' +
-                ", numTel='" + numTel + '\'' +
-                ", role='" + role + '\'' +
-                ", password='" + password + '\'' +
-                ", kycStatus='" + kycStatus + '\'' +
-                ", createdAt=" + createdAt +
-                '}';
+    public static String SQLTable() {
+        return """
+                CREATE TABLE IF NOT EXISTS users (
+                  id INT PRIMARY KEY AUTO_INCREMENT,
+                  nom VARCHAR(120) NOT NULL,
+                  prenom VARCHAR(120) NOT NULL DEFAULT '',
+                  email VARCHAR(190) NOT NULL UNIQUE,
+                  numTel VARCHAR(20) DEFAULT NULL,
+                  password VARCHAR(255) NOT NULL,
+                  role ENUM('ADMIN','CLIENT') NOT NULL DEFAULT 'CLIENT',
+                  status ENUM('EN_ATTENTE','ACCEPTE','REFUSE') NOT NULL DEFAULT 'EN_ATTENTE',
+                  createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,
+                  created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP
+                );
+                """;
     }
 }

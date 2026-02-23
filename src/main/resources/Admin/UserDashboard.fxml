@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.AdminControlleur.AdminUserDashboardController">
+
+    <top>
+        <VBox>
+            <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+                <children>
+                    <Label text="Administration Utilisateurs" styleClass="logo-text"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="Validation KYC" onAction="#goToKycValidation" styleClass="button-secondary"/>
+                    <Button text="Formulaire" onAction="#goToCreateUserForm" styleClass="button-secondary"/>
+                    <Button text="Menu" onAction="#goToMenu" styleClass="button-secondary"/>
+                    <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
+                </children>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="14" style="-fx-padding: 22 26;" styleClass="bank-card">
+            <HBox styleClass="section-header">
+                <Label text="Liste des utilisateurs" styleClass="section-title"/>
+            </HBox>
+            <Label text="Validation et suivi des statuts" styleClass="section-subtitle"/>
+
+            <TableView fx:id="usersTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="idColumn" text="ID" prefWidth="80"/>
+                    <TableColumn fx:id="nomColumn" text="Nom" prefWidth="180"/>
+                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="280"/>
+                    <TableColumn fx:id="roleColumn" text="Role" prefWidth="120"/>
+                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="140"/>
+                    <TableColumn fx:id="createdAtColumn" text="Cree le" prefWidth="180"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                <Label text="Nouveau statut:" styleClass="form-label"/>
+                <ComboBox fx:id="statusComboBox" prefWidth="180"/>
+                <Button text="Appliquer" onAction="#handleApplyStatus" styleClass="button-primary"/>
+                <Button text="Rafraichir" onAction="#handleRefresh" styleClass="button-secondary"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button text="Modifier" onAction="#handleEditUser" styleClass="button-secondary"/>
+                <Button text="Supprimer" onAction="#handleDeleteUser" styleClass="button-danger"/>
+            </HBox>
+
+            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Button text="Envoyer notification" onAction="#handleSendNotification" styleClass="button-secondary"/>
+                <Button text="Retour" onAction="#handleBack" styleClass="button-secondary"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

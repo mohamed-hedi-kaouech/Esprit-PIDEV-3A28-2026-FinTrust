@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.AdminControlleur.AdminUserEditController"
+            styleClass="root">
+
+    <children>
+        <VBox alignment="CENTER" spacing="18"
+              layoutX="0" layoutY="0"
+              prefWidth="400" prefHeight="420"
+              style="-fx-padding: 36 36 36 36; -fx-background-radius: 18; -fx-background-color: white;">
+
+            <Label text="Modifier Utilisateur" styleClass="section-title"/>
+
+            <VBox spacing="10" alignment="CENTER_LEFT" style="-fx-padding: 10 0 0 0;">
+                <Label text="Nom:" styleClass="form-label"/>
+                <TextField fx:id="nomField" promptText="Nom de l'utilisateur"/>
+
+                <Label text="Email:" styleClass="form-label"/>
+                <TextField fx:id="emailField" promptText="Adresse email"/>
+
+                <Label text="Téléphone:" styleClass="form-label"/>
+                <TextField fx:id="numTelField" promptText="Numéro de téléphone"/>
+
+                <Label text="Statut:" styleClass="form-label"/>
+                <ComboBox fx:id="statusComboBox"/>
+            </VBox>
+
+            <HBox spacing="18" alignment="CENTER">
+                <Button text="Enregistrer" styleClass="new-transaction-button" onAction="#handleSave"/>
+                <Button text="Annuler"
+                        style="-fx-background-color: #e5e7eb; -fx-text-fill: #1e293b; -fx-font-weight: 700; -fx-background-radius: 50; -fx-padding: 14 30;"
+                        onAction="#handleCancel"/>
+            </HBox>
+
+            <Label fx:id="infoLabel" style="-fx-font-size: 13px; -fx-padding: 8 0 0 0;"/>
+        </VBox>
+    </children>
+</AnchorPane>

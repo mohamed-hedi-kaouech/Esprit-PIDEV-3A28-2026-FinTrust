@@ -1,0 +1,77 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.AdminControlleur.AdminUserFormController">
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+            <children>
+                <Label text="Creation Utilisateur (Admin)" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Liste" onAction="#goToUserList" styleClass="button-secondary"/>
+                <Button text="Menu" onAction="#goToMenu" styleClass="button-secondary"/>
+                <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="12" alignment="TOP_LEFT" style="-fx-padding: 24 28;" styleClass="bank-card">
+            <HBox styleClass="section-header">
+                <Label text="Formulaire d'ajout" styleClass="section-title"/>
+            </HBox>
+            <Label text="L'admin peut creer des comptes ADMIN ou CLIENT" styleClass="section-subtitle"/>
+
+            <VBox spacing="8">
+                <Label text="Nom complet" styleClass="form-label"/>
+                <TextField fx:id="nomField" promptText="Nom" prefWidth="420"/>
+            </VBox>
+
+            <VBox spacing="8">
+                <Label text="Email" styleClass="form-label"/>
+                <TextField fx:id="emailField" promptText="email@domaine.com" prefWidth="420"/>
+            </VBox>
+
+            <HBox spacing="12">
+                <VBox spacing="8">
+                    <Label text="Mot de passe" styleClass="form-label"/>
+                    <PasswordField fx:id="passwordField" prefWidth="205"/>
+                </VBox>
+                <VBox spacing="8">
+                    <Label text="Confirmer" styleClass="form-label"/>
+                    <PasswordField fx:id="confirmPasswordField" prefWidth="205"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="12">
+                <VBox spacing="8">
+                    <Label text="Role" styleClass="form-label"/>
+                    <ComboBox fx:id="roleCombo" prefWidth="205"/>
+                </VBox>
+                <VBox spacing="8">
+                    <Label text="Statut" styleClass="form-label"/>
+                    <ComboBox fx:id="statusCombo" prefWidth="205"/>
+                </VBox>
+            </HBox>
+
+            <HBox spacing="12" alignment="CENTER_LEFT">
+                <Button text="Creer utilisateur" onAction="#handleCreateUser" styleClass="button-primary"/>
+                <Button text="Voir la liste" onAction="#goToUserList" styleClass="button-secondary"/>
+            </HBox>
+
+            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+        </VBox>
+    </center>
+</BorderPane>

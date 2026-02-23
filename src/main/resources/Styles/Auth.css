@@ -1,0 +1,50 @@
+.auth-root {
+    -fx-background-color: linear-gradient(to bottom right, #f4f7fb, #e6eef9);
+}
+
+.auth-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-border-radius: 16;
+    -fx-border-color: #d7e2f0;
+    -fx-border-width: 1;
+    -fx-effect: dropshadow(gaussian, rgba(23, 42, 69, 0.15), 16, 0.2, 0, 5);
+}
+
+.auth-title {
+    -fx-font-size: 24px;
+    -fx-font-weight: 700;
+    -fx-text-fill: #16324f;
+}
+
+.text-field,
+.password-field,
+.combo-box,
+.table-view {
+    -fx-font-size: 14px;
+}
+
+.text-field,
+.password-field {
+    -fx-background-radius: 10;
+    -fx-border-radius: 10;
+    -fx-border-color: #c4d3e7;
+    -fx-padding: 10 12;
+}
+
+.primary-btn {
+    -fx-background-color: #1d6bdb;
+    -fx-text-fill: white;
+    -fx-background-radius: 10;
+    -fx-font-weight: 700;
+    -fx-padding: 10 16;
+}
+
+.primary-btn:hover {
+    -fx-background-color: #1556b2;
+}
+
+.message-label {
+    -fx-font-size: 13px;
+    -fx-text-fill: #405870;
+}

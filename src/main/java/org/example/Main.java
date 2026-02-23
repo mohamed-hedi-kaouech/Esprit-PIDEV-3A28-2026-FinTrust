@@ -1,67 +1,108 @@
 package org.example;
+import org.example.Interfaces.InterfaceGlobal;
+import org.example.Model.Product.ClassProduct.Product;
+import org.example.Model.Product.EnumProduct.ProductCategory;
+import org.example.Service.ProductService.ProductService;
 
-import org.example.Model.User.Kyc;
-import org.example.Model.User.User;
-import org.example.Service.UserService.KycService;
-import org.example.Service.UserService.UserService;
+import org.example.Model.Loan.LoanClass.Loan;
+import org.example.Model.Loan.LoanClass.Repayment;
+import org.example.Model.Loan.LoanEnum.LoanStatus;
+import org.example.Model.Loan.LoanEnum.RepaymentStatus;
+import org.example.Service.LoanService.LoanService;
+import org.example.Service.LoanService.RepaymentService;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-
+//TIP To <b>Run</b> code, press <shortcut actionId="Run"/> or
+// click the <icon src="AllIcons.Actions.Execute"/> icon in the gutter.
 public class Main {
-
     public static void main(String[] args) {
+        LoanService ls = new LoanService();
+        Loan l= new Loan(30000,12,4,0);
+        Loan l2= new Loan(30000,14,5,0);
+       /*
+        ls.Add(l);
+        ls.Add(l2);
+        System.out.println(ls.ReadAll());
+        */
+        /*
+        System.out.println(ls.ReadId(1));
+        Loan l3= new Loan(3,35000,16,LoanStatus.ACTIVE,3.5,500.5);
+        ls.Update(l3);
+        System.out.println(ls.ReadAll());
+        *
+         /*
+        ls.Delete(1);
+        System.out.println(ls.ReadAll());
+          */
+        RepaymentService rs = new RepaymentService();
 
-        UserService userService = new UserService();
-        KycService kycService = new KycService();
+        Loan loan = ls.ReadId(3);
 
-        // ================== 1️⃣ Inscription ==================
-        User user = new User(
-                0,                  // currentKycId
-                "John",             // nom
-                "Doe",              // prenom
-                "john.doe@example.com", // email
-                "0600000000",       // numTel
-                "USER",             // role
-                "password123",      // password
-                "PENDING",          // kycStatus
-                LocalDateTime.now() // createdAt
-        );
-
-        if (userService.Add(user)) {
-            System.out.println("Utilisateur créé, id=" + user.getId() + ", KYC non rempli.");
-        } else {
-            System.out.println("Erreur création utilisateur ou email déjà existant.");
+        if (loan == null) {
+            System.out.println("Loan not found!");
             return;
         }
 
-        // ================== 2️⃣ Remplissage du KYC ==================
-        // Simuler des fichiers binaires
-        byte[] fakeDocumentFront = new byte[10];
-        Arrays.fill(fakeDocumentFront, (byte) 1);
-        byte[] fakeDocumentBack = new byte[10];
-        Arrays.fill(fakeDocumentBack, (byte) 2);
-        byte[] fakeSignature = new byte[10];
-        Arrays.fill(fakeSignature, (byte) 3);
-        byte[] fakeSelfie = new byte[10];
-        Arrays.fill(fakeSelfie, (byte) 4);
+        System.out.println("Loan found: " + loan);
 
-        // Hachage simple du numéro de carte (pour test)
-        String cardNumber = "1234567812345678";
-        String cardHash = Integer.toString(cardNumber.hashCode());
-        String last4Digits = cardNumber.substring(cardNumber.length() - 4);
-
-        // Créer le KYC
-        Kyc kyc = new Kyc(
-                user.getId(),
-                "CARTE_ID",
-                cardHash,
-                last4Digits,
-                fakeDocumentFront,
-                fakeDocumentBack,
-                fakeSignature,
-                fakeSelfie,
-                "PENDING",
-                LocalDateTime.now()
+        Repayment r1 = new Repayment(
+                loan.getLoanId(),
+                1,
+                3000,
+                2500,
+                500,
+                RepaymentStatus.UNPAID
         );
-    }}
+
+        Repayment r2 = new Repayment(
+                loan.getLoanId(),
+                2,
+                3000,
+                2600,
+                400,
+                RepaymentStatus.UNPAID
+        );
+
+        rs.Add(r1);
+        rs.Add(r2);
+        // Read by REPAYMENT BY ID
+        System.out.println(rs.ReadId(1));
+        // Read all repayments for this loan
+        System.out.println("Repayments for Loan ID " + loan.getLoanId());
+
+        for (Repayment r : rs.getByLoan(loan.getLoanId())) {
+            System.out.println(r);
+        }
+
+        System.out.println("After updating first installment:");
+
+        for (Repayment r : rs.getByLoan(loan.getLoanId())) {
+            System.out.println(r);
+        }
+        /*
+        Repayment r3 = new Repayment(
+                7,
+                loan.getLoanId(),
+                2,
+                3000,
+                2600,
+                400,
+                RepaymentStatus.PAID
+        );
+
+        rs.Update(r3);
+        System.out.println("After updating first installment:");
+
+        for (Repayment r : rs.getByLoan(loan.getLoanId())) {
+            System.out.println(r);
+        }
+
+        rs.Delete(8);
+        for (Repayment r : rs.getByLoan(loan.getLoanId())) {
+            System.out.println(r);
+        }
+
+         */
+
+
+    }
+}

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.KycControlleur.KycFormController">
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="10">
+            <children>
+                <Label text="Formulaire KYC" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Dashboard Client" onAction="#goToClientDashboard" styleClass="button-secondary"/>
+                <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="12" style="-fx-padding: 22;" styleClass="bank-card">
+            <Label fx:id="statusLabel" text="Statut KYC" styleClass="section-title"/>
+            <Label fx:id="commentLabel" text="Commentaire" styleClass="section-subtitle status-banner" wrapText="true"/>
+
+            <Label text="CIN" styleClass="form-label"/>
+            <TextField fx:id="cinField" promptText="Ex: AB123456"/>
+
+            <Label text="Adresse" styleClass="form-label"/>
+            <TextArea fx:id="adresseField" promptText="Adresse complete" prefRowCount="2" wrapText="true"/>
+
+            <Label text="Date de naissance" styleClass="form-label"/>
+            <DatePicker fx:id="dateNaissancePicker"/>
+
+            <HBox spacing="10">
+                <Button text="Choisir fichiers" onAction="#chooseFiles" styleClass="button-primary"/>
+                <Button text="Soumettre KYC" onAction="#submitKyc" styleClass="button-secondary"/>
+            </HBox>
+
+            <Label text="Fichiers selectionnes" styleClass="section-subtitle"/>
+            <ListView fx:id="selectedFilesList" prefHeight="100"/>
+
+            <Label text="Fichiers deja soumis" styleClass="section-subtitle"/>
+            <TableView fx:id="existingFilesTable" prefHeight="240">
+                <columns>
+                    <TableColumn fx:id="fileNameCol" text="Nom" prefWidth="260"/>
+                    <TableColumn fx:id="fileTypeCol" text="Type" prefWidth="180"/>
+                    <TableColumn fx:id="fileSizeCol" text="Taille" prefWidth="120"/>
+                    <TableColumn fx:id="updatedAtCol" text="Maj" prefWidth="170"/>
+                </columns>
+            </TableView>
+
+            <HBox spacing="10">
+                <Button text="Telecharger selection" onAction="#downloadSelected" styleClass="button-secondary"/>
+            </HBox>
+
+            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+        </VBox>
+    </center>
+</BorderPane>

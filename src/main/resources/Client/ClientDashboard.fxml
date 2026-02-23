@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.ClientControlleur.ClientDashboardController">
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+            <children>
+                <Label text="Dashboard Client" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <VBox spacing="14" style="-fx-padding: 26;" styleClass="bank-card">
+            <Label fx:id="welcomeLabel" text="Bienvenue" styleClass="section-title"/>
+            <Label fx:id="kycStatusLabel" text="Statut KYC" styleClass="section-subtitle status-banner"/>
+            <Label fx:id="kycCommentLabel" text="Commentaire" styleClass="section-subtitle status-banner" wrapText="true"/>
+
+            <HBox spacing="12">
+                <Button text="Completer KYC" onAction="#goToKycForm" styleClass="button-primary"/>
+                <Button text="Modifier KYC" onAction="#goToKycForm" styleClass="button-secondary"/>
+                <Button text="Check Statut" onAction="#checkKycStatus" styleClass="button-secondary"/>
+                <Button fx:id="walletButton" text="Acceder au Dashboard Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
+                <Button text="Profil" onAction="#goToProfile" styleClass="button-primary"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>

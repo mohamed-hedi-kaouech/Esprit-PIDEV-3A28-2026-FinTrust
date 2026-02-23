@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.collections.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
@@ -20,11 +19,6 @@
           AnchorPane.leftAnchor="0"
           AnchorPane.rightAnchor="0"
           AnchorPane.topAnchor="0">
-        <Button onAction="#goBackToMenu" prefWidth="120.0" styleClass="btn-back" text="⬅ Retour">
-            <font>
-                <Font name="System Bold" size="13.0" />
-            </font>
-        </Button>
 
         <Label text="Gestion des Wallets" styleClass="header-title">
             <font>
@@ -65,17 +59,7 @@
             <Label text="Devise *" styleClass="form-label"/>
             <ComboBox fx:id="deviseComboBox"
                       promptText="Choisir une devise"
-                      styleClass="form-input">
-
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="TND"/>
-                        <String fx:value="EUR"/>
-                        <String fx:value="USD"/>
-                        <String fx:value="GBP"/>
-                    </FXCollections>
-                </items>
-            </ComboBox>
+                      styleClass="form-input"/>
         </VBox>
 
         <!-- Statut -->
@@ -83,16 +67,7 @@
             <Label text="Statut *" styleClass="form-label"/>
             <ComboBox fx:id="statutComboBox"
                       promptText="Choisir un statut"
-                      styleClass="form-input">
-
-                <items>
-                    <FXCollections fx:factory="observableArrayList">
-                        <String fx:value="ACTIVE"/>
-                        <String fx:value="SUSPENDED"/>
-                        <String fx:value="CLOSED"/>
-                    </FXCollections>
-                </items>
-            </ComboBox>
+                      styleClass="form-input"/>
         </VBox>
 
         <!-- Buttons -->
