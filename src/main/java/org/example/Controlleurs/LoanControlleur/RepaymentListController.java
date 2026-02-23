@@ -14,6 +14,7 @@ import javafx.stage.Stage;
 import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
+import org.example.Service.LoanService.EmailService;
 import org.example.Service.LoanService.PdfExportService;
 import org.example.Service.LoanService.RepaymentService;
 
@@ -188,6 +189,14 @@ public class RepaymentListController {
             );
             service.updateLoanStatusIfCompleted(
                     r.getLoanId()
+            );
+
+            EmailService emailService = new EmailService();
+            emailService.sendRepaymentConfirmation(
+                    System.getenv("MAIL_USER"),
+                    r.getLoanId(),
+                    r.getMonth(),
+                    r.getMonthlyPayment()
             );
 
             loadData();
