@@ -134,20 +134,24 @@ public class Repayment {
 
     public static String SQLTable() {
         return """
-                CREATE TABLE IF NOT EXISTS repayment (
-                   repayId INT PRIMARY KEY AUTO_INCREMENT,
-                   loanId INT NOT NULL,
-                   number INT NOT NULL,
-                   month DECIMAL(10,2) NOT NULL,
-                   capitalPart DECIMAL(10,2) NOT NULL,
-                   interestPart DECIMAL(10,2) NOT NULL,
-                   status VARCHAR(20) NOT NULL,
-
-                   CONSTRAINT fk_repayment_loan
-                   FOREIGN KEY (loanId)
-                   REFERENCES loan(loanId)
-                   ON DELETE CASCADE
-               );
+            CREATE TABLE IF NOT EXISTS repayment (
+                repayId INT PRIMARY KEY AUTO_INCREMENT,
+                loanId INT NOT NULL,
+                month INT NOT NULL,
+            
+                startingBalance DECIMAL(10,2) NOT NULL,
+                monthlyPayment DECIMAL(10,2) NOT NULL,
+                capitalPart DECIMAL(10,2) NOT NULL,
+                interestPart DECIMAL(10,2) NOT NULL,
+                remainingBalance DECIMAL(10,2) NOT NULL,
+            
+                status VARCHAR(20) NOT NULL,
+            
+                CONSTRAINT fk_repayment_loan
+                    FOREIGN KEY (loanId)
+                    REFERENCES loan(loanId)
+                    ON DELETE CASCADE
+            );
                 """;
     }
 }

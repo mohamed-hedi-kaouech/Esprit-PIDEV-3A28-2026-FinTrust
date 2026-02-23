@@ -23,6 +23,10 @@
 
             <Region HBox.hgrow="ALWAYS"/>
 
+            <Button text="Télécharger PDF"
+                    styleClass="btn-primary"
+                    onAction="#handleDownloadPdf"/>
+
             <Button text="Retour"
                     styleClass="btn-back"
                     onAction="#handleBack"/>

@@ -9,11 +9,17 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
+import org.example.Service.LoanService.PdfExportService;
 import org.example.Service.LoanService.RepaymentService;
 
+import java.io.File;
+import java.nio.file.Files;
+import java.util.List;
 import java.util.Optional;
 
 public class RepaymentListController {
@@ -185,6 +191,37 @@ public class RepaymentListController {
             );
 
             loadData();
+        }
+    }
+
+
+    @FXML
+    private void handleDownloadPdf() {
+        try {
+
+            if (repaymentTable.getItems().isEmpty()) {
+                throw new RuntimeException("No repayment data.");
+            }
+
+            int loanId = repaymentTable.getItems().get(0).getLoanId();
+
+            PdfExportService pdfService = new PdfExportService();
+            byte[] pdf = pdfService.generatePdfFromRepayments(
+                    repaymentTable.getItems(), loanId
+            );
+
+            FileChooser fc = new FileChooser();
+            fc.getExtensionFilters().add(
+                    new FileChooser.ExtensionFilter("PDF Files", "*.pdf"));
+            fc.setInitialFileName("repayment_plan_" + loanId + ".pdf");
+
+            File file = fc.showSaveDialog(repaymentTable.getScene().getWindow());
+            if (file == null) return;
+
+            Files.write(file.toPath(), pdf);
+
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

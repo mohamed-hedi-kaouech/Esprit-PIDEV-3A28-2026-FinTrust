@@ -1,6 +1,7 @@
 package org.example.Service.LoanService;
 
 import org.example.Interfaces.InterfaceGlobal;
+import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
 import org.example.Utils.MaConnexion;
@@ -291,4 +292,7 @@ public class RepaymentService implements InterfaceGlobal<Repayment> {
 
         return false;
     }
+
 }
+
+
