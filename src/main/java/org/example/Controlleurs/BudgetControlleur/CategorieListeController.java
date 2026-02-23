@@ -19,6 +19,8 @@ import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.Model.Budget.Categorie;
 import org.example.Service.BudgetService.BudgetService;
+import org.example.Service.BudgetService.AlerteService;
+import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
@@ -36,6 +38,8 @@ public class CategorieListeController implements Initializable {
 
     // Search
     @FXML private TextField tfSearch;
+    // Notifications
+    @FXML private MenuButton notificationMenu;
 
     // ListView
     @FXML private ListView<Categorie> categorieListView;
@@ -44,10 +48,14 @@ public class CategorieListeController implements Initializable {
     private ObservableList<Categorie> categorieList = FXCollections.observableArrayList();
     private FilteredList<Categorie> filteredList;
     private BudgetService BS;
+    private AlerteService alerteService = new AlerteService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         BS = new BudgetService();
+
+        // load alerts into menu
+        loadAlertsMenu();
 
         setupListView();
         setupSearchFilter();
@@ -86,6 +94,113 @@ public class CategorieListeController implements Initializable {
         }
 
         updateStatistics();
+        // refresh alerts list when categories change
+        loadAlertsMenu();
+    }
+
+    private void loadAlertsMenu() {
+        if (notificationMenu == null) return;
+        notificationMenu.getItems().clear();
+        // Fetch latest alerts
+        try {
+            java.util.List<org.example.Model.Budget.Alerte> alerts = alerteService.ReadAll();
+            if (alerts.isEmpty()) {
+                MenuItem empty = new MenuItem("Aucune alerte");
+                empty.setDisable(true);
+                notificationMenu.getItems().add(empty);
+                return;
+            }
+
+            for (org.example.Model.Budget.Alerte a : alerts) {
+                String text = String.format("[%s] %s (%.2f DT)",
+                        a.getCreatedAt() != null ? a.getCreatedAt().toString() : "--",
+                        a.getMessage(), a.getSeuil());
+                MenuItem mi = new MenuItem(text);
+                mi.setOnAction(ev -> showAlerteDetails(a));
+                notificationMenu.getItems().add(mi);
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+            MenuItem err = new MenuItem("Erreur lors du chargement");
+            err.setDisable(true);
+            notificationMenu.getItems().add(err);
+        }
+    }
+
+    private void showAlerteDetails(org.example.Model.Budget.Alerte a) {
+        StringBuilder sb = new StringBuilder();
+        sb.append("Alerte pour Catégorie ID: ").append(a.getIdCategorie()).append("\n\n");
+        sb.append("Message: ").append(a.getMessage()).append("\n");
+        sb.append("Seuil: ").append(String.format("%.2f DT", a.getSeuil())).append("\n");
+        sb.append("Active: ").append(a.isActive() ? "Oui" : "Non");
+
+        Alert info = new Alert(Alert.AlertType.INFORMATION);
+        info.setTitle("Détails Alerte");
+        info.setHeaderText(null);
+        info.setContentText(sb.toString());
+        info.showAndWait();
+    }
+
+    @FXML
+    private void openCreateAlerte() {
+        try {
+            // Build dialog with category choice, message and seuil
+            Dialog<org.example.Model.Budget.Alerte> dialog = new Dialog<>();
+            dialog.setTitle("Créer une Alerte");
+
+            ButtonType createBtn = new ButtonType("Créer", ButtonBar.ButtonData.OK_DONE);
+            dialog.getDialogPane().getButtonTypes().addAll(createBtn, ButtonType.CANCEL);
+
+            // Content
+            GridPane grid = new GridPane();
+            grid.setHgap(10);
+            grid.setVgap(10);
+            grid.setPadding(new Insets(20, 150, 10, 10));
+
+            ComboBox<Categorie> cbCategories = new ComboBox<>();
+            cbCategories.getItems().addAll(categorieList);
+            cbCategories.setPrefWidth(300);
+
+            TextField tfMessage = new TextField();
+            tfMessage.setPromptText("Message de l'alerte");
+
+            TextField tfSeuil = new TextField();
+            tfSeuil.setPromptText("Seuil (ex: 100.0)");
+
+            grid.add(new Label("Catégorie:"), 0, 0);
+            grid.add(cbCategories, 1, 0);
+            grid.add(new Label("Message:"), 0, 1);
+            grid.add(tfMessage, 1, 1);
+            grid.add(new Label("Seuil:"), 0, 2);
+            grid.add(tfSeuil, 1, 2);
+
+            dialog.getDialogPane().setContent(grid);
+
+            // Convert result
+            dialog.setResultConverter(dialogButton -> {
+                if (dialogButton == createBtn) {
+                    Categorie chosen = cbCategories.getValue();
+                    if (chosen == null) return null;
+                    String msg = tfMessage.getText();
+                    double s = 0;
+                    try { s = Double.parseDouble(tfSeuil.getText()); } catch (NumberFormatException ex) { s = chosen.getSeuilAlerte(); }
+                    org.example.Model.Budget.Alerte a = new org.example.Model.Budget.Alerte(chosen.getIdCategorie(), msg, s);
+                    return a;
+                }
+                return null;
+            });
+
+            Optional<org.example.Model.Budget.Alerte> result = dialog.showAndWait();
+            result.ifPresent(a -> {
+                alerteService.Add(a);
+                showSuccessAlert("Succès", "Alerte créée.");
+                loadAlertsMenu();
+            });
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur", "Impossible d'ouvrir le dialogue de création d'alerte.");
+        }
     }
 
     private String calculateStatut(double budget, double seuil) {

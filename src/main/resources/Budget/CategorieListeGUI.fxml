@@ -33,6 +33,11 @@
                 </Label>
 
                 <Region HBox.hgrow="ALWAYS"/>
+                <!-- Notification dropdown -->
+                <MenuButton fx:id="notificationMenu" text="🔔 Alertes" styleClass="btn-notification">
+                    <!-- Menu items populated at runtime -->
+                </MenuButton>
+                
 
                 <!-- Stats Summary -->
                 <VBox alignment="CENTER" spacing="3" styleClass="stat-box">
