@@ -21,8 +21,9 @@ public class Categorie {
         this.budgetPrevu = budgetPrevu;
         this.seuilAlerte = seuilAlerte;
     }
-    public Categorie(int id,String nomCategorie, double budgetPrevu, double seuilAlerte) {
-        this.idCategorie = id;
+
+    public Categorie(int idCategorie, String nomCategorie, double budgetPrevu, double seuilAlerte) {
+        this.idCategorie = idCategorie;
         this.nomCategorie = nomCategorie;
         this.budgetPrevu = budgetPrevu;
         this.seuilAlerte = seuilAlerte;
@@ -69,16 +70,13 @@ public class Categorie {
         this.items = items;
     }
 
+    // affichage dans ComboBox
     @Override
     public String toString() {
-        return "Categorie{" +
-                "idCategorie=" + idCategorie +
-                ", nomCategorie='" + nomCategorie + '\'' +
-                ", budgetPrevu=" + budgetPrevu +
-                ", seuilAlerte=" + seuilAlerte +
-                '}';
+        return nomCategorie;
     }
 
+    // SQL Table
     public static String SQLTable() {
         return """
                 CREATE TABLE IF NOT EXISTS categorie (
@@ -87,8 +85,9 @@ public class Categorie {
                       budgetPrevu DOUBLE NOT NULL,
                       seuilAlerte DOUBLE NOT NULL,
                       PRIMARY KEY (idCategorie)
-                    ) ENGINE=InnoDB\s
-                    DEFAULT CHARSET=utf8mb4\s
-                    COLLATE=utf8mb4_general_ci;
-                """;}
+                ) ENGINE=InnoDB
+                DEFAULT CHARSET=utf8mb4
+                COLLATE=utf8mb4_general_ci;
+                """;
+    }
 }

@@ -3,7 +3,7 @@
 /* ==================== General Styles ==================== */
 .root {
     -fx-font-family: "Segoe UI", "Roboto", Arial, sans-serif;
-    -fx-background-color: #f8f9fa;
+   -fx-background-color: transparent;
 }
 
 /* ==================== Main Container ==================== */
@@ -537,6 +537,105 @@
     -fx-background-color: transparent;
 }
 
+/* Make ListView background transparent (remove white sheet) */
+.item-listview,
+.categorie-listview {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+.item-listview .viewport,
+.categorie-listview .viewport {
+    -fx-background-color: transparent;
+}
+
+.item-listview .list-cell,
+.categorie-listview .list-cell {
+    -fx-background-color: transparent;
+    -fx-control-inner-background: transparent;
+}
+
+.item-listview .list-cell:filled:selected,
+.categorie-listview .list-cell:filled:selected {
+    -fx-background-color: rgba(59,130,246,0.08);
+}
+
+.item-listview .list-cell:filled:hover,
+.categorie-listview .list-cell:filled:hover {
+    -fx-background-color: rgba(59,130,246,0.04);
+}
+
+/* Table header styling for lists */
+.table-header {
+    -fx-background-color: rgba(15,23,42,0.45);
+    -fx-background-radius: 10px;
+    -fx-padding: 8px 12px;
+    -fx-border-color: rgba(148,163,184,0.06);
+    -fx-border-width: 0 0 1px 0;
+}
+
+.table-col {
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: bold;
+}
+
+.id-col {
+    -fx-pref-width: 60px;
+}
+
+.name-col {
+    -fx-alignment: CENTER_LEFT;
+}
+
+.category-col {
+    -fx-pref-width: 180px;
+}
+
+.montant-col {
+    -fx-pref-width: 120px;
+}
+
+.actions-col {
+    -fx-pref-width: 140px;
+    -fx-alignment: CENTER_RIGHT;
+}
+
+/* Make categorie-card span full width and look like a row */
+.categorie-card {
+    -fx-background-color: #111827; /* slightly darker variant */
+    -fx-background-radius: 12px;
+    -fx-border-color: rgba(148, 163, 184, 0.12);
+    -fx-border-width: 1px;
+    -fx-border-radius: 12px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.25), 8, 0, 0, 3);
+    -fx-padding: 12px;
+}
+
+.categorie-card .categorie-id {
+    -fx-background-color: linear-gradient(to right, #5c6bc0, #7986cb);
+    -fx-background-radius: 10px;
+    -fx-padding: 6px 10px;
+    -fx-text-fill: white;
+}
+
+.categorie-card .categorie-nom {
+    -fx-font-size: 14px;
+}
+
+.categorie-card .categorie-seuil {
+    -fx-text-fill: #cbd5e1;
+}
+/* Add this to force the inner container to be transparent */
+.item-listview .virtual-flow,
+.categorie-listview .virtual-flow {
+    -fx-background-color: transparent;
+}
+
+/* Ensure empty cells don't show the default white background */
+.item-listview .list-cell:empty,
+.categorie-listview .list-cell:empty {
+    -fx-background-color: transparent;
+}
 /* ==================== Validation States ==================== */
 .input-field.error {
     -fx-border-color: #ef4444;
@@ -582,7 +681,93 @@
     -fx-font-style: italic;
     -fx-text-alignment: center;
 }
+/* This block kills the white background */
+.list-view,
+.item-listview,
+.categorie-listview {
+    -fx-background-color: transparent !important;
+    -fx-control-inner-background: transparent !important;
+    -fx-background-insets: 0 !important;
+    -fx-padding: 5px;
+}
 
+/* Targets the internal scrollable sheet */
+.list-view .virtual-flow,
+.list-view .viewport {
+    -fx-background-color: transparent !important;
+}
+
+/* Targets the individual rows */
+.list-view .list-cell {
+    -fx-background-color: transparent !important;
+    -fx-padding: 8px;
+    -fx-text-fill: white;
+}
+
+/* Targets empty space below your items */
+.list-view .list-cell:empty {
+    -fx-background-color: transparent !important;
+}
+
+/* Hover and selection colors for the rows */
+.list-view .list-cell:filled:hover {
+    -fx-background-color: rgba(59, 130, 246, 0.1) !important;
+}
+
+.list-view .list-cell:filled:selected {
+    -fx-background-color: rgba(59, 130, 246, 0.2) !important;
+}
+
+/* ==================== Item / Categorie Card Styles ==================== */
+.categorie-card {
+    -fx-background-color: #1e293b;
+    -fx-background-radius: 15px;
+    -fx-border-color: rgba(148, 163, 184, 0.3);
+    -fx-border-width: 1px;
+    -fx-border-radius: 15px;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 3);
+}
+
+.categorie-card:hover {
+    -fx-border-color: #3b82f6;
+    -fx-cursor: hand;
+}
+
+.categorie-nom { -fx-text-fill: white; -fx-font-weight: bold; }
+.categorie-budget { -fx-text-fill: #22c55e; }
+.categorie-seuil { -fx-text-fill: #f59e0b; }
+
+/* ==================== Table Headers for Lists ==================== */
+.table-header {
+    -fx-background-color: rgba(15, 23, 42, 0.45);
+    -fx-background-radius: 10px;
+    -fx-padding: 8px 12px;
+}
+
+.table-col {
+    -fx-text-fill: #94a3b8;
+    -fx-font-weight: bold;
+}
+
+/* ==================== Footer with Totals ==================== */
+.list-footer {
+    -fx-background-color: rgba(30, 41, 59, 0.8);
+    -fx-background-radius: 10px;
+}
+
+.footer-label { -fx-text-fill: #94a3b8; }
+.footer-value { -fx-text-fill: #22c55e; }
+.footer-value-warning { -fx-text-fill: #f59e0b; }
+
+/* ==================== ScrollBar Styling ==================== */
+.list-view .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+.list-view .scroll-bar:vertical .thumb {
+    -fx-background-color: rgba(148, 163, 184, 0.3);
+    -fx-background-radius: 5px;
+}
 /* ==================== Responsive Adjustments ==================== */
 @media (max-width: 900px) {
     .categorie-card {

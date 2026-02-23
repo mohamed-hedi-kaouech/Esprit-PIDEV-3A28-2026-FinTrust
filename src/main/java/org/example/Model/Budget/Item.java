@@ -6,7 +6,8 @@ public class Item {
     private int idItem;
     private String libelle;
     private double montant;
-    private Categorie categorie;   // Relation objet
+    private Categorie categorie;// Relation objet
+    private int idCategorie;
 
     // Constructeurs
     public Item() {}
@@ -51,6 +52,14 @@ public class Item {
         this.categorie = categorie;
     }
 
+    public int getIdCategorie() {
+        return idCategorie;
+    }
+
+    public void setIdCategorie(int idCategorie) {
+        this.idCategorie = idCategorie;
+    }
+
     @Override
     public String toString() {
         return "Item{" +
@@ -59,5 +68,22 @@ public class Item {
                 ", montant=" + montant +
                 ", categorie=" + categorie +
                 '}';
+    }
+
+    public static String SQLTable() {
+        return """
+            CREATE TABLE IF NOT EXISTS item (
+                  idItem INT(11) NOT NULL AUTO_INCREMENT,
+                  libelle VARCHAR(255) NOT NULL,
+                  montant DOUBLE NOT NULL,
+                  categorie VARCHAR(255) NULL,
+                  idCategorie INT(11) NOT NULL,
+                  PRIMARY KEY (idItem),
+                  KEY idCategorie (idCategorie),
+                  CONSTRAINT fk_item_categorie FOREIGN KEY (idCategorie) REFERENCES categorie(idCategorie) ON UPDATE CASCADE
+                ) ENGINE=InnoDB
+                DEFAULT CHARSET=utf8mb4
+                COLLATE=utf8mb4_general_ci;
+            """;
     }
 }

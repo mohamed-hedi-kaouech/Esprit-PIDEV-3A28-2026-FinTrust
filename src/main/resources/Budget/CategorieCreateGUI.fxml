@@ -11,7 +11,7 @@
 <?import javafx.geometry.Insets?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieCreateController"
-            prefWidth="900" prefHeight="600"
+           prefWidth="900" prefHeight="600"
             stylesheets="/Styles/StyleBudget.css"
             styleClass="main-container">
     <!-- TOP BAR -->
@@ -182,14 +182,14 @@
                         <Insets top="10"/>
                     </padding>
 
-                    <Button text="💾 Enregistrer" onAction="#createCategorie"
-                            styleClass="btn-save" prefWidth="180">
+                    <Button fx:id="btnAjouter" text="💾 Enregistrer" onAction="#handleAjouter"
+                        styleClass="btn-save" prefWidth="180">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Button>
 
-                    <Button text="🔄 Réinitialiser" onAction="#resetForm"
+                        <Button fx:id="btnAnnuler" text="🔄 Réinitialiser" onAction="#handleAnnuler"
                             styleClass="btn-clear" prefWidth="150">
                         <font>
                             <Font name="System Bold" size="13.0" />
