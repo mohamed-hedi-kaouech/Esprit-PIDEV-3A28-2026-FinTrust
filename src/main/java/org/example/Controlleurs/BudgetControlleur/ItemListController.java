@@ -18,6 +18,8 @@ import org.example.Controlleurs.BudgetControlleur.ItemUpdateController;
 import org.example.Model.Budget.Categorie;
 import org.example.Model.Budget.Item;
 import org.example.Service.BudgetService.ItemService;
+import org.example.Service.BudgetService.AlerteService;
+import org.example.Model.Budget.Alerte;
 
 import java.io.IOException;
 import java.net.URL;
@@ -30,11 +32,16 @@ public class ItemListController implements Initializable {
     @FXML private ListView<Item> itemListView;
     @FXML private Label lblTotalItems;
     @FXML private Label lblMontantTotal;
+    @FXML private Label lblSommeMontants;
+    @FXML private Label lblSommeItems;
     @FXML private TextField tfSearch;
 
     private ItemService itemService;
     private ObservableList<Item> items;
     private Categorie currentCategory;
+    // Track whether we've already shown the alert for the current category
+    private boolean seuilAlertShown = false;
+    private AlerteService alerteService = new AlerteService();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -161,8 +168,10 @@ public class ItemListController implements Initializable {
         List<Item> itemList = itemService.ReadAll();
         items = FXCollections.observableArrayList(itemList);
         itemListView.setItems(items);
-        updateStats(items);
+        // Reset category context when showing all items
         currentCategory = null;
+        seuilAlertShown = false;
+        updateStats(items);
     }
 
     // Charge les items d'une catégorie spécifique
@@ -170,8 +179,10 @@ public class ItemListController implements Initializable {
         List<Item> itemList = itemService.ReadByCategory(categorie.getIdCategorie());
         items = FXCollections.observableArrayList(itemList);
         itemListView.setItems(items);
-        updateStats(items);
+        // Set current category first so updateStats can evaluate seuil
         currentCategory = categorie;
+        seuilAlertShown = false; // reset alert state when switching categories
+        updateStats(items);
     }
 
     // Met à jour le nombre d’items et le total
@@ -181,6 +192,49 @@ public class ItemListController implements Initializable {
 
         lblTotalItems.setText(String.valueOf(totalItems));
         lblMontantTotal.setText(String.format("%.2f DT", totalMontant));
+        // Mirror values into the footer labels if they're present in the FXML
+        if (lblSommeMontants != null) lblSommeMontants.setText(String.format("%.2f DT", totalMontant));
+        if (lblSommeItems != null) lblSommeItems.setText(String.valueOf(totalItems));
+
+        // Check against the category threshold (seuilAlerte) when a category is selected
+        checkSeuil(totalMontant);
+    }
+
+    // Show a warning when the total montant for the current category reaches or exceeds its seuilAlerte
+    private void checkSeuil(double totalMontant) {
+        if (currentCategory == null) return;
+        double seuil = currentCategory.getSeuilAlerte();
+        if (seuil <= 0) return;
+
+        if (totalMontant >= seuil && !seuilAlertShown) {
+            String title = "Seuil d'alerte atteint";
+            String message = String.format("La catégorie '%s' a atteint le seuil (%.2f DT). Montant actuel: %.2f DT.",
+                    currentCategory.getNomCategorie(), seuil, totalMontant);
+            showWarningAlert(title, message);
+            // Persist an alert record if one doesn't already exist for this category+seuil
+            try {
+                java.util.List<Alerte> existing = alerteService.ReadByCategory(currentCategory.getIdCategorie());
+                boolean duplicate = existing.stream().anyMatch(a -> a.isActive() && Double.compare(a.getSeuil(), seuil) == 0 && a.getMessage().equals(message));
+                if (!duplicate) {
+                    Alerte a = new Alerte(currentCategory.getIdCategorie(), message, seuil);
+                    alerteService.Add(a);
+                }
+            } catch (Exception ex) {
+                ex.printStackTrace();
+            }
+            seuilAlertShown = true;
+        } else if (totalMontant < seuil) {
+            // If total drops below threshold, allow alert to be shown again on next crossing
+            seuilAlertShown = false;
+        }
+    }
+
+    private void showWarningAlert(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 
     // Filtrage par recherche

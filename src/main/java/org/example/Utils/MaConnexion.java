@@ -1,12 +1,15 @@
 package org.example.Utils;
 
 import org.example.Model.Budget.Categorie;
+import org.example.Model.Budget.Item;
+import org.example.Model.Budget.Alerte;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Wallet.Transaction;
 import org.example.Model.Wallet.Wallet;
 import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Repayment;
+
 
 
 import java.sql.Connection;
@@ -60,6 +63,9 @@ public class MaConnexion {
 
                 //Categorie TABLE
                 st.executeUpdate(Categorie.SQLTable());
+                st.executeUpdate(Item.SQLTable());
+                st.executeUpdate(Alerte.SQLTable());
+                
 
                 //Wallet TABLE
                 st.executeUpdate(Wallet.SQLTable());
