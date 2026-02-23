@@ -202,4 +202,22 @@ public class RepaymentService implements InterfaceGlobal<Repayment> {
 
         return list;
     }
+
+    public void markAsPaid(int repayId) {
+
+        String req = "UPDATE repayment SET status=? WHERE repayId=?";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+            ps.setString(1, RepaymentStatus.PAID.name());
+            ps.setInt(2, repayId);
+
+            ps.executeUpdate();
+
+            System.out.println("Repayment marked as PAID.");
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+    }
 }

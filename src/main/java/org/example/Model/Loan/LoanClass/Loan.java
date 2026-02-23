@@ -143,4 +143,18 @@ public class Loan {
 
         return this.loanId == loan.loanId ;
     }
+
+    public static String SQLTable() {
+        return """
+                CREATE TABLE IF NOT EXISTS loan (
+                    loanId INT PRIMARY KEY AUTO_INCREMENT,
+                    amount DOUBLE NOT NULL,
+                    duration INT NOT NULL,
+                    status VARCHAR(50) NOT NULL,
+                    interest_rate DOUBLE NOT NULL,
+                    remaining_principal DOUBLE NOT NULL,
+                    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
+                );
+                """;
+    }
 }

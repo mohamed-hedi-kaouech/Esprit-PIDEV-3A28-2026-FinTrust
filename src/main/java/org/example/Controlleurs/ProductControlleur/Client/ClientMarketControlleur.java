@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Client;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -19,21 +19,31 @@ import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
+import okhttp3.OkHttpClient;
 import org.example.Model.Product.ClassProduct.Product;
+import org.example.Model.Product.ClassProduct.ProductSubscription;
+import org.example.Model.Product.EnumProduct.SubscriptionType;
 import org.example.Service.ProductService.ProductService;
+import org.example.Service.ProductService.ProductSubscriptionService;
+
 import java.io.IOException;
+import java.net.URI;
 import java.net.URL;
+import java.net.http.HttpClient;
+import java.net.http.HttpRequest;
+import java.net.http.HttpResponse;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
+import java.util.concurrent.CompletableFuture;
 
 
-public class ListeProductControlleur implements Initializable {
+public class ClientMarketControlleur implements Initializable {
 
 
     // TableView
     @FXML private ListView<Product> productListView;
-
+    private ProductSubscriptionService PSS;
 
     @FXML private TextField searchField;
     @FXML private Label totalProductsLabel;
@@ -46,28 +56,13 @@ public class ListeProductControlleur implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         PS = new ProductService();
-
+        PSS = new ProductSubscriptionService();
         setupListView();
         loadProductData();
         setupSearchListener();
     }
+    
 
-    @FXML
-    private void goToCreatePage(ActionEvent event) {
-
-        try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/CreateProductGUI.fxml")
-            );
-
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Créer Produit");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
     private void setupListView() {
         // Set custom cell factory for ListView
         productListView.setCellFactory(listView -> new ProductListCell());
@@ -134,23 +129,128 @@ public class ListeProductControlleur implements Initializable {
     }
 
 
-    // Dans votre ListView, lors du clic sur "Modifier"
-    private void handleUpdate(Product product) {
-        try {
-            FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/Product/ProductUpdateGUI.fxml")
-            );
-            Parent root = loader.load();
+    private void handleSub(Product product) {
+        // Create a custom dialog
+        Dialog<SubscriptionType> dialog = new Dialog<>();
+        dialog.setTitle("Abonnement");
+        dialog.setHeaderText("Choisissez votre type d'abonnement pour :\n" + formatCategoryName(product.getCategory().name()));
 
-            ProductUpdateControlleur controller = loader.getController();
-            controller.loadProduct(product); // Charge les données
+        // Set the button types
+        ButtonType confirmButtonType = new ButtonType("Confirmer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().addAll(confirmButtonType, ButtonType.CANCEL);
 
-            Stage stage = (Stage) productListView.getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.show();
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        // Create the content
+        VBox content = new VBox(15);
+        content.setPadding(new Insets(20));
+
+        Label choiceLabel = new Label("Type d'abonnement :");
+        choiceLabel.setFont(Font.font("System Bold", 13));
+
+        ToggleGroup toggleGroup = new ToggleGroup();
+
+        RadioButton monthlyBtn = new RadioButton("Mensuel (MONTHLY)");
+        RadioButton annualBtn  = new RadioButton("Annuel (ANNUAL)");
+        RadioButton transactionBtn = new RadioButton("Par transaction (TRANSACTION)");
+        RadioButton oneTimeBtn = new RadioButton("Unique (ONE_TIME)");
+
+        monthlyBtn.setToggleGroup(toggleGroup);
+        annualBtn.setToggleGroup(toggleGroup);
+        transactionBtn.setToggleGroup(toggleGroup);
+        oneTimeBtn.setToggleGroup(toggleGroup);
+
+        // Map each button to its SubscriptionType
+        monthlyBtn.setUserData(SubscriptionType.MONTHLY);
+        annualBtn.setUserData(SubscriptionType.ANNUAL);
+        transactionBtn.setUserData(SubscriptionType.TRANSACTION);
+        oneTimeBtn.setUserData(SubscriptionType.ONE_TIME);
+
+        monthlyBtn.setSelected(true); // default selection
+
+        content.getChildren().addAll(choiceLabel, monthlyBtn, annualBtn, transactionBtn, oneTimeBtn);
+        dialog.getDialogPane().setContent(content);
+
+        // Disable confirm button if nothing selected (safety)
+        Node confirmButton = dialog.getDialogPane().lookupButton(confirmButtonType);
+        confirmButton.setDisable(false);
+
+        // Convert result
+        dialog.setResultConverter(dialogButton -> {
+            if (dialogButton == confirmButtonType) {
+                Toggle selected = toggleGroup.getSelectedToggle();
+                if (selected != null) {
+                    return (SubscriptionType) selected.getUserData();
+                }
+            }
+            return null;
+        });
+
+        Optional<SubscriptionType> result = dialog.showAndWait();
+
+        result.ifPresent(subscriptionType -> {
+            try {
+                PSS = new ProductSubscriptionService();
+                ProductSubscription productSubscription = new ProductSubscription(1, product.getProductId(), subscriptionType);
+                boolean success = PSS.add(productSubscription);
+
+                if (success) {
+                    showAlert(Alert.AlertType.INFORMATION, "Succès",
+                            "Abonnement " + subscriptionType.name() + " ajouté avec succès !");
+
+                    // Fire webhook asynchronously — never block the FX thread
+                    String productCategorie = product.getCategory().name();
+                    String productType      = subscriptionType.name();
+                    String price            = product.getPrice().toString();
+
+                    String jsonBody = String.format("""
+                        {
+                            "ProductCategorie": "%s",
+                            "ProductType": "%s",
+                            "Price": "%s"
+                        }
+                        """, productCategorie, productType, price);
+                    CompletableFuture.runAsync(() -> {
+                        String webhookUrl = "http://localhost:5680/webhook/775c96dd-935c-455d-a9d4-5cb84ff1ea8a";
+                        // Step 1: Test basic connectivity first
+                        try {
+                            java.net.Socket socket = new java.net.Socket();
+                            socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
+                            socket.close();
+                            OkHttpClient client = new OkHttpClient.Builder()
+                                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .build();
+
+                            okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                                    jsonBody,
+                                    okhttp3.MediaType.parse("application/json")
+                            );
+
+                            okhttp3.Request request = new okhttp3.Request.Builder()
+                                    .url(webhookUrl)
+                                    .post(body)
+                                    .build();
+
+                            try (okhttp3.Response response = client.newCall(request).execute()) {
+                                System.out.println("✅ Status: " + response.code());
+                                System.out.println("✅ Body: " + response.body().string());
+                            }
+
+                    } catch (Exception e) {
+                        System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                    });
+
+                } else {
+                    showAlert(Alert.AlertType.ERROR, "Erreur",
+                            "Échec de l'abonnement. Veuillez réessayer.");
+                }
+
+            } catch (Exception e) {
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue : " + e.getMessage());
+            }
+        });
     }
 
     private void handleDelete(Product product) {
@@ -194,6 +294,21 @@ public class ListeProductControlleur implements Initializable {
         alert.showAndWait();
     }
 
+    @FXML
+    private void goBackToMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Product/MenuProductGUI.fxml")
+            );
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Manager");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
 
     // ==================== Custom ListView Cell ====================
     private class ProductListCell extends ListCell<Product> {
@@ -207,8 +322,7 @@ public class ListeProductControlleur implements Initializable {
         private final Label priceLabel;
         private final Label descriptionLabel;
         private final Label dateLabel;
-        private final Button updateButton;
-        private final Button deleteButton;
+        private final Button SubButton;
 
         public ProductListCell() {
             super();
@@ -261,13 +375,10 @@ public class ListeProductControlleur implements Initializable {
             Region spacer2 = new Region();
             HBox.setHgrow(spacer2, Priority.ALWAYS);
 
-            updateButton = new Button("Modifier");
-            updateButton.getStyleClass().add("btn-update");
+            SubButton = new Button("Abonner");
+            SubButton.getStyleClass().add("btn-update");
 
-            deleteButton = new Button("Supprimer");
-            deleteButton.getStyleClass().add("btn-delete");
-
-            footerBox.getChildren().addAll(dateLabel, spacer2, updateButton, deleteButton);
+            footerBox.getChildren().addAll(dateLabel, spacer2, SubButton);
 
             // Add all sections to container
             container.getChildren().addAll(headerBox, new Separator(), bodyBox, footerBox);
@@ -299,9 +410,7 @@ public class ListeProductControlleur implements Initializable {
                 dateLabel.setText("📅 Créé le: " + product.getCreatedAt().format(formatter));
 
                 // Set button actions
-                updateButton.setOnAction(e -> handleUpdate(product));
-                deleteButton.setOnAction(e -> handleDelete(product));
-
+                SubButton.setOnAction(e -> handleSub(product));
                 setGraphic(container);
             }
         }
@@ -326,5 +435,12 @@ public class ListeProductControlleur implements Initializable {
             return "-fx-background-color: #f5f5f5; -fx-text-fill: #666666; " +
                     "-fx-background-radius: 12px; -fx-padding: 4px 12px; -fx-font-weight: bold; -fx-font-size: 11px;";
         }
+    }
+    private void showAlert(Alert.AlertType type, String title, String message) {
+        Alert alert = new Alert(type);
+        alert.setTitle(title);
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
     }
 }

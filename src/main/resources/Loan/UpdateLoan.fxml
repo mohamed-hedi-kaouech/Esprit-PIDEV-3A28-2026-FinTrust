@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<AnchorPane prefWidth="600" prefHeight="400"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.UpdateLoanControlleur">
+
+    <VBox spacing="25" alignment="CENTER"
+          AnchorPane.topAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          AnchorPane.bottomAnchor="0">
+
+        <padding>
+            <Insets top="40" left="40" right="40" bottom="40"/>
+        </padding>
+
+        <Label text="Paiement du Prêt"
+               styleClass="page-title"/>
+
+        <VBox spacing="15" maxWidth="350" styleClass="card-container">
+
+            <Label fx:id="loanInfoLabel"/>
+
+            <TextField fx:id="paymentField"
+                       promptText="Montant à payer (DT)"
+                       styleClass="form-input"/>
+
+            <Button text="Valider Paiement"
+                    onAction="#handlePayment"
+                    styleClass="btn-primary"/>
+
+            <Button text="⬅ Retour"
+                    onAction="#handleBack"
+                    styleClass="btn-back"/>
+
+        </VBox>
+
+    </VBox>
+
+</AnchorPane>

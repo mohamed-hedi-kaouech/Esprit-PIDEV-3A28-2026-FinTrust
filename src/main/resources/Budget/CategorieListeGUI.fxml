@@ -26,11 +26,17 @@
                     </font>
                 </Button>
 
+
                 <Label text="💰 Liste des Catégories Budget" styleClass="page-title">
                     <font>
                         <Font name="System Bold" size="24.0" />
                     </font>
                 </Label>
+                <Button text="List Items" onAction="#goListeItem" styleClass="btn-back">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Button>
 
                 <Region HBox.hgrow="ALWAYS"/>
 

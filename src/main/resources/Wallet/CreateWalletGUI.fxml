@@ -1,0 +1,115 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.collections.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<?import java.lang.String?>
+<AnchorPane prefHeight="600.0" prefWidth="800.0"
+            stylesheets="/Styles/StyleWallet.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.WalletManagerGUI">
+
+    <!-- HEADER -->
+    <VBox alignment="CENTER"
+          prefHeight="100.0"
+          styleClass="header"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          AnchorPane.topAnchor="0">
+        <Button onAction="#goBackToMenu" prefWidth="120.0" styleClass="btn-back" text="⬅ Retour">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Button>
+
+        <Label text="Gestion des Wallets" styleClass="header-title">
+            <font>
+                <Font name="System Bold" size="26"/>
+            </font>
+        </Label>
+    </VBox>
+
+    <!-- FORM -->
+    <VBox spacing="25"
+          alignment="CENTER"
+          layoutY="120"
+          AnchorPane.leftAnchor="150"
+          AnchorPane.rightAnchor="150">
+
+        <padding>
+            <Insets top="30" bottom="30"/>
+        </padding>
+
+        <!-- Nom propriétaire -->
+        <VBox spacing="5">
+            <Label text="Nom du Propriétaire *" styleClass="form-label"/>
+            <TextField fx:id="nomProprietaireField"
+                       promptText="Ex: Feryel Ben Ali"
+                       styleClass="form-input"/>
+        </VBox>
+
+        <!-- Solde -->
+        <VBox spacing="5">
+            <Label text="Solde Initial *" styleClass="form-label"/>
+            <TextField fx:id="soldeField"
+                       promptText="0.00"
+                       styleClass="form-input"/>
+        </VBox>
+
+        <!-- Devise -->
+        <VBox spacing="5">
+            <Label text="Devise *" styleClass="form-label"/>
+            <ComboBox fx:id="deviseComboBox"
+                      promptText="Choisir une devise"
+                      styleClass="form-input">
+
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="TND"/>
+                        <String fx:value="EUR"/>
+                        <String fx:value="USD"/>
+                        <String fx:value="GBP"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <!-- Statut -->
+        <VBox spacing="5">
+            <Label text="Statut *" styleClass="form-label"/>
+            <ComboBox fx:id="statutComboBox"
+                      promptText="Choisir un statut"
+                      styleClass="form-input">
+
+                <items>
+                    <FXCollections fx:factory="observableArrayList">
+                        <String fx:value="ACTIVE"/>
+                        <String fx:value="SUSPENDED"/>
+                        <String fx:value="CLOSED"/>
+                    </FXCollections>
+                </items>
+            </ComboBox>
+        </VBox>
+
+        <!-- Buttons -->
+        <HBox spacing="30" alignment="CENTER">
+
+            <Button text="Enregistrer"
+                    onAction="#CreateWallet"
+                    prefWidth="160"
+                    styleClass="btn-primary"/>
+
+            <Button text="Réinitialiser"
+                    onAction="#handleClear"
+                    prefWidth="160"
+                    styleClass="btn-secondary"/>
+
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>

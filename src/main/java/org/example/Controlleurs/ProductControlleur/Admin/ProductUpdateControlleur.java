@@ -1,10 +1,8 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Admin;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -17,7 +15,6 @@ import org.example.Service.ProductService.ProductService;
 import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -31,7 +28,6 @@ public class ProductUpdateControlleur implements Initializable {
     @FXML private Label currentCategoryLabel;
     @FXML private Label currentPriceLabel;
     @FXML private Label currentDateLabel;
-    @FXML private Label lastModifiedLabel;
 
     // Form Fields
     @FXML private ComboBox<String> categoryComboBox;
@@ -62,10 +58,8 @@ public class ProductUpdateControlleur implements Initializable {
         setupPriceFieldValidation();
     }
 
-    /**
-     * Load product data into the form
-     * This method should be called after navigating to this page
-     */
+    //Load product data into the form
+    //This method should be called after navigating to this page
     public void loadProduct(Product product) {
         if (product == null) {
             showErrorAlert("Erreur", "Aucun produit à modifier.");
@@ -75,10 +69,8 @@ public class ProductUpdateControlleur implements Initializable {
         this.currentProduct = product;
 
         // Set hidden product ID
-//        productIdField.setText(String.valueOf(product.getProductId()));
+        productIdField.setText(String.valueOf(product.getProductId()));
 
-        // Display product ID badge
-//        productIdDisplay.setText("#" + product.getProductId());
 
         // Display current information
         currentCategoryLabel.setText(formatCategoryName(product.getCategory().name()));
@@ -94,14 +86,13 @@ public class ProductUpdateControlleur implements Initializable {
         // Update character count
         int length = product.getDescription().length();
         charCountLabel.setText(length + "/500 caractères");
-
     }
 
     /**
      * Load product by ID
      */
 //    public void loadProductById(int productId) {
-//        Product product = ProductService.ReadId(productId);
+//        Product product = PS.getProductById(productId);
 //        if (product != null) {
 //            loadProduct(product);
 //        } else {
@@ -109,6 +100,24 @@ public class ProductUpdateControlleur implements Initializable {
 //        }
 //    }
 
+    @FXML
+    private void goBackToList() {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Product/Admin/ListeProductGUI.fxml")
+            );
+
+            Stage stage = (Stage) Stage.getWindows()
+                    .filtered(window -> window.isShowing())
+                    .get(0);
+
+            stage.setScene(new Scene(root));
+            stage.setTitle("Liste Produits");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void setupDescriptionCounter() {
         descriptionArea.textProperty().addListener((observable, oldValue, newValue) -> {
             int length = newValue.length();
@@ -139,6 +148,7 @@ public class ProductUpdateControlleur implements Initializable {
         confirmAlert.setTitle("Confirmation");
         confirmAlert.setHeaderText("Confirmer les modifications");
         confirmAlert.setContentText("Êtes-vous sûr de vouloir enregistrer ces modifications?\n\n" +
+                "Produit #" + currentProduct.getProductId() + "\n" +
                 "Nouvelle catégorie: " + formatCategoryName(categoryComboBox.getValue()) + "\n" +
                 "Nouveau prix: " + priceField.getText() + " DT");
 
@@ -163,6 +173,7 @@ public class ProductUpdateControlleur implements Initializable {
                     // Refresh current info display
                     loadProduct(updatedProduct);
 
+                    // Optionally navigate back to list
                      goBackToList();
                 } else {
                     showErrorAlert("Erreur", "Erreur lors de la modification du produit.");
@@ -190,26 +201,6 @@ public class ProductUpdateControlleur implements Initializable {
         }
     }
 
-
-    @FXML
-    private void goBackToList() {
-
-        try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/ListeProductGUI.fxml")
-            );
-
-            Stage stage = (Stage) Stage.getWindows()
-                    .filtered(window -> window.isShowing())
-                    .get(0);
-
-            stage.setScene(new Scene(root));
-            stage.setTitle("Liste Produits");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 
     private boolean validateInput() {
         StringBuilder errors = new StringBuilder();

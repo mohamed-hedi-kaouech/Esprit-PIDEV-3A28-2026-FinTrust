@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/StyleProduct.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.ProductControlleur.ProductUpdateControlleur">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/StyleProduct.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.ProductControlleur.Admin.ProductCreationControlleur">
 
     <!-- Header Section with Back Button -->
     <VBox alignment="CENTER" layoutX="0.0" layoutY="0.0" prefHeight="80.0" prefWidth="800.0" styleClass="header" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
@@ -24,7 +24,7 @@
 
             <Region HBox.hgrow="ALWAYS" />
 
-            <Label styleClass="header-title" text="Modifier le Produit">
+            <Label styleClass="header-title" text="Créer un Nouveau Produit">
                 <font>
                     <Font name="System Bold" size="24.0" />
                 </font>
@@ -41,51 +41,20 @@
                 <Insets bottom="40.0" left="60.0" right="60.0" top="40.0" />
             </padding>
 
-            <!-- Form Title with Product ID -->
+            <!-- Form Title -->
             <VBox spacing="8.0" styleClass="form-intro">
-                <HBox alignment="CENTER_LEFT" spacing="15.0">
-                    <Label styleClass="form-section-title" text="Modification du Produit">
-                        <font>
-                            <Font name="System Bold" size="18.0" />
-                        </font>
-                    </Label>
-                </HBox>
-                <Separator prefWidth="200.0" />
-                <Label styleClass="form-subtitle" text="Modifiez les informations du produit ci-dessous" />
-            </VBox>
-
-            <!-- Product ID (Hidden Field) -->
-            <TextField fx:id="productIdField" managed="false" visible="false" />
-
-            <!-- Current Product Info Display -->
-            <VBox spacing="10.0" styleClass="current-info-box">
-                <padding>
-                    <Insets bottom="12.0" left="15.0" right="15.0" top="12.0" />
-                </padding>
-                <Label styleClass="current-info-title" text="📋 Informations actuelles">
+                <Label styleClass="form-section-title" text="Informations du Produit">
                     <font>
-                        <Font name="System Bold" size="13.0" />
+                        <Font name="System Bold" size="18.0" />
                     </font>
                 </Label>
-                <HBox spacing="20.0">
-                    <VBox spacing="3.0">
-                        <Label styleClass="current-info-label" text="Catégorie actuelle:" />
-                        <Label fx:id="currentCategoryLabel" styleClass="current-info-value" text="-" />
-                    </VBox>
-                    <VBox spacing="3.0">
-                        <Label styleClass="current-info-label" text="Prix actuel:" />
-                        <Label fx:id="currentPriceLabel" styleClass="current-info-value" text="-" />
-                    </VBox>
-                    <VBox spacing="3.0">
-                        <Label styleClass="current-info-label" text="Date de création:" />
-                        <Label fx:id="currentDateLabel" styleClass="current-info-value" text="-" />
-                    </VBox>
-                </HBox>
+                <Separator prefWidth="200.0" />
+                <Label styleClass="form-subtitle" text="Remplissez les champs ci-dessous pour créer un nouveau produit bancaire" />
             </VBox>
 
             <!-- Category -->
             <VBox spacing="8.0" styleClass="input-group">
-                <Label styleClass="form-label" text="Nouvelle Catégorie *">
+                <Label styleClass="form-label" text="Catégorie *">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
@@ -112,12 +81,12 @@
                         </FXCollections>
                     </items>
                 </ComboBox>
-                <Label styleClass="help-text" text="Choisissez une nouvelle catégorie ou conservez l'actuelle" />
+                <Label styleClass="help-text" text="Choisissez le type de produit bancaire" />
             </VBox>
 
             <!-- Price -->
             <VBox spacing="8.0" styleClass="input-group">
-                <Label styleClass="form-label" text="Nouveau Prix (DT) *">
+                <Label styleClass="form-label" text="Prix (DT) *">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
@@ -130,17 +99,17 @@
                         </font>
                     </Label>
                 </HBox>
-                <Label styleClass="help-text" text="Entrez le nouveau prix du produit" />
+                <Label styleClass="help-text" text="Entrez le prix du produit (ex: 29.99)" />
             </VBox>
 
             <!-- Description -->
             <VBox spacing="8.0" styleClass="input-group">
-                <Label styleClass="form-label" text="Nouvelle Description *">
+                <Label styleClass="form-label" text="Description *">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <TextArea fx:id="descriptionArea" prefHeight="140.0" promptText="Entrez une nouvelle description..." styleClass="form-textarea" wrapText="true" />
+                <TextArea fx:id="descriptionArea" prefHeight="140.0" promptText="Entrez une description détaillée du produit..." styleClass="form-textarea" wrapText="true" />
                 <HBox alignment="CENTER_LEFT" spacing="10.0">
                     <Label fx:id="charCountLabel" styleClass="char-count" text="0/500 caractères" />
                     <Region HBox.hgrow="ALWAYS" />
@@ -152,17 +121,6 @@
                 </HBox>
             </VBox>
 
-            <!-- Date Created (Display Only) -->
-            <VBox spacing="8.0" styleClass="input-group">
-                <Label styleClass="form-label" text="Date de Création">
-                    <font>
-                        <Font name="System Bold" size="13.0" />
-                    </font>
-                </Label>
-                <DatePicker fx:id="createdAtPicker" disable="true" prefWidth="300.0" styleClass="form-input" />
-                <Label styleClass="help-text" text="La date de création ne peut pas être modifiée" />
-            </VBox>
-
             <!-- Separator before buttons -->
             <Separator prefWidth="200.0" />
 
@@ -172,33 +130,32 @@
                     <Insets bottom="10.0" top="10.0" />
                 </padding>
 
-                <Button fx:id="updateButton" onAction="#handleUpdate" prefWidth="180.0" styleClass="btn-primary" text="Modifier">
+                <Button fx:id="saveButton" onAction="#CreateProduct" prefWidth="180.0" styleClass="btn-primary" text="Enregistrer">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Button>
 
-                <Button fx:id="cancelButton" onAction="#handleCancel" prefWidth="180.0" styleClass="btn-secondary" text="Annuler">
+                <Button fx:id="clearButton" onAction="#handleClear" prefWidth="180.0" styleClass="btn-secondary" text="Réinitialiser">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>
                 </Button>
-
             </HBox>
 
-            <!-- Warning Box -->
-            <VBox spacing="10.0" styleClass="warning-box">
+            <!-- Info Box -->
+            <VBox spacing="10.0" styleClass="info-box">
                 <padding>
                     <Insets bottom="15.0" left="20.0" right="20.0" top="15.0" />
                 </padding>
-                <Label styleClass="warning-title" text="Attention">
+                <Label styleClass="info-title" text="Informations importantes">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
                 </Label>
-                <Label styleClass="warning-text" text="• Assurez-vous que toutes les modifications sont correctes avant d'enregistrer" wrapText="true" />
-                <Label styleClass="warning-text" text="• Les modifications seront appliquées immédiatement" wrapText="true" />
-                <Label styleClass="warning-text" text="• La suppression du produit est définitive et irréversible" wrapText="true" />
+                <Label styleClass="info-text" text="• Assurez-vous que toutes les informations sont correctes avant d'enregistrer" wrapText="true" />
+                <Label styleClass="info-text" text="• La description doit être claire et informative pour les clients" wrapText="true" />
+                <Label styleClass="info-text" text="• Le prix doit être précis et conforme à votre politique tarifaire" wrapText="true" />
             </VBox>
 
         </VBox>
