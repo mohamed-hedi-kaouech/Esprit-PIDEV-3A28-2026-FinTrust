@@ -1,79 +1,85 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.control.*?>
-<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane xmlns="http://javafx.com/javafx"
+<AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.PublicationControlleur.ListPubController"
             prefHeight="600.0"
-            prefWidth="900.0"
-            style="-fx-background-color: linear-gradient(to bottom, #e6f0ff, #f7fbff);"
+            prefWidth="1000.0"
+            styleClass="app-root"
             stylesheets="@/Styles/BlueTheme.css">
 
-    <VBox spacing="20.0"
+    <VBox spacing="16.0" styleClass="page-shell"
           AnchorPane.topAnchor="0.0"
           AnchorPane.leftAnchor="0.0"
           AnchorPane.rightAnchor="0.0"
           AnchorPane.bottomAnchor="0.0">
 
-        <padding>
-            <Insets top="30.0" left="30.0" right="30.0" bottom="30.0"/>
-        </padding>
-
-        <!-- Header -->
-        <HBox alignment="CENTER_LEFT" spacing="20.0">
-
-            <Button text="⬅ Retour"
+        <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="topbar-card">
+            <Button text="Retour"
                     onAction="#goBackToMenu"
-                    prefWidth="120.0" styleClass="btn-back"/>
+                    prefWidth="110.0"
+                    styleClass="btn-ghost"/>
 
-            <Label text="Liste des Publications" styleClass="header-title">
+            <Label text="Gestion Publications" styleClass="topbar-title">
                 <font>
-                    <Font name="System Bold" size="24"/>
+                    <Font name="System Bold" size="21.0"/>
                 </font>
             </Label>
 
             <Region HBox.hgrow="ALWAYS"/>
 
-            <Button text="➕ Nouvelle Publication"
+            <Button text="Nouvelle Publication"
                     onAction="#goToCreatePage"
-                    prefWidth="200.0" styleClass="btn-primary"/>
+                    prefWidth="190.0"
+                    styleClass="btn-primary"/>
 
             <Button text="Statistiques Feedback"
                     onAction="#goToFeedbackStats"
-                    prefWidth="180.0"/>
+                    prefWidth="180.0"
+                    styleClass="btn-outline"/>
 
-            <!-- BOUTON CLIENT -->
+            <Button text="Exporter stats mensuelles"
+                    onAction="#exportMonthlyStats"
+                    prefWidth="190.0"
+                    styleClass="btn-outline"/>
+
             <Button text="Client"
                     onAction="#goToClientView"
-                    prefWidth="120.0"/>
+                    prefWidth="110.0"
+                    styleClass="btn-outline"/>
         </HBox>
 
-        <!-- Search Section -->
-        <HBox spacing="10.0" alignment="CENTER_LEFT">
+        <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="search-row">
             <TextField fx:id="searchField"
-                       promptText="🔍 Rechercher une publication..."
-                       prefWidth="300.0"/>
+                       promptText="Rechercher une publication..."
+                       prefWidth="340.0"
+                       styleClass="search-field"/>
 
             <Button text="Rechercher"
-                    onAction="#handleSearch"/>
+                    onAction="#handleSearch"
+                    styleClass="btn-primary"/>
 
-            <Button text="Réinitialiser"
-                    onAction="#handleReset"/>
+            <Button text="Reinitialiser"
+                    onAction="#handleReset"
+                    styleClass="btn-outline"/>
         </HBox>
 
-        <!-- ListView -->
-        <ListView fx:id="publicationListView"
-                  VBox.vgrow="ALWAYS"/>
+        <ListView fx:id="publicationListView" VBox.vgrow="ALWAYS"/>
 
-        <!-- Footer Info -->
         <HBox alignment="CENTER">
             <Label fx:id="totalPublicationsLabel"
-                   text="Total: 0 publications"/>
+                   text="Total: 0 publications"
+                   styleClass="muted-label"/>
         </HBox>
-
     </VBox>
 </AnchorPane>

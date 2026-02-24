@@ -1,6 +1,10 @@
 package org.example.Controlleurs.PublicationControlleur;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
+import java.util.ArrayList;
+import java.util.Comparator;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 import java.util.ResourceBundle;
@@ -10,6 +14,7 @@ import org.example.Model.Publication.Publication;
 import org.example.Service.PublicationService.FeedbackService;
 import org.example.Service.PublicationService.PublicationService;
 import org.example.Utils.BadWordsApiClient;
+import org.example.Utils.PiiApiClient;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -21,6 +26,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
@@ -34,6 +40,7 @@ public class ClientController implements Initializable {
 
     @FXML private VBox clientListContainer;
     @FXML private TextField searchField;
+    @FXML private ComboBox<String> sortModeCombo;
     @FXML private Button backBtn;
 
     private PublicationService publicationService;
@@ -48,32 +55,57 @@ public class ClientController implements Initializable {
         publicationService = new PublicationService();
         feedbackService = new FeedbackService();
 
+        sortModeCombo.getItems().addAll("Tendance", "Mieux notees", "Recentes");
+        sortModeCombo.setValue("Tendance");
+        sortModeCombo.valueProperty().addListener((obs, oldValue, newValue) -> refreshFeed());
+
         loadPublications();
 
         // Fermeture de la fenêtre (vu que l'admin ouvre l'espace client en popup)
         backBtn.setOnAction(e -> ((Stage) backBtn.getScene().getWindow()).close());
 
-        searchField.textProperty().addListener((obs, o, n) -> filter(n));
+        searchField.textProperty().addListener((obs, o, n) -> refreshFeed());
     }
 
     private void loadPublications() {
-        clientListContainer.getChildren().clear();
         publications.clear();
         // Pour le moment : afficher toutes les publications.
         // Option (quand tu veux) : remplacer par publicationService.findVisiblePublications()
         publications.addAll(publicationService.findAll());
-        for (Publication p : publications) {
-            clientListContainer.getChildren().add(buildClientCard(p));
-        }
+        refreshFeed();
     }
 
-    private void filter(String q) {
+    private void refreshFeed() {
         clientListContainer.getChildren().clear();
+        String q = searchField == null ? "" : searchField.getText();
         String lower = q == null ? "" : q.toLowerCase();
+
+        List<Publication> visible = new ArrayList<>();
         for (Publication p : publications) {
-            if (lower.isEmpty() || p.getTitre().toLowerCase().contains(lower) || p.getContenu().toLowerCase().contains(lower)) {
-                clientListContainer.getChildren().add(buildClientCard(p));
+            if (lower.isEmpty()
+                    || p.getTitre().toLowerCase().contains(lower)
+                    || p.getContenu().toLowerCase().contains(lower)) {
+                visible.add(p);
             }
+        }
+
+        String mode = sortModeCombo == null ? "Tendance" : sortModeCombo.getValue();
+        if ("Recentes".equals(mode)) {
+            visible.sort(Comparator.comparing(Publication::getDatePublication, Comparator.nullsLast(Comparator.reverseOrder())));
+        } else if ("Mieux notees".equals(mode)) {
+            visible.sort((a, b) -> Double.compare(
+                    feedbackService.averageRating(b.getIdPublication()),
+                    feedbackService.averageRating(a.getIdPublication())
+            ));
+        } else {
+            visible.sort((a, b) -> Double.compare(
+                    calculateTrendingScore(b),
+                    calculateTrendingScore(a)
+            ));
+        }
+
+        for (Publication p : visible) {
+            clientListContainer.getChildren().add(buildClientCard(p));
         }
     }
     private VBox buildClientCard(Publication p) {
@@ -89,10 +121,13 @@ public class ClientController implements Initializable {
         Label title = new Label(p.getTitre());
         title.getStyleClass().add("publication-title");
 
+        Label trendScoreLabel = new Label();
+        trendScoreLabel.setStyle("-fx-text-fill: #0b5ed7; -fx-font-weight: 700;");
+
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
-        header.getChildren().addAll(id, title, spacer);
+        header.getChildren().addAll(id, title, spacer, trendScoreLabel);
 
         // Content
         Label content = new Label(p.getContenu());
@@ -126,6 +161,7 @@ public class ClientController implements Initializable {
             avgRating.setText(avg > 0 ? String.format("⭐ %.1f", avg) : "⭐ -");
 
             refreshFeedbackList(feedbackBox, p);
+            trendScoreLabel.setText(String.format("Score: %.2f", calculateTrendingScore(p)));
 
             // refresh stars selected for current user
             Feedback existingRating = feedbackService.getUserRating(p.getIdPublication(), CURRENT_USER_ID);
@@ -212,6 +248,7 @@ public class ClientController implements Initializable {
 
             Label content = new Label(formatFeedbackText(f));
             content.setWrapText(true);
+            content.setStyle("-fx-text-fill: #163a6b; -fx-font-size: 13px; -fx-font-weight: 600;");
 
             Label date = new Label(f.getDateFeedback().format(fmt));
             date.setStyle("-fx-text-fill:#6c7b89; -fx-font-size:11px;");
@@ -293,8 +330,12 @@ public class ClientController implements Initializable {
                     return;
                 }
                 String cleaned = txt.trim();
+                if (!PiiApiClient.isAllowed(cleaned)) {
+                    new Alert(Alert.AlertType.ERROR, "Interdit d'ajouter des données sensibles").showAndWait();
+                    return;
+                }
                 if (!BadWordsApiClient.isAllowed(cleaned)) {
-                    new Alert(Alert.AlertType.ERROR, "Commentaire refusé : langage inapproprié").showAndWait();
+                    new Alert(Alert.AlertType.ERROR, "language innaproprié").showAndWait();
                     return;
                 }
                 feedbackService.upsertComment(p.getIdPublication(), CURRENT_USER_ID, cleaned);
@@ -346,8 +387,26 @@ public class ClientController implements Initializable {
         });
     }
 
+    private double calculateTrendingScore(Publication p) {
+        int likes = feedbackService.countLikes(p.getIdPublication());
+        int dislikes = feedbackService.countDislikes(p.getIdPublication());
+        int comments = feedbackService.countComments(p.getIdPublication());
+        double avgRating = feedbackService.averageRating(p.getIdPublication());
+        double recencyBonus = computeRecencyBonus(p.getDatePublication());
+
+        return (likes - dislikes) + (avgRating * 3.0) + (comments * 0.5) + recencyBonus;
+    }
+
+    private double computeRecencyBonus(LocalDateTime publicationDate) {
+        if (publicationDate == null) {
+            return 0.0;
+        }
+        long ageDays = Math.max(0, ChronoUnit.DAYS.between(publicationDate, LocalDateTime.now()));
+        return 10.0 / (1.0 + ageDays);
+    }
+
     @FXML
     private void handleSearch() {
-        filter(searchField.getText());
+        refreshFeed();
     }
 }

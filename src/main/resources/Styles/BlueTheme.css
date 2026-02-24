@@ -1,202 +1,268 @@
-/* BlueThemeModern.css - Modern blue UI for JavaFX */
-
-/* ---------- Base ---------- */
 .root {
-    -fx-font-family: "Segoe UI", Roboto, Arial;
-    -fx-background-color: #f6f9ff;
+    -fx-font-family: "Segoe UI", "Tahoma", sans-serif;
+    -fx-background-color: linear-gradient(to bottom right, #edf4ff, #f7fbff 45%, #ecf6ff);
 }
 
-/* Smooth scrolling background */
-.scroll-pane {
-    -fx-background: transparent;
-    -fx-background-color: transparent;
-}
-.scroll-pane > .viewport {
-    -fx-background-color: transparent;
+.app-root {
+    -fx-background-color: linear-gradient(to bottom right, #edf4ff, #f7fbff 45%, #ecf6ff);
 }
 
-/* ---------- Topbar ---------- */
-.topbar {
-    -fx-padding: 14 18 14 18;
-    -fx-background-radius: 0 0 18 18;
-    -fx-background-color: linear-gradient(to right, #1e90ff, #4facfe);
-    -fx-effect: dropshadow(gaussian, rgba(15, 35, 80, 0.20), 18, 0.18, 0, 6);
+.page-shell {
+    -fx-padding: 24;
+    -fx-spacing: 16;
+}
+
+.topbar-card {
+    -fx-background-color: linear-gradient(to right, #0d6efd, #2a9df4, #54b8ff);
+    -fx-background-radius: 18;
+    -fx-padding: 14 16 14 16;
+    -fx-effect: dropshadow(gaussian, rgba(10, 50, 110, 0.25), 18, 0.22, 0, 6);
 }
 
 .topbar-title {
     -fx-text-fill: white;
-    -fx-font-size: 18px;
+    -fx-font-size: 19px;
     -fx-font-weight: 800;
 }
 
-.topbar-subtitle {
-    -fx-text-fill: rgba(255,255,255,0.80);
-    -fx-font-size: 12px;
+.topbar-count {
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
 }
 
-/* ---------- Buttons ---------- */
+.header-title {
+    -fx-text-fill: #0a2f66;
+    -fx-font-size: 24px;
+    -fx-font-weight: 900;
+}
+
+.search-row {
+    -fx-background-color: rgba(255, 255, 255, 0.82);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(32, 91, 175, 0.16);
+    -fx-border-radius: 14;
+    -fx-padding: 10;
+    -fx-spacing: 10;
+}
+
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(32, 91, 175, 0.18);
+    -fx-border-radius: 12;
+    -fx-padding: 10 12 10 12;
+}
+
+.search-field:focused {
+    -fx-border-color: #2a9df4;
+    -fx-effect: dropshadow(gaussian, rgba(42, 157, 244, 0.25), 10, 0.2, 0, 0);
+}
+
+.combo-box {
+    -fx-background-color: white;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(32, 91, 175, 0.18);
+    -fx-border-radius: 12;
+}
+
+.combo-box .list-cell {
+    -fx-padding: 8 10 8 10;
+}
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #0d6efd, #32a4ff);
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-padding: 9 14 9 14;
+    -fx-cursor: hand;
+}
+
+.btn-primary:hover {
+    -fx-effect: dropshadow(gaussian, rgba(13, 110, 253, 0.35), 12, 0.2, 0, 2);
+}
+
+.btn-outline,
+.btn-back,
+.btn-feedback {
+    -fx-background-color: white;
+    -fx-text-fill: #0f4ea5;
+    -fx-font-weight: 700;
+    -fx-border-color: rgba(15, 78, 165, 0.25);
+    -fx-border-radius: 12;
+    -fx-background-radius: 12;
+    -fx-padding: 8 12 8 12;
+    -fx-cursor: hand;
+}
+
+.btn-outline:hover,
+.btn-back:hover,
+.btn-feedback:hover {
+    -fx-background-color: #eff6ff;
+}
+
 .btn-ghost {
-    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-background-color: rgba(255, 255, 255, 0.2);
     -fx-text-fill: white;
     -fx-font-weight: 700;
     -fx-background-radius: 10;
     -fx-padding: 8 12 8 12;
     -fx-cursor: hand;
 }
-.btn-ghost:hover { -fx-background-color: rgba(255,255,255,0.26); }
 
-.btn-primary {
-    -fx-background-color: linear-gradient(to right, #1e90ff, #4facfe);
-    -fx-text-fill: white;
-    -fx-font-weight: 800;
-    -fx-background-radius: 12;
-    -fx-padding: 10 14 10 14;
-    -fx-cursor: hand;
+.btn-ghost:hover {
+    -fx-background-color: rgba(255, 255, 255, 0.3);
 }
-.btn-primary:hover { -fx-opacity: 0.95; }
 
-.btn-outline {
-    -fx-background-color: transparent;
-    -fx-border-color: rgba(30,144,255,0.35);
-    -fx-border-radius: 12;
-    -fx-text-fill: #0b5ed7;
+.btn-update {
+    -fx-background-color: #eef6ff;
+    -fx-text-fill: #0f4ea5;
     -fx-font-weight: 700;
-    -fx-padding: 10 14 10 14;
-    -fx-cursor: hand;
-}
-.btn-outline:hover {
-    -fx-background-color: rgba(30,144,255,0.08);
-}
-
-.btn-danger {
-    -fx-background-color: rgba(255, 72, 72, 0.12);
-    -fx-text-fill: #c1121f;
-    -fx-font-weight: 800;
     -fx-background-radius: 12;
-    -fx-padding: 10 14 10 14;
+    -fx-border-color: rgba(15, 78, 165, 0.22);
+    -fx-border-radius: 12;
     -fx-cursor: hand;
 }
-.btn-danger:hover { -fx-background-color: rgba(255,72,72,0.18); }
 
-/* ---------- Search bar ---------- */
-.search-wrap {
-    -fx-padding: 10 18 0 18;
-}
-.search-field {
-    -fx-background-color: white;
-    -fx-background-radius: 14;
-    -fx-padding: 10 12 10 12;
-    -fx-border-color: rgba(10, 86, 200, 0.12);
-    -fx-border-radius: 14;
-    -fx-effect: dropshadow(gaussian, rgba(20,40,90,0.08), 10, 0.20, 0, 2);
-}
-.search-field:focused {
-    -fx-border-color: rgba(30,144,255,0.6);
+.btn-delete {
+    -fx-background-color: #fff0f2;
+    -fx-text-fill: #d63d57;
+    -fx-font-weight: 700;
+    -fx-background-radius: 12;
+    -fx-border-color: rgba(214, 61, 87, 0.22);
+    -fx-border-radius: 12;
+    -fx-cursor: hand;
 }
 
-/* ---------- Cards ---------- */
+.publication-card,
 .card {
-    -fx-background-color: white;
+    -fx-background-color: rgba(255, 255, 255, 0.9);
     -fx-background-radius: 16;
-    -fx-padding: 14;
-    -fx-border-color: rgba(10, 86, 200, 0.10);
+    -fx-border-color: rgba(28, 88, 170, 0.14);
     -fx-border-radius: 16;
-    -fx-effect: dropshadow(gaussian, rgba(15,35,80,0.08), 18, 0.18, 0, 6);
+    -fx-padding: 14;
+    -fx-effect: dropshadow(gaussian, rgba(18, 54, 109, 0.12), 16, 0.2, 0, 5);
 }
 
-.card-header {
-    -fx-alignment: center-left;
-    -fx-spacing: 10;
-}
-
-.badge-id {
-    -fx-background-color: rgba(30,144,255,0.10);
-    -fx-text-fill: #0b5ed7;
-    -fx-font-weight: 900;
-    -fx-padding: 4 10 4 10;
+.publication-id {
+    -fx-background-color: #e9f3ff;
+    -fx-text-fill: #0f4ea5;
+    -fx-font-weight: 800;
     -fx-background-radius: 999;
+    -fx-padding: 4 10 4 10;
 }
 
+.publication-title,
 .card-title {
-    -fx-text-fill: #06224a;
+    -fx-text-fill: #0a2f66;
     -fx-font-size: 16px;
     -fx-font-weight: 900;
 }
 
+.publication-content,
 .card-text {
-    -fx-text-fill: #2a3b52;
+    -fx-text-fill: #28476e;
     -fx-font-size: 13px;
 }
 
-/* ---------- Action row (chips) ---------- */
-.actions-row {
-    -fx-spacing: 10;
-    -fx-padding: 8 0 0 0;
-    -fx-alignment: center-left;
+.publication-date,
+.muted-label {
+    -fx-text-fill: #6a7f9d;
 }
 
-.chip {
-    -fx-background-color: rgba(30,144,255,0.08);
-    -fx-background-radius: 999;
-    -fx-padding: 7 10 7 10;
-    -fx-text-fill: #0b5ed7;
-    -fx-font-weight: 800;
-    -fx-cursor: hand;
-}
-.chip:hover { -fx-background-color: rgba(30,144,255,0.14); }
-
-.chip-neutral {
-    -fx-background-color: rgba(0,0,0,0.05);
-    -fx-text-fill: #3b4b61;
+.transparent-scroll,
+.scroll-pane {
+    -fx-background-color: transparent;
+    -fx-background: transparent;
 }
 
-.counter {
-    -fx-text-fill: #0b5ed7;
-    -fx-font-weight: 900;
-    -fx-padding: 0 6 0 0;
+.transparent-scroll > .viewport,
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
 }
 
-.rating-avg {
-    -fx-text-fill: #1c2f4f;
-    -fx-font-weight: 800;
+.cards-stack {
+    -fx-spacing: 12;
+    -fx-padding: 16;
 }
 
-/* ---------- Comments area ---------- */
-.comment-box {
-    -fx-padding: 10 0 0 0;
+.composer-panel {
+    -fx-background-color: rgba(255, 255, 255, 0.86);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(30, 94, 180, 0.14);
+    -fx-border-radius: 14;
+    -fx-padding: 12;
     -fx-spacing: 8;
 }
 
-.comment-row {
-    -fx-background-color: rgba(30,144,255,0.06);
+.comment-input {
+    -fx-background-color: white;
     -fx-background-radius: 12;
-    -fx-padding: 10;
-    -fx-border-color: rgba(30,144,255,0.10);
+    -fx-border-color: rgba(30, 94, 180, 0.2);
     -fx-border-radius: 12;
 }
 
-.comment-user {
-    -fx-text-fill: #0b5ed7;
-    -fx-font-weight: 900;
+.reaction-btn {
+    -fx-background-color: white;
+    -fx-background-radius: 10;
+    -fx-border-color: rgba(30, 94, 180, 0.26);
+    -fx-border-radius: 10;
+    -fx-font-size: 14px;
 }
 
-.comment-date {
-    -fx-text-fill: #6c7b89;
-    -fx-font-size: 11px;
+.reaction-btn:hover {
+    -fx-background-color: #edf6ff;
 }
 
-.star {
-    -fx-font-size: 18px;
-    -fx-text-fill: #f5c518;
-    -fx-cursor: hand;
-}
-.star:hover { -fx-opacity: 0.85; }
-
-/* ---------- ListView polish (Admin) ---------- */
 .list-view {
     -fx-background-color: transparent;
+    -fx-border-color: transparent;
 }
-.list-cell {
+
+.list-view .list-cell {
     -fx-background-color: transparent;
     -fx-padding: 10 0 10 0;
+}
+
+.table-view {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(28, 88, 170, 0.14);
+    -fx-border-radius: 14;
+}
+
+.table-view .column-header-background {
+    -fx-background-color: linear-gradient(to right, #e9f3ff, #f4f9ff);
+    -fx-background-radius: 14 14 0 0;
+}
+
+.table-view .column-header,
+.table-view .filler {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent transparent rgba(30, 94, 180, 0.12) transparent;
+}
+
+.table-row-cell {
+    -fx-background-color: rgba(255, 255, 255, 0.6);
+}
+
+.table-row-cell:filled:selected {
+    -fx-background-color: #dceeff;
+}
+
+.chart {
+    -fx-background-color: rgba(255, 255, 255, 0.88);
+    -fx-background-radius: 14;
+    -fx-border-color: rgba(28, 88, 170, 0.14);
+    -fx-border-radius: 14;
+    -fx-padding: 8;
+}
+
+.chart-title {
+    -fx-text-fill: #0f4ea5;
+    -fx-font-weight: 800;
+}
+
+.axis-label {
+    -fx-text-fill: #4f6790;
 }

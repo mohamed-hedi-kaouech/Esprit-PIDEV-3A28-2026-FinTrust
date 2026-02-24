@@ -4,15 +4,35 @@ import org.example.Model.Publication.Feedback;
 import org.example.Model.Publication.FeedbackStats;
 import org.example.Model.Publication.FeedbackTrendPoint;
 import org.example.Model.Publication.GlobalFeedbackStats;
+import org.example.Model.Publication.MonthlyFeedbackStats;
 import org.example.Model.Publication.Publication;
 import org.example.Utils.MaConnexion;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.pdmodel.PDPage;
+import org.apache.pdfbox.pdmodel.PDPageContentStream;
+import org.apache.pdfbox.pdmodel.font.PDType1Font;
+import org.apache.pdfbox.pdmodel.graphics.image.LosslessFactory;
+import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
+import java.awt.BasicStroke;
+import java.awt.Color;
+import java.awt.Font;
+import java.awt.Graphics2D;
+import java.awt.RenderingHints;
+import java.awt.image.BufferedImage;
 import java.sql.*;
 import java.sql.Timestamp;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 /**
@@ -384,6 +404,32 @@ public class FeedbackService {
         return 0;
     }
 
+    public int countComments(int idPublication) {
+        ensureConnection();
+
+        if (!isConnected) {
+            int c = 0;
+            for (Feedback f : offline) {
+                if (f.getIdPublication() == idPublication && "COMMENT".equalsIgnoreCase(f.getTypeReaction())) c++;
+            }
+            return c;
+        }
+
+        String sql = "SELECT COUNT(*) FROM feedback WHERE id_publication = ? AND type_reaction = 'COMMENT'";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idPublication);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                return rs.getInt(1);
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur count comments : " + e.getMessage());
+        }
+
+        return 0;
+    }
+
     // ===============================
     // Notes (RATE) : moyenne (optionnel mais utile pour l'UI)
     // ===============================
@@ -404,6 +450,187 @@ public class FeedbackService {
             System.out.println("Erreur averageRating : " + e.getMessage());
         }
         return 0.0;
+    }
+
+    public boolean exportFeedbacksToCSV(int publicationId, File file) {
+        ensureConnection();
+        if (!isConnected || file == null) return false;
+
+        String sql = "SELECT id_feedback, id_user, type_reaction, commentaire, date_feedback " +
+                "FROM feedback WHERE id_publication=? ORDER BY date_feedback DESC";
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+             PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, publicationId);
+            ResultSet rs = ps.executeQuery();
+
+            bw.write("id_feedback,id_user,type_reaction,commentaire,date_feedback");
+            bw.newLine();
+
+            while (rs.next()) {
+                String commentaire = rs.getString("commentaire");
+                if (commentaire == null) commentaire = "";
+                commentaire = commentaire.replace("\"", "\"\"");
+
+                String line = rs.getInt("id_feedback") + "," +
+                        rs.getInt("id_user") + "," +
+                        safeCsv(rs.getString("type_reaction")) + "," +
+                        "\"" + commentaire + "\"," +
+                        rs.getTimestamp("date_feedback");
+                bw.write(line);
+                bw.newLine();
+            }
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erreur exportFeedbacksToCSV : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public boolean exportPublicationReportToPDF(int publicationId, String pubTitle, File file) {
+        ensureConnection();
+        if (!isConnected || file == null) return false;
+
+        int likes = 0;
+        int dislikes = 0;
+        int comments = 0;
+        int ratingCount = 0;
+        double avgRating = 0.0;
+        Map<Integer, Integer> dist = getRatingDistribution(publicationId);
+
+        String kpiSql = "SELECT " +
+                "SUM(CASE WHEN type_reaction='LIKE' THEN 1 ELSE 0 END) AS likes, " +
+                "SUM(CASE WHEN type_reaction='DISLIKE' THEN 1 ELSE 0 END) AS dislikes, " +
+                "SUM(CASE WHEN type_reaction='COMMENT' THEN 1 ELSE 0 END) AS comments, " +
+                "AVG(CASE WHEN type_reaction LIKE 'RATE%' THEN CAST(commentaire AS UNSIGNED) END) AS avg_rating, " +
+                "SUM(CASE WHEN type_reaction LIKE 'RATE%' THEN 1 ELSE 0 END) AS rating_count " +
+                "FROM feedback WHERE id_publication=?";
+
+        try (PreparedStatement ps = cnx.prepareStatement(kpiSql)) {
+            ps.setInt(1, publicationId);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) {
+                likes = rs.getInt("likes");
+                dislikes = rs.getInt("dislikes");
+                comments = rs.getInt("comments");
+                avgRating = rs.getDouble("avg_rating");
+                ratingCount = rs.getInt("rating_count");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur KPI report PDF : " + e.getMessage());
+        }
+
+        double likeRatio = (likes + dislikes) == 0 ? 0.0 : (likes * 100.0 / (likes + dislikes));
+
+        try (PDDocument doc = new PDDocument()) {
+            PDPage page = new PDPage();
+            doc.addPage(page);
+
+            try (PDPageContentStream cs = new PDPageContentStream(doc, page)) {
+                float y = 760;
+                y = writePdfLine(cs, PDType1Font.HELVETICA_BOLD, 16, 50, y,
+                        sanitizePdfText("Rapport de satisfaction - Publication"));
+                y = writePdfLine(cs, PDType1Font.HELVETICA_BOLD, 12, 50, y - 10,
+                        sanitizePdfText("Publication #" + publicationId + " - " + (pubTitle == null ? "" : pubTitle)));
+                y = writePdfLine(cs, PDType1Font.HELVETICA, 10, 50, y - 6,
+                        sanitizePdfText("Genere le: " + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))));
+
+                y = writePdfLine(cs, PDType1Font.HELVETICA_BOLD, 12, 50, y - 20, sanitizePdfText("KPI"));
+                y = writePdfLine(cs, PDType1Font.HELVETICA, 11, 50, y - 8,
+                        sanitizePdfText("Likes=" + likes + " | Dislikes=" + dislikes + " | Commentaires=" + comments));
+                y = writePdfLine(cs, PDType1Font.HELVETICA, 11, 50, y - 6,
+                        sanitizePdfText(String.format(Locale.US,
+                                "Note moyenne=%.2f/5 | Nb notes=%d | Ratio like=%.1f%%", avgRating, ratingCount, likeRatio)));
+
+                BufferedImage statsImage = createStatsImage(
+                        publicationId, pubTitle, likes, dislikes, comments, avgRating, ratingCount, likeRatio, dist
+                );
+                PDImageXObject statsImagePdf = LosslessFactory.createFromImage(doc, statsImage);
+                float imageWidth = 500;
+                float imageHeight = 240;
+                float imageY = y - imageHeight - 20;
+                cs.drawImage(statsImagePdf, 50, imageY, imageWidth, imageHeight);
+                y = imageY - 10;
+
+                y = writePdfLine(cs, PDType1Font.HELVETICA_BOLD, 12, 50, y - 18, sanitizePdfText("Derniers commentaires"));
+
+                String comSql = "SELECT id_user, commentaire, date_feedback " +
+                        "FROM feedback WHERE id_publication=? AND type_reaction='COMMENT' " +
+                        "ORDER BY date_feedback DESC LIMIT 8";
+
+                try (PreparedStatement ps = cnx.prepareStatement(comSql)) {
+                    ps.setInt(1, publicationId);
+                    ResultSet rs = ps.executeQuery();
+                    while (rs.next() && y > 80) {
+                        String comment = safeOneLine(rs.getString("commentaire"), 90);
+                        String line = "User#" + rs.getInt("id_user") + " - " + rs.getTimestamp("date_feedback") + " : " + comment;
+                        y = writePdfLine(cs, PDType1Font.HELVETICA, 9, 50, y - 6, sanitizePdfText(line));
+                    }
+                }
+            }
+
+            doc.save(file);
+            return true;
+        } catch (Exception e) {
+            System.out.println("Erreur exportPublicationReportToPDF : " + e.getMessage());
+            return false;
+        }
+    }
+
+    public List<MonthlyFeedbackStats> getMonthlyStats(LocalDate startInclusive, LocalDate endExclusive) {
+        ensureConnection();
+        List<MonthlyFeedbackStats> rows = new ArrayList<>();
+        if (!isConnected) return rows;
+        if (startInclusive == null || endExclusive == null) return rows;
+
+        String sql = "SELECT DATE_FORMAT(date_feedback, '%Y-%m') AS month, " +
+                "SUM(CASE WHEN type_reaction='LIKE' THEN 1 ELSE 0 END) AS likes, " +
+                "SUM(CASE WHEN type_reaction='DISLIKE' THEN 1 ELSE 0 END) AS dislikes, " +
+                "SUM(CASE WHEN type_reaction='COMMENT' THEN 1 ELSE 0 END) AS comments, " +
+                "AVG(CASE WHEN type_reaction LIKE 'RATE%' THEN CAST(commentaire AS UNSIGNED) END) AS avg_rating " +
+                "FROM feedback " +
+                "WHERE date_feedback >= ? AND date_feedback < ? " +
+                "GROUP BY month ORDER BY month";
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(startInclusive.atStartOfDay()));
+            ps.setTimestamp(2, Timestamp.valueOf(endExclusive.atStartOfDay()));
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                rows.add(new MonthlyFeedbackStats(
+                        rs.getString("month"),
+                        rs.getInt("likes"),
+                        rs.getInt("dislikes"),
+                        rs.getInt("comments"),
+                        rs.getDouble("avg_rating")
+                ));
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur getMonthlyStats : " + e.getMessage());
+        }
+        return rows;
+    }
+
+    public boolean exportMonthlyStatsToCSV(LocalDate startInclusive, LocalDate endExclusive, File file) {
+        List<MonthlyFeedbackStats> rows = getMonthlyStats(startInclusive, endExclusive);
+        if (file == null) return false;
+
+        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
+            bw.write("month,likes,dislikes,comments,avg_rating");
+            bw.newLine();
+            for (MonthlyFeedbackStats row : rows) {
+                bw.write(row.getMonth() + "," +
+                        row.getLikes() + "," +
+                        row.getDislikes() + "," +
+                        row.getComments() + "," +
+                        String.format(Locale.US, "%.2f", row.getAvgRating()));
+                bw.newLine();
+            }
+            return true;
+        } catch (IOException e) {
+            System.out.println("Erreur exportMonthlyStatsToCSV : " + e.getMessage());
+            return false;
+        }
     }
 
     public GlobalFeedbackStats getGlobalStats() {
@@ -651,6 +878,132 @@ public class FeedbackService {
         }
 
         return null;
+    }
+
+    private String safeCsv(String value) {
+        return value == null ? "" : value.replace(",", " ");
+    }
+
+    private String safeOneLine(String s, int max) {
+        if (s == null) return "";
+        String oneLine = s.replace("\n", " ").replace("\r", " ");
+        if (oneLine.length() > max) {
+            return oneLine.substring(0, max) + "...";
+        }
+        return oneLine;
+    }
+
+    private float writePdfLine(PDPageContentStream cs, PDType1Font font, int size, float x, float y, String text) throws IOException {
+        cs.beginText();
+        cs.setFont(font, size);
+        cs.newLineAtOffset(x, y);
+        cs.showText(text == null ? "" : text);
+        cs.endText();
+        return y - (size + 4);
+    }
+
+    private String sanitizePdfText(String text) {
+        if (text == null) return "";
+        String normalized = java.text.Normalizer.normalize(text, java.text.Normalizer.Form.NFD)
+                .replaceAll("\\p{M}", "");
+        return normalized.replaceAll("[^\\x20-\\x7E]", "?");
+    }
+
+    private BufferedImage createStatsImage(
+            int publicationId,
+            String pubTitle,
+            int likes,
+            int dislikes,
+            int comments,
+            double avgRating,
+            int ratingCount,
+            double likeRatio,
+            Map<Integer, Integer> dist
+    ) {
+        int width = 1200;
+        int height = 560;
+        int padding = 60;
+
+        BufferedImage image = new BufferedImage(width, height, BufferedImage.TYPE_INT_RGB);
+        Graphics2D g = image.createGraphics();
+        g.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
+
+        g.setColor(new Color(245, 250, 255));
+        g.fillRect(0, 0, width, height);
+
+        g.setColor(new Color(20, 63, 120));
+        g.setFont(new Font("SansSerif", Font.BOLD, 30));
+        g.drawString("Rapport Statistique - Publication #" + publicationId, padding, 50);
+
+        g.setColor(new Color(55, 80, 110));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 20));
+        String safeTitle = pubTitle == null ? "" : safeOneLine(pubTitle, 70);
+        g.drawString(safeTitle, padding, 82);
+
+        g.setFont(new Font("SansSerif", Font.BOLD, 20));
+        g.setColor(new Color(30, 100, 190));
+        g.drawString("Likes: " + likes, padding, 130);
+        g.drawString("Dislikes: " + dislikes, padding + 190, 130);
+        g.drawString("Commentaires: " + comments, padding + 420, 130);
+
+        g.setColor(new Color(70, 90, 120));
+        g.setFont(new Font("SansSerif", Font.PLAIN, 18));
+        g.drawString(String.format(Locale.US, "Moyenne: %.2f/5 | Notes: %d | Ratio Like: %.1f%%", avgRating, ratingCount, likeRatio), padding, 160);
+
+        int chartX = padding;
+        int chartY = 220;
+        int chartW = width - 2 * padding;
+        int chartH = 260;
+
+        g.setColor(Color.WHITE);
+        g.fillRoundRect(chartX, chartY, chartW, chartH, 16, 16);
+        g.setColor(new Color(200, 215, 235));
+        g.drawRoundRect(chartX, chartY, chartW, chartH, 16, 16);
+
+        g.setColor(new Color(90, 110, 140));
+        g.setFont(new Font("SansSerif", Font.BOLD, 18));
+        g.drawString("Distribution des notes (image)", chartX + 20, chartY + 30);
+
+        int maxValue = 1;
+        for (int i = 1; i <= 5; i++) {
+            maxValue = Math.max(maxValue, dist.getOrDefault(i, 0));
+        }
+
+        int graphLeft = chartX + 70;
+        int graphRight = chartX + chartW - 30;
+        int graphTop = chartY + 55;
+        int graphBottom = chartY + chartH - 45;
+        int graphHeight = graphBottom - graphTop;
+        int graphWidth = graphRight - graphLeft;
+        int barWidth = 90;
+        int gap = (graphWidth - (barWidth * 5)) / 6;
+        if (gap < 10) gap = 10;
+
+        g.setColor(new Color(210, 220, 240));
+        g.setStroke(new BasicStroke(2f));
+        g.drawLine(graphLeft, graphBottom, graphRight, graphBottom);
+        g.drawLine(graphLeft, graphTop, graphLeft, graphBottom);
+
+        for (int i = 1; i <= 5; i++) {
+            int value = dist.getOrDefault(i, 0);
+            int x = graphLeft + gap * i + barWidth * (i - 1);
+            int barHeight = (int) ((value / (double) maxValue) * (graphHeight - 10));
+            int y = graphBottom - barHeight;
+
+            g.setColor(new Color(52, 152, 219));
+            g.fillRoundRect(x, y, barWidth, barHeight, 12, 12);
+            g.setColor(new Color(32, 94, 170));
+            g.drawRoundRect(x, y, barWidth, barHeight, 12, 12);
+
+            g.setColor(new Color(50, 65, 85));
+            g.setFont(new Font("SansSerif", Font.BOLD, 16));
+            g.drawString(String.valueOf(i), x + barWidth / 2 - 4, graphBottom + 22);
+            g.setFont(new Font("SansSerif", Font.PLAIN, 15));
+            g.drawString(String.valueOf(value), x + barWidth / 2 - 8, y - 8);
+        }
+
+        g.dispose();
+        return image;
     }
 }
 

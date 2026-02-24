@@ -11,6 +11,7 @@ import org.example.Model.Publication.Feedback;
 import org.example.Model.Publication.Publication;
 import org.example.Service.PublicationService.FeedbackService;
 import org.example.Utils.BadWordsApiClient;
+import org.example.Utils.PiiApiClient;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -119,8 +120,12 @@ public class FeedbackUserController implements Initializable {
             return;
         }
         String cleaned = text.trim();
+        if (!PiiApiClient.isAllowed(cleaned)) {
+            new Alert(Alert.AlertType.ERROR, "Interdit d'ajouter des données sensibles").showAndWait();
+            return;
+        }
         if (!BadWordsApiClient.isAllowed(cleaned)) {
-            new Alert(Alert.AlertType.ERROR, "Commentaire refusé : langage inapproprié").showAndWait();
+            new Alert(Alert.AlertType.ERROR, "language innaproprié").showAndWait();
             return;
         }
         Feedback f = new Feedback(publication.getIdPublication(), 1, cleaned, "COMMENT");

@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -32,11 +34,13 @@ import javafx.scene.control.Label;
 import javafx.scene.control.ListCell;
 import javafx.scene.control.ListView;
 import javafx.scene.control.Separator;
+import javafx.scene.control.TextInputDialog;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
+import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 
 
@@ -211,6 +215,46 @@ public class ListPubController implements Initializable {
         updateTotalLabel();
     }
 
+    @FXML
+    private void exportMonthlyStats(ActionEvent event) {
+        TextInputDialog monthDialog = new TextInputDialog(YearMonth.now().toString());
+        monthDialog.setTitle("Export stats mensuelles");
+        monthDialog.setHeaderText("Saisir le mois au format YYYY-MM");
+        monthDialog.setContentText("Mois:");
+
+        Optional<String> monthResult = monthDialog.showAndWait();
+        if (monthResult.isEmpty()) {
+            return;
+        }
+
+        YearMonth ym;
+        try {
+            ym = YearMonth.parse(monthResult.get().trim());
+        } catch (Exception ex) {
+            showErrorAlert("Format invalide", "Utilise le format YYYY-MM (ex: 2026-02).");
+            return;
+        }
+
+        FileChooser chooser = new FileChooser();
+        chooser.setTitle("Exporter stats mensuelles en CSV");
+        chooser.setInitialFileName("stats_feedback_" + ym + ".csv");
+        chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+        java.io.File file = chooser.showSaveDialog(((Node) event.getSource()).getScene().getWindow());
+        if (file == null) {
+            return;
+        }
+
+        FeedbackService service = new FeedbackService();
+        LocalDate start = ym.atDay(1);
+        LocalDate end = ym.plusMonths(1).atDay(1);
+        boolean ok = service.exportMonthlyStatsToCSV(start, end, file);
+        if (ok) {
+            showSuccessAlert("Export réussi", "Stats mensuelles exportées: " + file.getName());
+        } else {
+            showErrorAlert("Export échoué", "Impossible d'exporter les stats mensuelles.");
+        }
+    }
+
     private void handleUpdate(Publication pub) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Publication/UpdatePub.fxml"));
@@ -277,6 +321,8 @@ public class ListPubController implements Initializable {
         private final Button feedbackButton;
         private final Button likeButton;
         private final Button dislikeButton;
+        private final Button exportCsvButton;
+        private final Button exportPdfButton;
         private final Label likeCountLabel;
         private final Label dislikeCountLabel;
         private final FeedbackService feedbackService;
@@ -336,13 +382,25 @@ public class ListPubController implements Initializable {
 
             likeButton = new Button("👍");
             dislikeButton = new Button("👎");
+            likeButton.setDisable(true);
+            dislikeButton.setDisable(true);
+            likeButton.setFocusTraversable(false);
+            dislikeButton.setFocusTraversable(false);
+
+            exportCsvButton = new Button("Donnees CSV");
+            exportPdfButton = new Button("Rapport PDF (stats image)");
 
             likeCountLabel = new Label("0");
             dislikeCountLabel = new Label("0");
 
             feedbackService = new FeedbackService();
 
-            footerBox.getChildren().addAll(dateLabel, spacer2, feedbackButton, likeButton, likeCountLabel, dislikeButton, dislikeCountLabel, updateButton, deleteButton);
+            footerBox.getChildren().addAll(
+                    dateLabel, spacer2,
+                    feedbackButton, exportPdfButton, exportCsvButton,
+                    likeButton, likeCountLabel, dislikeButton, dislikeCountLabel,
+                    updateButton, deleteButton
+            );
 
             container.getChildren().addAll(headerBox, new Separator(), bodyBox, footerBox);
         }
@@ -385,22 +443,55 @@ public class ListPubController implements Initializable {
                     }
                 });
 
-                likeButton.setOnAction(e -> {
-                    int currentUserId = 1; // TEMPORAIRE : mets un id qui existe vraiment en base
-                    Feedback f = new Feedback(pub.getIdPublication(), currentUserId, "", "LIKE");
-                    feedbackService.createFeedback(f);
-                    updateReactionCounts(pub);
-                });
-
-                dislikeButton.setOnAction(e -> {
-                    int currentUserId = 1; // TEMPORAIRE : mets un id qui existe vraiment en base
-                    Feedback f = new Feedback(pub.getIdPublication(), currentUserId, "", "DISLIKE");
-                    feedbackService.createFeedback(f);
-                    updateReactionCounts(pub);
-                });
+                exportCsvButton.setOnAction(e -> exportFeedbackCsv(pub));
+                exportPdfButton.setOnAction(e -> exportFeedbackPdf(pub));
 
                 setGraphic(container);
             }
+        }
+
+        private void exportFeedbackCsv(Publication pub) {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Exporter feedbacks CSV");
+            chooser.setInitialFileName("feedback_pub_" + pub.getIdPublication() + ".csv");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("CSV", "*.csv"));
+
+            java.io.File selectedFile = chooser.showSaveDialog(publicationListView.getScene().getWindow());
+            if (selectedFile == null) return;
+            java.io.File file = ensureExtension(selectedFile, ".csv");
+
+            boolean ok = feedbackService.exportFeedbacksToCSV(pub.getIdPublication(), file);
+            if (ok) {
+                showSuccessAlert("Export CSV réussi", "Fichier généré: " + file.getName());
+            } else {
+                showErrorAlert("Export échoué", "Impossible d'exporter le CSV.");
+            }
+        }
+
+        private void exportFeedbackPdf(Publication pub) {
+            FileChooser chooser = new FileChooser();
+            chooser.setTitle("Exporter rapport PDF");
+            chooser.setInitialFileName("rapport_satisfaction_pub_" + pub.getIdPublication() + ".pdf");
+            chooser.getExtensionFilters().add(new FileChooser.ExtensionFilter("PDF", "*.pdf"));
+
+            java.io.File selectedFile = chooser.showSaveDialog(publicationListView.getScene().getWindow());
+            if (selectedFile == null) return;
+            java.io.File file = ensureExtension(selectedFile, ".pdf");
+
+            boolean ok = feedbackService.exportPublicationReportToPDF(pub.getIdPublication(), pub.getTitre(), file);
+            if (ok) {
+                showSuccessAlert("Export PDF réussi", "Rapport statistique image généré: " + file.getName());
+            } else {
+                showErrorAlert("Export échoué", "Impossible d'exporter le PDF.");
+            }
+        }
+
+        private java.io.File ensureExtension(java.io.File file, String extension) {
+            String name = file.getName().toLowerCase();
+            if (name.endsWith(extension)) {
+                return file;
+            }
+            return new java.io.File(file.getParentFile(), file.getName() + extension);
         }
 
         private void updateReactionCounts(Publication pub) {

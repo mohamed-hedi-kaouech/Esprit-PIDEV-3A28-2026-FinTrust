@@ -21,16 +21,14 @@
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.PublicationControlleur.FeedbackStatsController"
             prefWidth="1200.0" prefHeight="780.0"
+            styleClass="app-root"
             stylesheets="@/Styles/BlueTheme.css">
 
-    <VBox spacing="14.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
-        <padding>
-            <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
-        </padding>
+    <VBox spacing="14.0" styleClass="page-shell" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
 
-        <HBox alignment="CENTER_LEFT" spacing="10.0">
-            <Button text="Retour" onAction="#goBack" styleClass="btn-outline"/>
-            <Label text="Dashboard Feedback Publications" styleClass="card-title">
+        <HBox alignment="CENTER_LEFT" spacing="10.0" styleClass="topbar-card">
+            <Button text="Retour" onAction="#goBack" styleClass="btn-ghost"/>
+            <Label text="Dashboard Feedback Publications" styleClass="topbar-title">
                 <font>
                     <Font size="20.0"/>
                 </font>
