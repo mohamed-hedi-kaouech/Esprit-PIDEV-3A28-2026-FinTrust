@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ClientControlleur;
+﻿package org.example.Controlleurs.ClientControlleur;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -91,6 +91,12 @@ public class ClientChatbotController {
     }
 
     @FXML
+    private void goToSmartBreakFromChatbot() {
+        session.setSmartBreakContext("CHATBOT");
+        navigateTo("/Client/SmartBreakHub.fxml", "Pause Intelligente", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
     private void handleLogout() {
         session.logout();
         navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
@@ -138,3 +144,4 @@ public class ClientChatbotController {
         infoLabel.setStyle(isError ? "-fx-text-fill: #b91c1c;" : "-fx-text-fill: #166534;");
     }
 }
+

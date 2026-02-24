@@ -11,14 +11,16 @@
 <?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            stylesheets="@../Styles/StyleWallet.css"
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" styleClass="auth-root"
+            stylesheets="@../Styles/StyleWallet.css,@../Styles/AuthModern.css"
             fx:controller="org.example.Controlleurs.AuthControlleur.AuthLoginController">
 
     <top>
-        <HBox styleClass="header-panel" alignment="CENTER_LEFT">
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="10">
             <children>
                 <Label text="FinTrust - Connexion" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Label text="Secure Access" styleClass="badge"/>
             </children>
         </HBox>
     </top>
@@ -26,22 +28,28 @@
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
             <content>
-        <VBox spacing="18" alignment="CENTER" style="-fx-padding: 40 24;" styleClass="bank-card" maxWidth="520">
-            <HBox alignment="CENTER" styleClass="section-header">
-                <Label text="Se connecter" styleClass="section-title" />
-            </HBox>
-            <Label text="Connectez-vous pour accéder à votre espace" styleClass="section-subtitle" />
-            <Label text="Email" styleClass="form-label" />
-            <TextField fx:id="emailField" promptText="Email" maxWidth="360" style="-fx-background-color: #e2edff; -fx-border-color: #1e3a8a; -fx-border-radius: 8; -fx-background-radius: 8;" />
-            <Label text="Mot de passe" styleClass="form-label" />
-            <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="360" style="-fx-background-color: #e2edff; -fx-border-color: #1e3a8a; -fx-border-radius: 8; -fx-background-radius: 8;" />
-            <HBox alignment="CENTER" style="-fx-padding: 18 0 0 0;">
-                 <Button text="Se connecter" onAction="#handleLogin" styleClass="new-transaction-button" maxWidth="220" />
-            </HBox>
-            <Label fx:id="messageLabel" text="" styleClass="section-subtitle" maxWidth="420" wrapText="true" />
-            <Hyperlink text="Créer un compte" onAction="#goToSignup" style="-fx-text-fill: #1e3a8a; -fx-font-weight: 700;" />
-              <Hyperlink text="Mot de passe oublié ?" onAction="#goToPasswordReset" style="-fx-text-fill: #2563eb; -fx-font-weight: 700;" />
-        </VBox>
+                <VBox spacing="20" alignment="TOP_CENTER" styleClass="auth-shell">
+                    <VBox spacing="12" alignment="CENTER" styleClass="bank-card auth-card" maxWidth="540">
+                        <HBox alignment="CENTER" styleClass="section-header auth-header">
+                            <Label text="Se connecter" styleClass="section-title auth-title" />
+                        </HBox>
+
+                        <Label text="Connectez-vous pour acceder a votre espace FinTrust" styleClass="section-subtitle auth-subtitle" />
+
+                        <Label text="Email" styleClass="form-label auth-label" />
+                        <TextField fx:id="emailField" promptText="votre@email.com" maxWidth="390" styleClass="auth-field" />
+
+                        <Label text="Mot de passe" styleClass="form-label auth-label" />
+                        <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="390" styleClass="auth-field" />
+
+                        <Button text="Se connecter" onAction="#handleLogin" styleClass="auth-primary-btn" maxWidth="260" />
+
+                        <Label fx:id="messageLabel" text="" styleClass="section-subtitle auth-message" maxWidth="430" wrapText="true" />
+
+                        <Hyperlink text="Creer un compte" onAction="#goToSignup" styleClass="auth-link auth-link-strong" />
+                        <Hyperlink text="Mot de passe oublie ?" onAction="#goToPasswordReset" styleClass="auth-link" />
+                    </VBox>
+                </VBox>
             </content>
         </ScrollPane>
     </center>

@@ -48,6 +48,12 @@ public final class SecretConfig {
         } catch (Exception ignored) {
         }
 
+        // 1.b) fallback dev file: ./PIDEV/src/main/resources/config.properties
+        Path nestedResourceCfg = Paths.get("PIDEV", "src", "main", "resources", "config.properties").toAbsolutePath();
+        if (Files.isRegularFile(nestedResourceCfg)) {
+            loadFile(nestedResourceCfg);
+        }
+
         // 2) user-level secure file: %USERPROFILE%/.fintrust/secrets.properties
         Path userSecrets = Paths.get(System.getProperty("user.home"), ".fintrust", "secrets.properties");
         if (Files.isRegularFile(userSecrets)) {
@@ -58,6 +64,12 @@ public final class SecretConfig {
         Path projectLocal = Paths.get("fintrust.local.properties").toAbsolutePath();
         if (Files.isRegularFile(projectLocal)) {
             loadFile(projectLocal);
+        }
+
+        // 3.b) fallback dev local file: ./PIDEV/fintrust.local.properties
+        Path nestedProjectLocal = Paths.get("PIDEV", "fintrust.local.properties").toAbsolutePath();
+        if (Files.isRegularFile(nestedProjectLocal)) {
+            loadFile(nestedProjectLocal);
         }
     }
 

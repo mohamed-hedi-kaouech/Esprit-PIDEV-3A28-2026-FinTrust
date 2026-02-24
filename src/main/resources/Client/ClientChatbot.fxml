@@ -17,7 +17,8 @@
     <top>
         <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
             <children>
-                <Label text="🤖 Assistant Client FinTrust" styleClass="logo-text"/>
+                <Label text="AI" styleClass="assistant-ia-icon"/>
+                <Label text="Assistant IA Client FinTrust" styleClass="logo-text"/>
                 <Region HBox.hgrow="ALWAYS"/>
                 <Button text="Retour Dashboard" onAction="#handleBack" styleClass="button-secondary"/>
                 <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
@@ -44,6 +45,7 @@
             <HBox spacing="10">
                 <TextField fx:id="messageField" promptText="Ecrivez votre message..." HBox.hgrow="ALWAYS"/>
                 <Button text="Envoyer" onAction="#handleSend" styleClass="button-primary chatbot-send-btn"/>
+                <Button text="Pause et Jeux" onAction="#goToSmartBreakFromChatbot" styleClass="button-secondary"/>
             </HBox>
 
             <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
@@ -52,3 +54,5 @@
         </ScrollPane>
     </center>
 </BorderPane>
+
+

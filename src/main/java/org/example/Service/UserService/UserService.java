@@ -5,17 +5,18 @@ import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
 import org.example.Model.User.UserStatus;
 import org.example.Repository.KycRepository;
+import org.example.Repository.PasswordResetRepository;
 import org.example.Repository.UserRepository;
 import org.example.Service.AuditService.AuditService;
 import org.example.Service.EmailService;
 import org.example.Service.NotificationService.NotificationService;
-import org.example.Service.OtpStore;
 import org.example.Service.Security.BCryptPasswordHasher;
 import org.example.Service.Security.PasswordHasher;
+import org.example.Utils.MaConnexion;
+import org.mindrot.jbcrypt.BCrypt;
 
+import java.sql.Connection;
 import java.time.LocalDateTime;
-import java.time.temporal.ChronoUnit;
-import java.util.concurrent.ConcurrentHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Optional;
@@ -29,16 +30,16 @@ public class UserService {
     private static final Pattern PHONE_PATTERN = Pattern.compile("^[0-9+\\-\\s]{8,20}$");
 
     private static final int OTP_EXPIRATION_SECONDS = 600;
+    private static final int MAX_RESET_ATTEMPTS = 5;
     public static final String RESET_BY_EMAIL = "EMAIL";
-    private static final ConcurrentHashMap<String, ResetContext> RESET_CONTEXT = new ConcurrentHashMap<>();
 
     private final UserRepository userRepository;
+    private final PasswordResetRepository passwordResetRepository;
     private final KycRepository kycRepository;
     private final NotificationService notificationService;
     private final AuditService auditService;
     private final PasswordHasher passwordHasher;
     private final EmailService emailService;
-    private final OtpStore otpStore;
 
     public UserService() {
         this(new UserRepository(), new KycRepository(), new BCryptPasswordHasher());
@@ -46,12 +47,12 @@ public class UserService {
 
     public UserService(UserRepository userRepository, KycRepository kycRepository, PasswordHasher passwordHasher) {
         this.userRepository = userRepository;
+        this.passwordResetRepository = new PasswordResetRepository();
         this.kycRepository = kycRepository;
         this.notificationService = new NotificationService();
         this.auditService = new AuditService();
         this.passwordHasher = passwordHasher;
         this.emailService = new EmailService();
-        this.otpStore = new OtpStore();
     }
 
     public PasswordResetResult requestPasswordResetCode(String emailRaw) {
@@ -65,10 +66,6 @@ public class UserService {
         }
 
         Optional<User> optionalUser = userRepository.findByEmail(email);
-        if (optionalUser.isEmpty()) {
-            return PasswordResetResult.failure("Utilisateur introuvable.");
-        }
-
         String channel = normalize(channelRaw).toUpperCase(Locale.ROOT);
         if (channel.isBlank()) {
             channel = RESET_BY_EMAIL;
@@ -77,20 +74,26 @@ public class UserService {
             return PasswordResetResult.failure("Methode d'envoi invalide.");
         }
 
-        User user = optionalUser.get();
         String requestId = UUID.randomUUID().toString();
-        String code = emailService.generateVerificationCode();
-        try {
-            emailService.sendPasswordResetCode(email, code);
-            otpStore.save(email, code, OTP_EXPIRATION_SECONDS);
-            LocalDateTime requestedAt = LocalDateTime.now();
-            RESET_CONTEXT.put(email, new ResetContext(RESET_BY_EMAIL, "", requestId, requestedAt, requestedAt.plusSeconds(OTP_EXPIRATION_SECONDS)));
-            safeAuditOtpRequest(user.getId(), email, RESET_BY_EMAIL, requestId, true, "sent");
-            return PasswordResetResult.success("Code envoye par email avec succes.");
-        } catch (Exception e) {
-            safeAuditOtpRequest(user.getId(), email, RESET_BY_EMAIL, requestId, false, e.getMessage());
-            return PasswordResetResult.failure("Envoi du code impossible (email: " + e.getMessage() + ").");
+        if (optionalUser.isEmpty()) {
+            safeAuditOtpRequest(null, email, RESET_BY_EMAIL, requestId, true, "neutral_response");
+            return PasswordResetResult.success("Si un compte existe, un code a ete envoye par email.");
         }
+
+        User user = optionalUser.get();
+        String code = emailService.generateVerificationCode();
+        String codeHash = BCrypt.hashpw(code, BCrypt.gensalt(10));
+        LocalDateTime expiresAt = LocalDateTime.now().plusSeconds(OTP_EXPIRATION_SECONDS);
+
+        try {
+            passwordResetRepository.invalidateActiveByUserId(user.getId());
+            passwordResetRepository.createResetCode(user.getId(), codeHash, expiresAt);
+            emailService.sendPasswordResetCode(email, code);
+            safeAuditOtpRequest(user.getId(), email, RESET_BY_EMAIL, requestId, true, "sent");
+        } catch (Exception e) {
+            safeAuditOtpRequest(user.getId(), email, RESET_BY_EMAIL, requestId, false, shortMsg(e.getMessage()));
+        }
+        return PasswordResetResult.success("Si un compte existe, un code a ete envoye par email.");
     }
 
     public PasswordResetResult resetPassword(String emailRaw, String codeRaw, String newPassword, String confirmPassword) {
@@ -101,20 +104,6 @@ public class UserService {
 
         if (!EMAIL_PATTERN.matcher(email).matches()) {
             return PasswordResetResult.failure("Email invalide.");
-        }
-
-        ResetContext context = RESET_CONTEXT.get(email);
-        if (context == null || LocalDateTime.now().isAfter(context.expiresAt())) {
-            RESET_CONTEXT.remove(email);
-            safeAuditOtpValidation(null, email, RESET_BY_EMAIL, context == null ? "" : context.requestId(), false, "expired_or_missing", null);
-            return PasswordResetResult.failure("Code invalide ou expire. Demandez un nouveau code.");
-        }
-
-        boolean validCode = otpStore.verifyAndConsume(email, code);
-        if (!validCode) {
-            Integer elapsed = (int) ChronoUnit.SECONDS.between(context.requestedAt(), LocalDateTime.now());
-            safeAuditOtpValidation(null, email, RESET_BY_EMAIL, context.requestId(), false, "invalid_code", elapsed);
-            return PasswordResetResult.failure("Code invalide ou expire. Demandez un nouveau code.");
         }
 
         if (!PASSWORD_PATTERN.matcher(pass).matches()) {
@@ -130,13 +119,64 @@ public class UserService {
         }
 
         User user = optionalUser.get();
-        String hash = passwordHasher.hash(pass);
-        userRepository.updatePassword(user.getId(), hash);
-        Integer elapsed = (int) ChronoUnit.SECONDS.between(context.requestedAt(), LocalDateTime.now());
-        safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, context.requestId(), true, "ok", elapsed);
-        RESET_CONTEXT.remove(email);
+        String requestId = UUID.randomUUID().toString();
 
-        return PasswordResetResult.success("Mot de passe reinitialise avec succes.");
+        Optional<PasswordResetRepository.ResetCodeRow> rowOpt = passwordResetRepository.findLatestActiveByUserId(user.getId());
+        if (rowOpt.isEmpty()) {
+            safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, requestId, false, "missing_code", null);
+            return PasswordResetResult.failure("Code invalide ou expire. Demandez un nouveau code.");
+        }
+
+        PasswordResetRepository.ResetCodeRow row = rowOpt.get();
+        if (LocalDateTime.now().isAfter(row.expiresAt())) {
+            passwordResetRepository.markUsed(row.id());
+            safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, requestId, false, "expired_code", null);
+            return PasswordResetResult.failure("Code invalide ou expire. Demandez un nouveau code.");
+        }
+        if (row.attempts() >= MAX_RESET_ATTEMPTS) {
+            passwordResetRepository.markUsed(row.id());
+            safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, requestId, false, "max_attempts", null);
+            return PasswordResetResult.failure("Trop de tentatives. Demandez un nouveau code.");
+        }
+
+        boolean validCode;
+        try {
+            validCode = BCrypt.checkpw(code, row.codeHash());
+        } catch (Exception e) {
+            validCode = false;
+        }
+        if (!validCode) {
+            passwordResetRepository.incrementAttempts(row.id());
+            safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, requestId, false, "invalid_code", null);
+            return PasswordResetResult.failure("Code invalide ou expire. Demandez un nouveau code.");
+        }
+
+        Connection cnx = MaConnexion.getInstance().getCnx();
+        boolean initialAutoCommit = true;
+        try {
+            initialAutoCommit = cnx.getAutoCommit();
+            cnx.setAutoCommit(false);
+
+            String hash = passwordHasher.hash(pass);
+            userRepository.updatePassword(user.getId(), hash);
+            passwordResetRepository.markUsed(row.id());
+
+            cnx.commit();
+            safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, requestId, true, "ok", null);
+            return PasswordResetResult.success("Mot de passe reinitialise avec succes.");
+        } catch (Exception e) {
+            try {
+                cnx.rollback();
+            } catch (Exception ignored) {
+            }
+            safeAuditOtpValidation(user.getId(), email, RESET_BY_EMAIL, requestId, false, "tx_error", null);
+            return PasswordResetResult.failure("Erreur technique pendant la reinitialisation.");
+        } finally {
+            try {
+                cnx.setAutoCommit(initialAutoCommit);
+            } catch (Exception ignored) {
+            }
+        }
     }
 
     // Backward compatibility if called elsewhere.
@@ -173,12 +213,23 @@ public class UserService {
         userRepository.save(user);
 
         try {
-            emailService.sendWelcomeEmail(user.getEmail(), user.getNom());
-            return SignupResult.success("Inscription reussie. Email de bienvenue envoye a " + user.getEmail() + ".");
+            String authCode = emailService.generateVerificationCode();
+            emailService.sendAuthVerificationCode(user.getEmail(), authCode);
+
+            // Mail de bienvenue non bloquant: on tente, mais l'inscription reste valide.
+            try {
+                emailService.sendWelcomeEmail(user.getEmail(), user.getNom());
+            } catch (Exception ignored) {
+            }
+
+            return SignupResult.success(
+                    "Inscription reussie. Un mail d'authentification a ete envoye a " + user.getEmail() + "."
+            );
         } catch (Exception e) {
             e.printStackTrace();
             return SignupResult.success(
-                    "Inscription reussie, mais l'email de bienvenue n'a pas ete envoye. Cause: " + shortMsg(e.getMessage())
+                    "Inscription reussie, mais le mail d'authentification n'a pas ete envoye. Cause: "
+                            + shortMsg(e.getMessage())
             );
         }
     }
@@ -391,5 +442,4 @@ public class UserService {
         }
     }
 
-    private record ResetContext(String channel, String phone, String requestId, LocalDateTime requestedAt, LocalDateTime expiresAt) {}
 }

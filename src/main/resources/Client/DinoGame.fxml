@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.ClientControlleur.DinoGameController">
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="10">
+            <children>
+                <Label text="Pause Intelligente - Dino Run 60s" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Retour jeux" onAction="#handleBackToMenu" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
+                <VBox spacing="12" style="-fx-padding: 22;" styleClass="bank-card">
+                    <HBox spacing="16" alignment="CENTER_LEFT" styleClass="status-banner">
+                        <Label fx:id="contextLabel" text="Contexte: PROFILE" styleClass="form-label"/>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label text="Temps:" styleClass="form-label"/>
+                        <Label fx:id="timerLabel" text="60s" styleClass="client-reward-chip-value"/>
+                        <Label text="Score:" styleClass="form-label"/>
+                        <Label fx:id="scoreLabel" text="0" styleClass="client-reward-chip-value"/>
+                        <Label text="Sauts:" styleClass="form-label"/>
+                        <Label fx:id="jumpsLabel" text="0" styleClass="client-reward-chip-value"/>
+                    </HBox>
+
+                    <Pane fx:id="gamePane" prefHeight="250" styleClass="dino-game-pane">
+                        <children>
+                            <Region fx:id="dinoNode" layoutX="70" layoutY="190" prefWidth="34" prefHeight="34" styleClass="dino-player"/>
+                            <Region fx:id="groundNode" layoutX="0" layoutY="224" prefWidth="900" prefHeight="6" styleClass="dino-ground"/>
+                        </children>
+                    </Pane>
+
+                    <HBox spacing="10">
+                        <Button text="Sauter (ESPACE)" onAction="#handleJump" styleClass="button-primary"/>
+                        <Button fx:id="retryButton" text="Rejouer" onAction="#handleRetry" styleClass="button-secondary"/>
+                    </HBox>
+
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

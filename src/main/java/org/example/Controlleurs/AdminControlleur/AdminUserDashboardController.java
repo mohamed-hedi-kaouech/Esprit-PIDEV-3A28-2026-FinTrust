@@ -4,6 +4,9 @@ import javafx.application.Platform;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -23,8 +26,10 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.format.DateTimeFormatter;
+import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 public class AdminUserDashboardController {
@@ -43,10 +48,16 @@ public class AdminUserDashboardController {
     @FXML private Label totalClientsLabel;
     @FXML private Label totalAdminsLabel;
     @FXML private PieChart statusPieChart;
+    @FXML private TextField searchField;
+    @FXML private ComboBox<String> sortByCombo;
+    @FXML private ComboBox<String> sortOrderCombo;
 
     private final UserService userService = new UserService();
     private final AdminExportService exportService = new AdminExportService();
     private static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
+    private final ObservableList<User> masterUsers = FXCollections.observableArrayList();
+    private FilteredList<User> filteredUsers;
+    private SortedList<User> sortedUsers;
 
     @FXML
     private void initialize() {
@@ -74,6 +85,28 @@ public class AdminUserDashboardController {
         // ✅ Status combo
         usersTable.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
         statusComboBox.getItems().setAll(UserStatus.values());
+        if (sortByCombo != null) {
+            sortByCombo.getItems().setAll("Date creation", "ID", "Nom", "Email", "Role", "Statut");
+            sortByCombo.setValue("Date creation");
+        }
+        if (sortOrderCombo != null) {
+            sortOrderCombo.getItems().setAll("DESC", "ASC");
+            sortOrderCombo.setValue("DESC");
+        }
+
+        filteredUsers = new FilteredList<>(masterUsers, u -> true);
+        sortedUsers = new SortedList<>(filteredUsers);
+        usersTable.setItems(sortedUsers);
+
+        if (searchField != null) {
+            searchField.textProperty().addListener((obs, oldV, newV) -> applyFilterAndSort());
+        }
+        if (sortByCombo != null) {
+            sortByCombo.valueProperty().addListener((obs, oldV, newV) -> applyFilterAndSort());
+        }
+        if (sortOrderCombo != null) {
+            sortOrderCombo.valueProperty().addListener((obs, oldV, newV) -> applyFilterAndSort());
+        }
         usersTable.getSelectionModel().selectedItemProperty().addListener((obs, o, n) -> {
             if (n != null) statusComboBox.setValue(n.getStatus());
         });
@@ -85,6 +118,14 @@ public class AdminUserDashboardController {
     private void handleRefresh() {
         loadUsers();
         setInfo("Liste actualisée.", false);
+    }
+
+    @FXML
+    private void handleResetFilter() {
+        if (searchField != null) searchField.clear();
+        if (sortByCombo != null) sortByCombo.setValue("Date creation");
+        if (sortOrderCombo != null) sortOrderCombo.setValue("DESC");
+        applyFilterAndSort();
     }
 
     @FXML
@@ -262,12 +303,47 @@ public class AdminUserDashboardController {
     private void loadUsers() {
         try {
             List<User> users = userService.listUsersForAdmin(SessionContext.getInstance().getCurrentUser());
-            usersTable.getItems().setAll(users);
+            masterUsers.setAll(users);
+            applyFilterAndSort();
             updateStats(users);
         } catch (Exception e) {
             setInfo("Impossible de charger les utilisateurs: " + e.getMessage(), true);
             e.printStackTrace();
         }
+    }
+
+    private void applyFilterAndSort() {
+        if (filteredUsers == null || sortedUsers == null) return;
+
+        final String q = (searchField == null || searchField.getText() == null)
+                ? ""
+                : searchField.getText().trim().toLowerCase(Locale.ROOT);
+
+        filteredUsers.setPredicate(user -> {
+            if (q.isBlank()) return true;
+            String id = String.valueOf(user.getId());
+            String nom = safe(user.getNom()).toLowerCase(Locale.ROOT);
+            String email = safe(user.getEmail()).toLowerCase(Locale.ROOT);
+            String role = user.getRole() == null ? "" : user.getRole().name().toLowerCase(Locale.ROOT);
+            String status = user.getStatus() == null ? "" : user.getStatus().name().toLowerCase(Locale.ROOT);
+            return id.contains(q) || nom.contains(q) || email.contains(q) || role.contains(q) || status.contains(q);
+        });
+
+        String sortBy = (sortByCombo == null || sortByCombo.getValue() == null) ? "Date creation" : sortByCombo.getValue();
+        Comparator<User> comparator = switch (sortBy) {
+            case "ID" -> Comparator.comparingInt(User::getId);
+            case "Nom" -> Comparator.comparing(u -> safe(u.getNom()).toLowerCase(Locale.ROOT));
+            case "Email" -> Comparator.comparing(u -> safe(u.getEmail()).toLowerCase(Locale.ROOT));
+            case "Role" -> Comparator.comparing(u -> u.getRole() == null ? "" : u.getRole().name());
+            case "Statut" -> Comparator.comparing(u -> u.getStatus() == null ? "" : u.getStatus().name());
+            default -> Comparator.comparing(User::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder()));
+        };
+
+        String order = (sortOrderCombo == null || sortOrderCombo.getValue() == null) ? "DESC" : sortOrderCombo.getValue();
+        if ("DESC".equalsIgnoreCase(order)) {
+            comparator = comparator.reversed();
+        }
+        sortedUsers.setComparator(comparator);
     }
 
     private void updateStats(List<User> users) {

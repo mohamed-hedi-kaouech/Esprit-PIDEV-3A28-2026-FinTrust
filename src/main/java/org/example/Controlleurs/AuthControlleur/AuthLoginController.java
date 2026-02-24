@@ -8,15 +8,20 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import javafx.stage.Window;
 import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
 import org.example.Service.AuditService.AuditService;
+import org.example.Service.Security.CaptchaService;
 import org.example.Service.UserService.LoginResult;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
 import java.net.URL;
+import java.time.LocalDateTime;
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
 
 public class AuthLoginController {
 
@@ -31,6 +36,12 @@ public class AuthLoginController {
 
     private UserService userService;
     private AuditService auditService;
+    private final CaptchaService captchaService = CaptchaService.getInstance();
+    private static final Map<String, Integer> FAILED_ATTEMPTS = new ConcurrentHashMap<>();
+    private static final Map<String, LocalDateTime> BLOCKED_UNTIL = new ConcurrentHashMap<>();
+    private static final int CAPTCHA_THRESHOLD = 3;
+    private static final int BLOCK_THRESHOLD = 5;
+    private static final int BLOCK_MINUTES = 10;
 
     @FXML
     private void initialize() {
@@ -45,11 +56,17 @@ public class AuthLoginController {
         } catch (Exception ignored) {
             auditService = null;
         }
+
+        SessionContext session = SessionContext.getInstance();
+        if (emailField != null && session.getCaptchaTargetEmail() != null && !session.getCaptchaTargetEmail().isBlank()) {
+            emailField.setText(session.getCaptchaTargetEmail());
+        }
     }
 
     @FXML
     private void handleLogin() {
         String email = emailField != null ? emailField.getText() : "";
+        String fingerprint = normalize(email);
 
         if (userService == null) {
             auditLogin(null, email, false, "db_unavailable");
@@ -65,6 +82,21 @@ public class AuthLoginController {
             return;
         }
 
+        if (isBlocked(fingerprint)) {
+            showMessage("Trop de tentatives. Reessayez plus tard.", true);
+            return;
+        }
+
+        if (isCaptchaRequired(fingerprint) || shouldForceCaptchaAfterSignup(email)) {
+            Window owner = emailField != null && emailField.getScene() != null ? emailField.getScene().getWindow() : null;
+            String captchaToken = CaptchaPuzzleDialog.show(owner, fingerprint, "login");
+            if (captchaToken == null || !captchaService.consumeCaptchaToken(captchaToken, fingerprint, "login")) {
+                registerFailure(fingerprint);
+                showMessage("Verification CAPTCHA requise.", true);
+                return;
+            }
+        }
+
         LoginResult result;
         try {
             result = userService.login(email, password);
@@ -76,10 +108,13 @@ public class AuthLoginController {
         }
 
         if (result == null || !result.isSuccess() || result.getUser() == null) {
+            registerFailure(fingerprint);
             auditLogin(null, email, false, result != null ? result.getMessage() : "login_failed");
             showMessage(result != null ? result.getMessage() : "Connexion impossible.", true);
             return;
         }
+        resetFailures(fingerprint);
+        SessionContext.getInstance().clearCaptchaRequirement();
 
         User loggedUser = result.getUser();
         auditLogin(loggedUser.getId(), loggedUser.getEmail(), true, "ok");
@@ -126,6 +161,46 @@ public class AuthLoginController {
         if (messageLabel == null) return;
         messageLabel.setText(text == null ? "" : text);
         messageLabel.setStyle(isError ? "-fx-text-fill: #cc2e2e;" : "-fx-text-fill: #1d6b34;");
+    }
+
+    private boolean isCaptchaRequired(String fingerprint) {
+        return FAILED_ATTEMPTS.getOrDefault(fingerprint, 0) >= CAPTCHA_THRESHOLD;
+    }
+
+    private boolean shouldForceCaptchaAfterSignup(String email) {
+        SessionContext session = SessionContext.getInstance();
+        if (!session.isForceCaptchaOnNextLogin()) return false;
+
+        String target = normalize(session.getCaptchaTargetEmail());
+        if (target.isBlank()) return true;
+        return target.equals(normalize(email));
+    }
+
+    private boolean isBlocked(String fingerprint) {
+        LocalDateTime blockedUntil = BLOCKED_UNTIL.get(fingerprint);
+        if (blockedUntil == null) return false;
+        if (LocalDateTime.now().isAfter(blockedUntil)) {
+            BLOCKED_UNTIL.remove(fingerprint);
+            return false;
+        }
+        return true;
+    }
+
+    private void registerFailure(String fingerprint) {
+        int attempts = FAILED_ATTEMPTS.getOrDefault(fingerprint, 0) + 1;
+        FAILED_ATTEMPTS.put(fingerprint, attempts);
+        if (attempts >= BLOCK_THRESHOLD) {
+            BLOCKED_UNTIL.put(fingerprint, LocalDateTime.now().plusMinutes(BLOCK_MINUTES));
+        }
+    }
+
+    private void resetFailures(String fingerprint) {
+        FAILED_ATTEMPTS.remove(fingerprint);
+        BLOCKED_UNTIL.remove(fingerprint);
+    }
+
+    private String normalize(String value) {
+        return value == null ? "" : value.trim().toLowerCase();
     }
 
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {

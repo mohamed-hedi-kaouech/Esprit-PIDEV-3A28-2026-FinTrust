@@ -7,6 +7,7 @@
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TableColumn?>
 <?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
@@ -65,6 +66,20 @@
                     <Label text="Statut des comptes" styleClass="admin-pie-title"/>
                     <PieChart fx:id="statusPieChart" prefWidth="290" prefHeight="220" legendVisible="true" labelsVisible="true" styleClass="admin-status-pie"/>
                 </VBox>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                <Label text="Recherche:" styleClass="form-label"/>
+                <TextField fx:id="searchField" promptText="Nom, email, role, statut, id..." prefWidth="320"/>
+
+                <Label text="Trier par:" styleClass="form-label"/>
+                <ComboBox fx:id="sortByCombo" prefWidth="170"/>
+
+                <Label text="Ordre:" styleClass="form-label"/>
+                <ComboBox fx:id="sortOrderCombo" prefWidth="120"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Reset filtre" onAction="#handleResetFilter" styleClass="button-secondary"/>
             </HBox>
 
             <VBox VBox.vgrow="ALWAYS" styleClass="admin-users-table-wrap">

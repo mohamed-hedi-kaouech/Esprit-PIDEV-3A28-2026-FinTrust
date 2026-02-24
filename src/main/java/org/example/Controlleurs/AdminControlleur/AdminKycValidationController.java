@@ -5,13 +5,21 @@ import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextArea;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
+import javafx.stage.Modality;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.Model.Kyc.KycFile;
@@ -27,9 +35,14 @@ import java.io.File;
 import java.net.URL;
 import java.nio.file.Files;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class AdminKycValidationController {
+    private static final Pattern JSON_PAIR = Pattern.compile("\"([^\"]+)\"\\s*:\\s*\"([^\"]*)\"");
 
     @FXML private TableView<KycAdminRow> kycTable;
     @FXML private TableColumn<KycAdminRow, Number> kycIdCol;
@@ -189,14 +202,18 @@ public class AdminKycValidationController {
             File image = chooser.showOpenDialog(getStage());
             if (image == null) return;
 
-            String token = qrScanService.decodeTokenFromImage(image);
-            int userId = qrScanService.resolveUserIdAndConsume(token);
+            String rawPayload = qrScanService.decodeTokenFromImage(image);
+            int userId = qrScanService.resolveUserIdAndConsume(rawPayload);
 
             refreshList();
             boolean selected = selectKycRowByUserId(userId);
             if (!selected) {
                 setInfo("Token valide, mais aucun dossier KYC trouve pour userId=" + userId, true);
                 return;
+            }
+            KycAdminRow row = kycTable.getSelectionModel().getSelectedItem();
+            if (row != null) {
+                showQrScanCard(rawPayload, row);
             }
             setInfo("QR scanne avec succes. Dossier KYC charge.", false);
         } catch (Exception e) {
@@ -302,5 +319,95 @@ public class AdminKycValidationController {
 
     private String safe(String s) {
         return s == null ? "" : s;
+    }
+
+    private void showQrScanCard(String rawPayload, KycAdminRow row) {
+        Map<String, String> data = parseJsonPairs(rawPayload);
+
+        VBox root = new VBox(12);
+        root.setPadding(new Insets(16));
+        root.getStyleClass().add("qr-scan-card-root");
+
+        StackPane badge = new StackPane();
+        badge.getStyleClass().add("qr-scan-badge-circle");
+        Label badgeText = new Label("QR");
+        badgeText.getStyleClass().add("qr-scan-badge-text");
+        badge.getChildren().add(badgeText);
+
+        Label title = new Label("Donnees scannees");
+        title.getStyleClass().add("qr-scan-title");
+
+        Label subtitle = new Label("Lecture QR client + KYC reussie");
+        subtitle.getStyleClass().add("qr-scan-subtitle");
+
+        HBox header = new HBox(10, badge, new VBox(2, title, subtitle));
+        header.setAlignment(Pos.CENTER_LEFT);
+
+        VBox details = new VBox(6,
+                line("Utilisateur", row.getNomComplet()),
+                line("Email", row.getEmail()),
+                line("User ID", String.valueOf(row.getUserId())),
+                line("Statut compte", valueFromPayloadOr(data, "statusCompte", "-")),
+                line("Statut KYC", row.getStatut() == null ? "-" : row.getStatut().name()),
+                line("CIN", safe(row.getCin())),
+                line("Date naissance", row.getDateNaissance() == null ? "-" : row.getDateNaissance().toString()),
+                line("Emis le", valueFromPayloadOr(data, "issuedAt", "-"))
+        );
+        details.getStyleClass().add("qr-scan-details-box");
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, javafx.scene.layout.Priority.ALWAYS);
+
+        Button closeBtn = new Button("Fermer");
+        closeBtn.getStyleClass().add("button-secondary");
+
+        HBox footer = new HBox(spacer, closeBtn);
+        footer.setAlignment(Pos.CENTER_RIGHT);
+
+        root.getChildren().addAll(header, details, footer);
+
+        Scene scene = new Scene(root, 430, 360);
+        URL cssUrl = getClass().getResource("/Styles/StyleWallet.css");
+        if (cssUrl != null) {
+            scene.getStylesheets().add(cssUrl.toExternalForm());
+        }
+
+        Stage modal = new Stage();
+        modal.initOwner(getStage());
+        modal.initModality(Modality.WINDOW_MODAL);
+        modal.setTitle("Resultat scan QR");
+        modal.setScene(scene);
+        closeBtn.setOnAction(e -> modal.close());
+        modal.showAndWait();
+    }
+
+    private HBox line(String key, String value) {
+        Label k = new Label(key + " :");
+        k.getStyleClass().add("qr-scan-key");
+        Label v = new Label(value == null || value.isBlank() ? "-" : value);
+        v.getStyleClass().add("qr-scan-value");
+        v.setWrapText(true);
+
+        HBox row = new HBox(8, k, v);
+        row.setAlignment(Pos.TOP_LEFT);
+        return row;
+    }
+
+    private Map<String, String> parseJsonPairs(String payload) {
+        Map<String, String> map = new HashMap<>();
+        if (payload == null || !payload.trim().startsWith("{")) {
+            return map;
+        }
+        Matcher m = JSON_PAIR.matcher(payload);
+        while (m.find()) {
+            map.put(m.group(1), m.group(2));
+        }
+        return map;
+    }
+
+    private String valueFromPayloadOr(Map<String, String> map, String key, String fallback) {
+        String value = map.get(key);
+        if (value == null || value.isBlank()) return fallback;
+        return value;
     }
 }

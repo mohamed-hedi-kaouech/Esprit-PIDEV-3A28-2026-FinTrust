@@ -1,4 +1,4 @@
-package org.example.Controlleurs.KycControlleur;
+﻿package org.example.Controlleurs.KycControlleur;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
@@ -7,6 +7,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.TextFormatter;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.Model.Kyc.KycFile;
@@ -27,8 +28,15 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+import java.util.Set;
+import java.util.function.UnaryOperator;
 
 public class KycFormController {
+    private static final long MAX_FILE_SIZE = 5L * 1024L * 1024L;
+    private static final Set<String> ALLOWED_EXT = Set.of("pdf", "jpg", "jpeg", "png");
+    private static final Set<String> ALLOWED_MIME = Set.of("application/pdf", "image/jpeg", "image/png");
+
     @FXML
     private Label statusLabel;
 
@@ -86,6 +94,17 @@ public class KycFormController {
                 data.getValue().getUpdatedAt() == null ? "-" : data.getValue().getUpdatedAt().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm"))
         ));
 
+        // CIN est String, mais uniquement chiffres (max 8) des la saisie.
+        UnaryOperator<TextFormatter.Change> cinFilter = change -> {
+            String next = change.getControlNewText();
+            if (next == null) return null;
+            if (!next.matches("\\d*")) return null;
+            if (next.length() > 8) return null;
+            return change;
+        };
+        cinField.setTextFormatter(new TextFormatter<>(cinFilter));
+        cinField.setPromptText("CIN (8 chiffres)");
+
         loadState();
         loadExistingFiles();
     }
@@ -101,6 +120,13 @@ public class KycFormController {
         List<File> files = chooser.showOpenMultipleDialog(getStage());
         if (files == null || files.isEmpty()) {
             return;
+        }
+        for (File file : files) {
+            String fileError = validateFile(file);
+            if (fileError != null) {
+                setInfo(fileError, true);
+                return;
+            }
         }
 
         selectedFiles.clear();
@@ -120,7 +146,7 @@ public class KycFormController {
                 return;
             }
 
-            String cin = cinField.getText();
+            String cin = cinField.getText() == null ? "" : cinField.getText().trim();
             if (!cin.matches("\\d{8}")) {
                 setInfo("Le CIN doit contenir exactement 8 chiffres.", true);
                 return;
@@ -182,6 +208,12 @@ public class KycFormController {
     }
 
     @FXML
+    private void goToSmartBreakFromKyc() {
+        session.setSmartBreakContext("KYC");
+        navigateTo("/Client/SmartBreakHub.fxml", "Pause Intelligente", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
     private void handleLogout() {
         session.logout();
         navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
@@ -232,6 +264,39 @@ public class KycFormController {
         selectedFilesList.getItems().setAll(lines);
     }
 
+    private String validateFile(File file) {
+        if (file == null || !file.exists() || !file.isFile()) {
+            return "Un fichier selectionne est invalide.";
+        }
+        long size = file.length();
+        if (size <= 0) {
+            return "Le fichier '" + file.getName() + "' est vide.";
+        }
+        if (size > MAX_FILE_SIZE) {
+            return "Le fichier '" + file.getName() + "' depasse 5MB.";
+        }
+
+        String name = file.getName() == null ? "" : file.getName().trim().toLowerCase(Locale.ROOT);
+        int dot = name.lastIndexOf('.');
+        String ext = dot >= 0 ? name.substring(dot + 1) : "";
+        if (!ALLOWED_EXT.contains(ext)) {
+            return "Type non autorise pour '" + file.getName() + "'. Formats: PDF/JPG/JPEG/PNG.";
+        }
+
+        try {
+            String mime = Files.probeContentType(file.toPath());
+            if (mime != null && !mime.isBlank()) {
+                String normalized = mime.toLowerCase(Locale.ROOT);
+                if (!ALLOWED_MIME.contains(normalized)) {
+                    return "MIME non autorise pour '" + file.getName() + "' : " + mime;
+                }
+            }
+        } catch (IOException ignored) {
+            // Si le type MIME est indisponible, on s'appuie sur extension + taille.
+        }
+        return null;
+    }
+
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -257,3 +322,4 @@ public class KycFormController {
         return (Stage) statusLabel.getScene().getWindow();
     }
 }
+

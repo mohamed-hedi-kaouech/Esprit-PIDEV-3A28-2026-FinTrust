@@ -26,6 +26,7 @@ import org.example.Service.AnalyticsService.UserScoreService;
 import org.example.Service.AnalyticsService.UserSegmentType;
 
 import java.net.URL;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -165,8 +166,13 @@ public class AdminAnalyticsDashboardController {
 
             XYChart.Series<String, Number> series = new XYChart.Series<>();
             series.setName("Logins / heure");
+            Map<String, Integer> byHour = new HashMap<>();
             for (HeatmapPoint p : analyticsService.getLoginHeatmapByHour()) {
-                series.getData().add(new XYChart.Data<>(p.bucket(), p.count()));
+                byHour.put(p.bucket(), p.count());
+            }
+            for (int h = 0; h < 24; h++) {
+                String bucket = String.format("%02d:00", h);
+                series.getData().add(new XYChart.Data<>(bucket, byHour.getOrDefault(bucket, 0)));
             }
             loginHourBarChart.getData().setAll(series);
 

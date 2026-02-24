@@ -11,6 +11,9 @@ public class SessionContext {
     private User currentUser;
     private KycStatus currentKycStatus;
     private String currentKycComment;
+    private String smartBreakContext = "PROFILE";
+    private boolean forceCaptchaOnNextLogin;
+    private String captchaTargetEmail;
 
     private SessionContext() {}
 
@@ -43,6 +46,35 @@ public class SessionContext {
         this.currentKycComment = currentKycComment;
     }
 
+    public String getSmartBreakContext() {
+        return smartBreakContext == null ? "PROFILE" : smartBreakContext;
+    }
+
+    public void setSmartBreakContext(String smartBreakContext) {
+        this.smartBreakContext = (smartBreakContext == null || smartBreakContext.isBlank()) ? "PROFILE" : smartBreakContext;
+    }
+
+    public boolean isForceCaptchaOnNextLogin() {
+        return forceCaptchaOnNextLogin;
+    }
+
+    public void setForceCaptchaOnNextLogin(boolean forceCaptchaOnNextLogin) {
+        this.forceCaptchaOnNextLogin = forceCaptchaOnNextLogin;
+    }
+
+    public String getCaptchaTargetEmail() {
+        return captchaTargetEmail;
+    }
+
+    public void setCaptchaTargetEmail(String captchaTargetEmail) {
+        this.captchaTargetEmail = captchaTargetEmail;
+    }
+
+    public void clearCaptchaRequirement() {
+        this.forceCaptchaOnNextLogin = false;
+        this.captchaTargetEmail = null;
+    }
+
     public boolean isLoggedIn() {
         return currentUser != null;
     }
@@ -70,5 +102,8 @@ public class SessionContext {
         currentUser = null;
         currentKycStatus = null;
         currentKycComment = null;
+        smartBreakContext = "PROFILE";
+        forceCaptchaOnNextLogin = false;
+        captchaTargetEmail = null;
     }
 }

@@ -57,6 +57,38 @@ public class KycService {
         return kycRepository.findFilesByKycId(kyc.getId());
     }
 
+    public KycStateResult updateClientBirthDate(User actor, LocalDate dateNaissance) {
+        ensureClient(actor);
+        if (dateNaissance == null) {
+            throw new IllegalArgumentException("La date de naissance est obligatoire.");
+        }
+        if (dateNaissance.isAfter(LocalDate.now())) {
+            throw new IllegalArgumentException("La date de naissance ne peut pas etre dans le futur.");
+        }
+
+        Kyc current = kycRepository.createIfMissing(actor.getId());
+        String cin = current.getCin() == null ? "" : current.getCin();
+        String adresse = current.getAdresse() == null ? "" : current.getAdresse();
+
+        KycStatus targetStatus = current.getStatut();
+        String commentaire = current.getCommentaireAdmin();
+        if (targetStatus == KycStatus.APPROUVE && !dateNaissance.equals(current.getDateNaissance())) {
+            targetStatus = KycStatus.EN_ATTENTE;
+            commentaire = null;
+        }
+
+        kycRepository.saveOrUpdateKyc(
+                actor.getId(),
+                cin,
+                adresse,
+                dateNaissance,
+                targetStatus,
+                commentaire,
+                LocalDateTime.now()
+        );
+        return getClientKycState(actor);
+    }
+
     public KycSubmitResult submitOrUpdateClientKyc(User actor,
                                                    String cinRaw,
                                                    String adresseRaw,

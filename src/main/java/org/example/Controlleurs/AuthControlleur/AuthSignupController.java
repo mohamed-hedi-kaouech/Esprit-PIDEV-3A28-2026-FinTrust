@@ -11,6 +11,7 @@ import javafx.stage.Stage;
 import org.example.Service.UserService.SignupRequest;
 import org.example.Service.UserService.SignupResult;
 import org.example.Service.UserService.UserService;
+import org.example.Utils.SessionContext;
 
 import java.io.IOException;
 
@@ -56,9 +57,11 @@ public class AuthSignupController {
         }
 
         showMessage(result.getMessage(), false);
-        if (result.getMessage() != null && result.getMessage().toLowerCase().contains("email de bienvenue envoye")) {
-            navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
-        }
+
+        SessionContext session = SessionContext.getInstance();
+        session.setForceCaptchaOnNextLogin(true);
+        session.setCaptchaTargetEmail(emailField == null ? null : emailField.getText());
+        navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
     }
 
     @FXML

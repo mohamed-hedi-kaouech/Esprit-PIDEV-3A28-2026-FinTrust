@@ -1089,6 +1089,26 @@
     -fx-background-color: linear-gradient(to bottom right, #f8fbff, #f1f6ff 50%, #eaf2ff);
 }
 
+.admin-ops-root .section-title,
+.admin-ops-root .section-subtitle,
+.admin-ops-root .form-label,
+.admin-ops-root .admin-pie-title {
+    -fx-text-fill: #113c70;
+}
+
+.admin-ops-root .game-stat-title {
+    -fx-text-fill: #1b4678;
+    -fx-font-weight: 800;
+}
+
+.admin-ops-root .game-stat-value {
+    -fx-text-fill: #0e2f58;
+}
+
+.admin-ops-root .list-view .list-cell {
+    -fx-text-fill: #113c70;
+}
+
 .admin-ops-hero {
     -fx-background-color: linear-gradient(to right, #0f3a78, #1d4d9c 55%, #2d6ad0);
     -fx-background-radius: 18;
@@ -1196,8 +1216,331 @@
     -fx-background-color: linear-gradient(to right, #ffe9e9, #ffdede);
 }
 
+/* ===== MEMORY GAME ===== */
+.memory-card {
+    -fx-background-color: linear-gradient(to bottom right, #1a4f9f, #2f70d9);
+    -fx-text-fill: white;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 20px;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-cursor: hand;
+}
+
+.memory-card:hover {
+    -fx-background-color: linear-gradient(to bottom right, #225fbe, #4285f4);
+}
+
 .chatbot-send-btn:pressed {
     -fx-background-color: linear-gradient(to right, #12306f, #265ccd);
     -fx-translate-y: 1;
     -fx-effect: dropshadow(gaussian, rgba(15,45,99,0.25), 8, 0.1, 0, 2);
+}
+
+/* ===== ASSISTANT IA ICON ===== */
+.assistant-ia-icon {
+    -fx-min-width: 30;
+    -fx-min-height: 30;
+    -fx-max-width: 30;
+    -fx-max-height: 30;
+    -fx-alignment: center;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 11px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+    -fx-background-color: linear-gradient(to bottom right, #1f4f9f, #3b80e8);
+    -fx-background-radius: 15;
+    -fx-effect: dropshadow(gaussian, rgba(23,76,146,0.28), 8, 0.2, 0, 2);
+}
+
+.assistant-ai-btn {
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-padding: 10 20;
+}
+
+.assistant-ai-btn-icon {
+    -fx-min-width: 22;
+    -fx-min-height: 22;
+    -fx-max-width: 22;
+    -fx-max-height: 22;
+    -fx-alignment: center;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 10px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #18468f;
+    -fx-background-color: #f2f8ff;
+    -fx-background-radius: 11;
+    -fx-border-color: #b9d0ee;
+    -fx-border-width: 1;
+    -fx-border-radius: 11;
+}
+
+/* ===== AUTH PAGES MODERN ===== */
+.auth-shell {
+    -fx-padding: 48 24 68 24;
+    -fx-alignment: top-center;
+}
+
+.auth-card {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f7fbff);
+    -fx-background-radius: 26;
+    -fx-border-color: #d8e6fb;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 26;
+    -fx-padding: 28 30 30 30;
+    -fx-effect: dropshadow(gaussian, rgba(11, 43, 88, 0.14), 26, 0.14, 0, 8);
+}
+
+.auth-header {
+    -fx-padding: 0 0 6 0;
+}
+
+.auth-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 36px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #0f2f5d;
+}
+
+.auth-subtitle {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #4c6f98;
+    -fx-wrap-text: true;
+    -fx-padding: 0 0 8 0;
+}
+
+.auth-label {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #20426e;
+    -fx-padding: 6 0 2 2;
+}
+
+.auth-field {
+    -fx-background-color: linear-gradient(to bottom, #fdfefe, #f4f8ff);
+    -fx-border-color: #bcd2f3;
+    -fx-border-width: 1.3;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-padding: 12 14;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-text-fill: #15375f;
+    -fx-prompt-text-fill: #86a1c4;
+}
+
+.auth-field:focused {
+    -fx-border-color: #2f6fcd;
+    -fx-border-width: 1.8;
+    -fx-effect: dropshadow(gaussian, rgba(47,111,205,0.24), 10, 0.15, 0, 1);
+}
+
+.auth-primary-btn {
+    -fx-background-color: linear-gradient(to right, #123d82, #2f74e5);
+    -fx-text-fill: white;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 15px;
+    -fx-font-weight: 800;
+    -fx-padding: 13 28;
+    -fx-background-radius: 40;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(18,61,130,0.30), 14, 0.18, 0, 4);
+}
+
+.auth-primary-btn:hover {
+    -fx-background-color: linear-gradient(to right, #154a9d, #3b84fb);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+.auth-secondary-btn {
+    -fx-background-color: white;
+    -fx-text-fill: #18457d;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 20;
+    -fx-background-radius: 30;
+    -fx-border-color: #24538f;
+    -fx-border-width: 1.4;
+    -fx-border-radius: 30;
+    -fx-cursor: hand;
+}
+
+.auth-secondary-btn:hover {
+    -fx-background-color: #eef5ff;
+}
+
+.auth-message {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #2c517f;
+}
+
+.auth-link {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #1f63c4;
+    -fx-border-color: transparent;
+}
+
+.auth-link:hover {
+    -fx-text-fill: #0f4ba1;
+}
+
+.auth-link-strong {
+    -fx-font-weight: 800;
+    -fx-text-fill: #184f9a;
+}
+
+/* ===== QR SCAN POPUP ===== */
+.qr-scan-card-root {
+    -fx-background-color: linear-gradient(to bottom right, #f6faff, #eef4ff);
+    -fx-background-radius: 18;
+    -fx-border-color: #d1e1f8;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 18;
+}
+
+.qr-scan-badge-circle {
+    -fx-min-width: 46;
+    -fx-min-height: 46;
+    -fx-max-width: 46;
+    -fx-max-height: 46;
+    -fx-background-color: linear-gradient(to bottom right, #194b96, #3473de);
+    -fx-background-radius: 23;
+    -fx-alignment: center;
+    -fx-effect: dropshadow(gaussian, rgba(25,75,150,0.33), 12, 0.2, 0, 2);
+}
+
+.qr-scan-badge-text {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 13px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.qr-scan-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #123f72;
+}
+
+.qr-scan-subtitle {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #4e7098;
+}
+
+.qr-scan-details-box {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-border-color: #d2e2fa;
+    -fx-border-width: 1;
+    -fx-border-radius: 14;
+    -fx-padding: 12;
+}
+
+.qr-scan-key {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #2f5684;
+    -fx-min-width: 110;
+}
+
+.qr-scan-value {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #183a63;
+}
+
+/* ===== SMART BREAK HUB ===== */
+.smartbreak-root {
+    -fx-background-color: linear-gradient(to bottom right, #f8fbff, #eef5ff);
+}
+
+.smartbreak-hero {
+    -fx-background-color: linear-gradient(to right, #1a4f9f, #3c79dc);
+    -fx-background-radius: 18;
+    -fx-padding: 14 16;
+    -fx-border-color: #2a62b8;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 18;
+}
+
+.smartbreak-hero-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 19px;
+    -fx-font-weight: 800;
+    -fx-text-fill: white;
+}
+
+.smartbreak-hero-subtitle {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 12px;
+    -fx-font-weight: 600;
+    -fx-text-fill: #d9e8ff;
+}
+
+.smartbreak-game-card {
+    -fx-background-color: linear-gradient(to bottom right, #ffffff, #f5faff);
+    -fx-border-color: #cfe1fa;
+    -fx-border-width: 1.2;
+    -fx-border-radius: 16;
+    -fx-background-radius: 16;
+    -fx-padding: 14;
+    -fx-min-height: 210;
+}
+
+.smartbreak-game-card-dino {
+    -fx-background-color: linear-gradient(to bottom right, #f3f9ff, #e9f5ff);
+}
+
+.smartbreak-game-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+    -fx-text-fill: #113c70;
+}
+
+.smartbreak-game-desc {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
+    -fx-font-weight: 500;
+    -fx-text-fill: #41688f;
+}
+
+/* ===== DINO GAME ===== */
+.dino-game-pane {
+    -fx-background-color: linear-gradient(to bottom, #eff7ff, #dfefff);
+    -fx-border-color: #bcd7f5;
+    -fx-border-width: 1.4;
+    -fx-border-radius: 14;
+    -fx-background-radius: 14;
+    -fx-padding: 6;
+}
+
+.dino-player {
+    -fx-background-color: linear-gradient(to bottom right, #18468f, #2f72dd);
+    -fx-background-radius: 7;
+    -fx-effect: dropshadow(gaussian, rgba(24,70,143,0.30), 8, 0.18, 0, 2);
+}
+
+.dino-ground {
+    -fx-background-color: #8aa8c9;
+}
+
+.dino-obstacle {
+    -fx-background-color: linear-gradient(to bottom, #2b8b57, #1f6e44);
+    -fx-background-radius: 4;
 }

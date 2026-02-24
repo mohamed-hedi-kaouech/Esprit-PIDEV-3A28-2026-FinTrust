@@ -1,19 +1,23 @@
-package org.example.Controlleurs.ClientControlleur;
+﻿package org.example.Controlleurs.ClientControlleur;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
 import org.example.Model.User.User;
 import org.example.Service.AnalyticsService.ClientGamificationSnapshot;
 import org.example.Service.AnalyticsService.GamificationService;
+import org.example.Service.KycService.KycService;
+import org.example.Service.KycService.KycStateResult;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
 import java.net.URL;
+import java.time.LocalDate;
 import java.util.regex.Pattern;
 
 public class ClientProfileController {
@@ -21,6 +25,7 @@ public class ClientProfileController {
     @FXML private TextField nomField;
     @FXML private TextField emailField;
     @FXML private TextField numTelField;
+    @FXML private DatePicker dateNaissancePicker;
     @FXML private Label rewardLevelLabel;
     @FXML private Label rewardPointsLabel;
     @FXML private Label rewardMedalLabel;
@@ -28,6 +33,7 @@ public class ClientProfileController {
 
     private final UserService userService = new UserService();
     private final GamificationService gamificationService = new GamificationService();
+    private final KycService kycService = new KycService();
 
     private static final Pattern EMAIL_PATTERN =
             Pattern.compile("^[A-Za-z0-9+_.-]+@[A-Za-z0-9.-]+$");
@@ -45,6 +51,13 @@ public class ClientProfileController {
         if (nomField != null) nomField.setText(nullSafe(user.getNom()));
         if (emailField != null) emailField.setText(nullSafe(user.getEmail()));
         if (numTelField != null) numTelField.setText(nullSafe(user.getNumTel()));
+        try {
+            KycStateResult state = kycService.getClientKycState(user);
+            if (dateNaissancePicker != null) {
+                dateNaissancePicker.setValue(state.getDateNaissance());
+            }
+        } catch (Exception ignored) {
+        }
         refreshRewards(user);
     }
 
@@ -72,6 +85,7 @@ public class ClientProfileController {
         String nom = nomField != null ? nomField.getText().trim() : "";
         String email = emailField != null ? emailField.getText().trim() : "";
         String tel = numTelField != null ? numTelField.getText().trim() : "";
+        LocalDate dateNaissance = dateNaissancePicker != null ? dateNaissancePicker.getValue() : null;
 
         if (nom.length() < 2) {
             setInfo("Nom invalide (min 2 caracteres).", true);
@@ -85,6 +99,10 @@ public class ClientProfileController {
             setInfo("Telephone invalide.", true);
             return;
         }
+        if (dateNaissance == null) {
+            setInfo("Date de naissance obligatoire.", true);
+            return;
+        }
 
         try {
             current.setNom(nom);
@@ -92,9 +110,16 @@ public class ClientProfileController {
             current.setNumTel(tel);
 
             userService.updateUserProfile(current);
+            KycStateResult state = kycService.updateClientBirthDate(current, dateNaissance);
+            SessionContext.getInstance().setCurrentKycStatus(state.getStatus());
+            SessionContext.getInstance().setCurrentKycComment(state.getCommentaireAdmin());
             SessionContext.getInstance().setCurrentUser(current);
 
-            setInfo("Profil modifie avec succes.", false);
+            String msg = "Profil modifie avec succes.";
+            if (state.getStatus() == org.example.Model.Kyc.KycStatus.EN_ATTENTE) {
+                msg += " KYC remis en attente apres modification de date de naissance.";
+            }
+            setInfo(msg, false);
 
         } catch (Exception e) {
             e.printStackTrace();
@@ -105,6 +130,12 @@ public class ClientProfileController {
     @FXML
     private void goToDashboard() {
         navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToSmartBreakFromProfile() {
+        SessionContext.getInstance().setSmartBreakContext("PROFILE");
+        navigateTo("/Client/SmartBreakHub.fxml", "Pause Intelligente", "/Styles/StyleWallet.css");
     }
 
     @FXML
@@ -150,3 +181,4 @@ public class ClientProfileController {
         return s == null ? "" : s;
     }
 }
+

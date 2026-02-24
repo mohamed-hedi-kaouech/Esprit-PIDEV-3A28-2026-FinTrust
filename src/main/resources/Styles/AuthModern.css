@@ -1,0 +1,146 @@
+/* =========================
+   FinTrust - Auth Modern UI
+   ========================= */
+
+.auth-root {
+    -fx-font-family: 'Poppins', 'Plus Jakarta Sans', 'Segoe UI', 'Inter', 'Roboto', 'Arial';
+    -fx-background-color: linear-gradient(to bottom right, #f4fbff, #e8f5ff 40%, #f1f9ff);
+}
+
+.auth-root .header-panel {
+    -fx-background-color: linear-gradient(to right, #cfeeff, #bfe7ff);
+    -fx-padding: 18 28 18 28;
+    -fx-min-height: 78;
+    -fx-effect: dropshadow(gaussian, rgba(30, 104, 170, 0.20), 20, 0.15, 0, 8);
+}
+
+.auth-root .logo-text {
+    -fx-text-fill: #0d3d66;
+    -fx-font-size: 29px;
+    -fx-font-weight: 800;
+}
+
+.auth-root .badge {
+    -fx-background-color: rgba(255,255,255,0.82);
+    -fx-background-radius: 999;
+    -fx-padding: 6 12 6 12;
+    -fx-text-fill: #1b5f96;
+    -fx-font-size: 12px;
+    -fx-font-weight: 700;
+}
+
+.auth-root .auth-shell {
+    -fx-padding: 46 26 70 26;
+}
+
+.auth-root .auth-card {
+    -fx-background-color: rgba(255,255,255,0.96);
+    -fx-background-radius: 22;
+    -fx-border-radius: 22;
+    -fx-border-color: #cae5f7;
+    -fx-border-width: 1;
+    -fx-padding: 30 30 28 30;
+    -fx-effect: dropshadow(gaussian, rgba(25, 90, 145, 0.20), 26, 0.16, 0, 12);
+}
+
+.auth-root .auth-title {
+    -fx-text-fill: #0f3e69;
+    -fx-font-size: 32px;
+    -fx-font-weight: 800;
+}
+
+.auth-root .auth-subtitle {
+    -fx-text-fill: #3f6f99;
+    -fx-font-size: 15px;
+    -fx-font-weight: 500;
+    -fx-padding: 0 0 10 0;
+}
+
+.auth-root .auth-label {
+    -fx-text-fill: #1e5784;
+    -fx-font-size: 15px;
+    -fx-font-weight: 700;
+}
+
+.auth-root .auth-field {
+    -fx-background-color: #f5fbff;
+    -fx-background-radius: 14;
+    -fx-border-radius: 14;
+    -fx-border-color: #b9daf4;
+    -fx-border-width: 1;
+    -fx-text-fill: #163d5f;
+    -fx-prompt-text-fill: #76a1c3;
+    -fx-padding: 13 16 13 16;
+    -fx-font-size: 15px;
+}
+
+.auth-root .auth-field:focused {
+    -fx-border-color: #4ea8e0;
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(gaussian, rgba(78,168,224,0.32), 18, 0.2, 0, 0);
+}
+
+.auth-root .auth-primary-btn {
+    -fx-background-radius: 18;
+    -fx-border-radius: 18;
+    -fx-background-color: linear-gradient(to right, #59bdf3, #3f8fdc);
+    -fx-text-fill: #ffffff;
+    -fx-font-size: 17px;
+    -fx-font-weight: 800;
+    -fx-padding: 13 24 13 24;
+    -fx-cursor: hand;
+    -fx-effect: dropshadow(gaussian, rgba(44,114,170,0.30), 18, 0.20, 0, 8);
+}
+
+.auth-root .auth-primary-btn:hover {
+    -fx-background-color: linear-gradient(to right, #66c7f7, #4e9ce5);
+}
+
+.auth-root .auth-primary-btn:pressed {
+    -fx-translate-y: 1;
+    -fx-effect: dropshadow(gaussian, rgba(44,114,170,0.22), 12, 0.18, 0, 5);
+}
+
+.auth-root .auth-secondary-btn {
+    -fx-background-color: #f2f9ff;
+    -fx-text-fill: #225c8c;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-padding: 10 18;
+    -fx-background-radius: 16;
+    -fx-border-color: #b9daf4;
+    -fx-border-width: 1;
+    -fx-border-radius: 16;
+}
+
+.auth-root .auth-secondary-btn:hover {
+    -fx-background-color: #e7f4ff;
+}
+
+.auth-root .auth-link {
+    -fx-text-fill: #2c7aba;
+    -fx-font-size: 14px;
+    -fx-font-weight: 700;
+    -fx-underline: false;
+}
+
+.auth-root .auth-link:hover {
+    -fx-text-fill: #1e5f96;
+    -fx-underline: true;
+}
+
+.auth-root .auth-link-strong {
+    -fx-text-fill: #216ca8;
+    -fx-font-weight: 800;
+}
+
+.auth-root .auth-message {
+    -fx-text-fill: #2a658f;
+    -fx-font-size: 14px;
+    -fx-font-weight: 600;
+}
+
+.auth-root .auth-header {
+    -fx-alignment: center;
+    -fx-padding: 0 0 4 0;
+}

@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ClientControlleur;
+﻿package org.example.Controlleurs.ClientControlleur;
 
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -156,6 +156,12 @@ public class ClientDashboardController {
     }
 
     @FXML
+    private void goToSmartBreakFromProfile() {
+        session.setSmartBreakContext("PROFILE");
+        navigateTo("/Client/SmartBreakHub.fxml", "Pause Intelligente", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
     private void goToNotifications() {
         navigateTo("/Client/Notifications.fxml", "Notifications", "/Styles/StyleWallet.css");
     }
@@ -251,3 +257,4 @@ public class ClientDashboardController {
         qrInfoLabel.setStyle(isError ? "-fx-text-fill: #b91c1c;" : "-fx-text-fill: #166534; -fx-font-weight: 600;");
     }
 }
+

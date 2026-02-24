@@ -37,7 +37,7 @@
             <Label fx:id="commentLabel" text="Commentaire" styleClass="section-subtitle status-banner" wrapText="true"/>
 
             <Label text="CIN" styleClass="form-label"/>
-            <TextField fx:id="cinField" promptText="Ex: AB123456"/>
+            <TextField fx:id="cinField" promptText="CIN (8 chiffres)"/>
 
             <Label text="Adresse" styleClass="form-label"/>
             <TextArea fx:id="adresseField" promptText="Adresse complete" prefRowCount="2" wrapText="true"/>
@@ -48,6 +48,7 @@
             <HBox spacing="10">
                 <Button text="Choisir fichiers" onAction="#chooseFiles" styleClass="button-primary"/>
                 <Button text="Soumettre KYC" onAction="#submitKyc" styleClass="button-secondary"/>
+                <Button text="Pause et Jeux" onAction="#goToSmartBreakFromKyc" styleClass="button-secondary"/>
             </HBox>
 
             <Label text="Fichiers selectionnes" styleClass="section-subtitle"/>
@@ -73,3 +74,5 @@
         </ScrollPane>
     </center>
 </BorderPane>
+
+

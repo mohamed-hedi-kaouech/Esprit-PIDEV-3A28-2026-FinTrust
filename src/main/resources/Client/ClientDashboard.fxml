@@ -60,16 +60,22 @@
             </VBox>
 
             <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
-                <Label text="🤖 Assistant intelligent:" styleClass="form-label"/>
+                <Label text="AI" styleClass="assistant-ia-icon"/>
+                <Label text="Assistant IA:" styleClass="form-label"/>
                 <Label text="Besoin d'aide rapide sur votre compte ?" styleClass="section-subtitle"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="🤖 Ouvrir Assistant" onAction="#goToChatbot" styleClass="button-primary"/>
+                <Button text="Ouvrir l'assistant IA" onAction="#goToChatbot" styleClass="button-primary assistant-ai-btn">
+                    <graphic>
+                        <Label text="AI" styleClass="assistant-ai-btn-icon"/>
+                    </graphic>
+                </Button>
             </HBox>
 
             <HBox spacing="12" fillHeight="true">
                 <Button fx:id="profileButton" text="Profil" onAction="#goToProfile" styleClass="button-primary"/>
                 <Button fx:id="walletButton" text="Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
                 <Button text="KYC" onAction="#goToKycForm" styleClass="button-secondary"/>
+                <Button text="Pause et Jeux" onAction="#goToSmartBreakFromProfile" styleClass="button-secondary"/>
                 <Button fx:id="loanButton" text="Loan" onAction="#goToLoan" styleClass="button-secondary"/>
                 <Button fx:id="budgetButton" text="Budget" onAction="#goToBudget" styleClass="button-secondary"/>
                 <Button fx:id="publicationButton" text="Publications" onAction="#goToPublications" styleClass="button-secondary"/>
@@ -93,3 +99,5 @@
         </ScrollPane>
     </center>
 </BorderPane>
+
+
