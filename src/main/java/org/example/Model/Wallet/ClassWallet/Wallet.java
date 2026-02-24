@@ -1,122 +1,64 @@
 package org.example.Model.Wallet.ClassWallet;
 
+// CORRECTION: Ajout de "Wallet" dans le chemin
 import org.example.Model.Wallet.EnumWallet.WalletDevise;
 import org.example.Model.Wallet.EnumWallet.WalletStatut;
-
 import java.time.LocalDateTime;
 
 public class Wallet {
-
-    // ===== Attributes =====
-    private int idWallet;
-    private String nomProprietaire;
-    private Double solde;
+    private int id_wallet;
+    private String nom_proprietaire;
+    private double solde;
     private WalletDevise devise;
     private WalletStatut statut;
-    private LocalDateTime dateCreation;
+    private LocalDateTime date_creation;
 
-    // ===== Constructors =====
-
-    // Constructeur vide
+    // Constructeurs
     public Wallet() {
-        this.dateCreation = LocalDateTime.now();
+        this.date_creation = LocalDateTime.now();
+        this.statut = WalletStatut.DRAFT;
     }
 
-    // Constructeur pour INSERT (sans id)
-    public Wallet(String nomProprietaire, Double solde,
-                  WalletDevise devise, WalletStatut statut) {
-        this.nomProprietaire = nomProprietaire;
+    public Wallet(String nom_proprietaire, double solde, WalletDevise devise) {
+        this.nom_proprietaire = nom_proprietaire;
         this.solde = solde;
         this.devise = devise;
-        this.statut = statut;
-        this.dateCreation = LocalDateTime.now();
+        this.statut = WalletStatut.DRAFT;
+        this.date_creation = LocalDateTime.now();
     }
 
-    // Constructeur pour UPDATE / SELECT (avec id)
-    public Wallet(int idWallet, String nomProprietaire, Double solde,
-                  WalletDevise devise, WalletStatut statut,
-                  LocalDateTime dateCreation) {
-        this.idWallet = idWallet;
-        this.nomProprietaire = nomProprietaire;
-        this.solde = solde;
-        this.devise = devise;
-        this.statut = statut;
-        this.dateCreation = dateCreation;
+    // Getters et Setters
+    public int getId_wallet() { return id_wallet; }
+    public void setId_wallet(int id_wallet) { this.id_wallet = id_wallet; }
+
+    public String getNom_proprietaire() { return nom_proprietaire; }
+    public void setNom_proprietaire(String nom_proprietaire) {
+        if (nom_proprietaire == null || nom_proprietaire.trim().isEmpty()) {
+            throw new IllegalArgumentException("Le nom du propriétaire est obligatoire");
+        }
+        this.nom_proprietaire = nom_proprietaire;
     }
 
-    // ===== Getters & Setters =====
-
-    public int getIdWallet() {
-        return idWallet;
-    }
-
-    public void setIdWallet(int idWallet) {
-        this.idWallet = idWallet;
-    }
-
-    public String getNomProprietaire() {
-        return nomProprietaire;
-    }
-
-    public void setNomProprietaire(String nomProprietaire) {
-        this.nomProprietaire = nomProprietaire;
-    }
-
-    public Double getSolde() {
-        return solde;
-    }
-
-    public void setSolde(Double solde) {
+    public double getSolde() { return solde; }
+    public void setSolde(double solde) {
+        if (solde < 0) throw new IllegalArgumentException("Le solde ne peut pas être négatif");
         this.solde = solde;
     }
 
-    public WalletDevise getDevise() {
-        return devise;
-    }
-
+    public WalletDevise getDevise() { return devise; }
     public void setDevise(WalletDevise devise) {
+        if (devise == null) throw new IllegalArgumentException("La devise est obligatoire");
         this.devise = devise;
     }
 
-    public WalletStatut getStatut() {
-        return statut;
-    }
+    public WalletStatut getStatut() { return statut; }
+    public void setStatut(WalletStatut statut) { this.statut = statut; }
 
-    public void setStatut(WalletStatut statut) {
-        this.statut = statut;
-    }
-
-    public LocalDateTime getDateCreation() {
-        return dateCreation;
-    }
-
-    public void setDateCreation(LocalDateTime dateCreation) {
-        this.dateCreation = dateCreation;
-    }
-
-    // ===== toString =====
+    public LocalDateTime getDate_creation() { return date_creation; }
+    public void setDate_creation(LocalDateTime date_creation) { this.date_creation = date_creation; }
 
     @Override
     public String toString() {
-        return "Wallet{" +
-                "idWallet=" + idWallet +
-                ", nomProprietaire='" + nomProprietaire + '\'' +
-                ", solde=" + solde +
-                ", devise=" + devise +
-                ", statut=" + statut +
-                ", dateCreation=" + dateCreation +
-                '}';
-    }
-
-    // ===== equals (basé sur id) =====
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Wallet wallet = (Wallet) o;
-
-        return idWallet == wallet.idWallet;
+        return nom_proprietaire + " - " + devise + " - " + solde;
     }
 }

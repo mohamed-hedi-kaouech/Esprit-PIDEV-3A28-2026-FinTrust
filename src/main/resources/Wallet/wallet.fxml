@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox alignment="TOP_CENTER" spacing="10" stylesheets="@../Styles/StyleWallet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.WalletControlleur.WalletController">
+    <children>
+        <Label styleClass="header-label" text="Gestion des Wallets">
+            <font><Font name="System Bold" size="18.0" /></font>
+        </Label>
+
+        <TitledPane animated="false" expanded="true" text="Formulaire Wallet">
+            <content>
+                <GridPane hgap="10" vgap="10">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="150.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="200.0" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                        <RowConstraints minHeight="10.0" vgrow="SOMETIMES" />
+                    </rowConstraints>
+                    <children>
+                        <Label text="Nom propriétaire :" />
+                        <TextField fx:id="txtNomProprietaire" GridPane.columnIndex="1" />
+                        <Label fx:id="lblErrorNom" styleClass="error-label" textFill="RED" GridPane.columnIndex="2" />
+
+                        <Label text="Solde initial :" GridPane.rowIndex="1" />
+                        <TextField fx:id="txtSolde" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                        <Label fx:id="lblErrorSolde" styleClass="error-label" textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+
+                        <Label text="Devise :" GridPane.rowIndex="2" />
+                        <ComboBox fx:id="comboDevise" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                        <Label fx:id="lblErrorDevise" styleClass="error-label" textFill="RED" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+
+                        <Label text="Statut :" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="comboStatut" prefWidth="200.0" GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                    </children>
+                    <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
+                </GridPane>
+            </content>
+        </TitledPane>
+
+        <HBox alignment="CENTER" spacing="10">
+            <children>
+                <Button mnemonicParsing="false" onAction="#handleAjouter" styleClass="action-button" text="Ajouter" />
+                <Button mnemonicParsing="false" onAction="#handleModifier" styleClass="action-button" text="Modifier" />
+                <Button mnemonicParsing="false" onAction="#handleSupprimer" styleClass="action-button" text="Supprimer" />
+                <Button mnemonicParsing="false" onAction="#handleVider" styleClass="action-button" text="Vider" />
+            </children>
+            <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
+        </HBox>
+
+        <TitledPane animated="false" expanded="true" text="Liste des Wallets" VBox.vgrow="ALWAYS">
+            <content>
+                <TableView fx:id="tableViewWallet" VBox.vgrow="ALWAYS">
+                    <columns>
+                        <TableColumn fx:id="colId" prefWidth="75" text="ID" />
+                        <TableColumn fx:id="colNom" prefWidth="200" text="Propriétaire" />
+                        <TableColumn fx:id="colSolde" prefWidth="100" text="Solde" />
+                        <TableColumn fx:id="colDevise" prefWidth="100" text="Devise" />
+                        <TableColumn fx:id="colStatut" prefWidth="100" text="Statut" />
+                        <TableColumn fx:id="colDate" prefWidth="150" text="Date création" />
+                    </columns>
+                </TableView>
+            </content>
+        </TitledPane>
+    </children>
+    <padding><Insets bottom="10" left="10" right="10" top="10" /></padding>
+</VBox>

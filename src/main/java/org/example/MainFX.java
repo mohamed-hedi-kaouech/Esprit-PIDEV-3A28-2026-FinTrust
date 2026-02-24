@@ -6,32 +6,32 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-import java.io.IOException;
-import java.util.Objects;
-
 public class MainFX extends Application {
-
-    public static void main(String[] args) {
-        launch(args);
-    }
 
     @Override
     public void start(Stage primaryStage) {
-
         try {
-            Parent root = FXMLLoader.load(
-                    Objects.requireNonNull(
-                            getClass().getResource("/Wallet/CreateWalletGUI.fxml")
-                    )
-            );
+            // Charge le fichier FXML du dashboard
+            Parent root = FXMLLoader.load(getClass().getResource("/Wallet/dashboard.fxml"));
 
             Scene scene = new Scene(root);
-            primaryStage.setTitle("Wallet Manager");
+
+            // Ajoute le CSS
+            String css = getClass().getResource("/Styles/StyleWallet.css").toExternalForm();
+            scene.getStylesheets().add(css);
+
+            primaryStage.setTitle("FinTrust - Gestion Bancaire");
+            primaryStage.setMaximized(true);
             primaryStage.setScene(scene);
             primaryStage.show();
 
-        } catch (IOException e) {
+        } catch(Exception e) {
             e.printStackTrace();
+            System.err.println("Erreur lors du chargement de l'application : " + e.getMessage());
         }
+    }
+
+    public static void main(String[] args) {
+        launch(args);
     }
 }

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox fx:id="root" alignment="TOP_CENTER" spacing="10" stylesheets="@../Styles/StyleWallet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.WalletControlleur.DashboardController">
+    <children>
+        <MenuBar styleClass="menu-bar">
+            <menus>
+                <Menu mnemonicParsing="false" text="Fichier">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleQuitter" text="Quitter" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Gestion">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#handleGestionWallet" text="Wallets" />
+                        <MenuItem mnemonicParsing="false" onAction="#handleGestionTransaction" text="Transactions" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+
+        <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-panel">
+            <children>
+                <Label text="FinTrust" styleClass="logo-label">
+                    <font><Font name="System Bold" size="24.0" /></font>
+                </Label>
+                <Label text="Gestion des Wallets" styleClass="slogan-label" />
+                <Region HBox.hgrow="ALWAYS" />
+                <Button mnemonicParsing="false" onAction="#handleRefresh" styleClass="action-button" text="Rafraîchir" />
+            </children>
+            <padding><Insets bottom="10" left="20" right="20" top="10" /></padding>
+        </HBox>
+
+        <HBox spacing="20" VBox.vgrow="ALWAYS">
+            <children>
+                <VBox spacing="20" styleClass="sidebar">
+                    <children>
+                        <Label styleClass="section-title" text="Statistiques" />
+                        <VBox spacing="10" styleClass="stat-card">
+                            <children>
+                                <Label styleClass="stat-label" text="Total Wallets" />
+                                <Label fx:id="lblTotalWallets" styleClass="stat-value" text="0" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="10" styleClass="stat-card">
+                            <children>
+                                <Label styleClass="stat-label" text="Total Transactions" />
+                                <Label fx:id="lblTotalTransactions" styleClass="stat-value" text="0" />
+                            </children>
+                        </VBox>
+                        <VBox spacing="10" styleClass="stat-card">
+                            <children>
+                                <Label styleClass="stat-label" text="Solde Total" />
+                                <Label fx:id="lblSoldeTotal" styleClass="stat-value" text="0.00 TND" />
+                            </children>
+                        </VBox>
+
+                        <Label styleClass="section-title" text="Actions Rapides">
+                            <VBox.margin><Insets top="20" /></VBox.margin>
+                        </Label>
+                        <Button mnemonicParsing="false" onAction="#handleGestionWallet" styleClass="action-button" text="Gérer les Wallets" />
+                        <Button mnemonicParsing="false" onAction="#handleGestionTransaction" styleClass="action-button" text="Gérer les Transactions" />
+                    </children>
+                    <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+                </VBox>
+
+                <VBox spacing="20" HBox.hgrow="ALWAYS">
+                    <children>
+                        <Label styleClass="section-title" text="Wallets Récents" />
+                        <TableView fx:id="tableViewWallets" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colId" prefWidth="75" text="ID" />
+                                <TableColumn fx:id="colProprietaire" prefWidth="200" text="Propriétaire" />
+                                <TableColumn fx:id="colSolde" prefWidth="100" text="Solde" />
+                                <TableColumn fx:id="colDevise" prefWidth="80" text="Devise" />
+                                <TableColumn fx:id="colStatut" prefWidth="100" text="Statut" />
+                            </columns>
+                        </TableView>
+
+                        <HBox spacing="20">
+                            <children>
+                                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="section-title" text="Transactions Récentes" />
+                                        <ListView fx:id="recentTransactionsList" prefHeight="150" />
+                                    </children>
+                                </VBox>
+                                <VBox spacing="10" HBox.hgrow="ALWAYS">
+                                    <children>
+                                        <Label styleClass="section-title" text="Répartition par Devise" />
+                                        <PieChart fx:id="pieChartWallets" prefHeight="150" />
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+                    </children>
+                    <padding><Insets bottom="20" left="20" right="20" top="20" /></padding>
+                </VBox>
+            </children>
+        </HBox>
+    </children>
+</VBox>
