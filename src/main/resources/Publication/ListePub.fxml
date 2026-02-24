@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.PublicationControlleur.ListPubController"
+            prefHeight="600.0"
+            prefWidth="900.0"
+            style="-fx-background-color: linear-gradient(to bottom, #e6f0ff, #f7fbff);"
+            stylesheets="@/Styles/BlueTheme.css">
+
+    <VBox spacing="20.0"
+          AnchorPane.topAnchor="0.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0">
+
+        <padding>
+            <Insets top="30.0" left="30.0" right="30.0" bottom="30.0"/>
+        </padding>
+
+        <!-- Header -->
+        <HBox alignment="CENTER_LEFT" spacing="20.0">
+
+            <Button text="⬅ Retour"
+                    onAction="#goBackToMenu"
+                    prefWidth="120.0" styleClass="btn-back"/>
+
+            <Label text="Liste des Publications" styleClass="header-title">
+                <font>
+                    <Font name="System Bold" size="24"/>
+                </font>
+            </Label>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="➕ Nouvelle Publication"
+                    onAction="#goToCreatePage"
+                    prefWidth="200.0" styleClass="btn-primary"/>
+
+            <Button text="Statistiques Feedback"
+                    onAction="#goToFeedbackStats"
+                    prefWidth="180.0"/>
+
+            <!-- BOUTON CLIENT -->
+            <Button text="Client"
+                    onAction="#goToClientView"
+                    prefWidth="120.0"/>
+        </HBox>
+
+        <!-- Search Section -->
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField"
+                       promptText="🔍 Rechercher une publication..."
+                       prefWidth="300.0"/>
+
+            <Button text="Rechercher"
+                    onAction="#handleSearch"/>
+
+            <Button text="Réinitialiser"
+                    onAction="#handleReset"/>
+        </HBox>
+
+        <!-- ListView -->
+        <ListView fx:id="publicationListView"
+                  VBox.vgrow="ALWAYS"/>
+
+        <!-- Footer Info -->
+        <HBox alignment="CENTER">
+            <Label fx:id="totalPublicationsLabel"
+                   text="Total: 0 publications"/>
+        </HBox>
+
+    </VBox>
+</AnchorPane>

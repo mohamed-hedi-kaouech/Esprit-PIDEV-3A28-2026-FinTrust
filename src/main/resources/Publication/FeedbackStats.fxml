@@ -1,0 +1,108 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.LineChart?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.PublicationControlleur.FeedbackStatsController"
+            prefWidth="1200.0" prefHeight="780.0"
+            stylesheets="@/Styles/BlueTheme.css">
+
+    <VBox spacing="14.0" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <padding>
+            <Insets top="16.0" right="16.0" bottom="16.0" left="16.0"/>
+        </padding>
+
+        <HBox alignment="CENTER_LEFT" spacing="10.0">
+            <Button text="Retour" onAction="#goBack" styleClass="btn-outline"/>
+            <Label text="Dashboard Feedback Publications" styleClass="card-title">
+                <font>
+                    <Font size="20.0"/>
+                </font>
+            </Label>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Actualiser" onAction="#refresh" styleClass="btn-primary"/>
+        </HBox>
+
+        <HBox spacing="10.0">
+            <VBox spacing="4.0" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label text="Total Likes"/>
+                <Label fx:id="totalLikesLabel" text="0" styleClass="card-title"/>
+            </VBox>
+            <VBox spacing="4.0" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label text="Total Dislikes"/>
+                <Label fx:id="totalDislikesLabel" text="0" styleClass="card-title"/>
+            </VBox>
+            <VBox spacing="4.0" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label text="Ratio Like/Dislike"/>
+                <Label fx:id="likeRatioLabel" text="0%" styleClass="card-title"/>
+            </VBox>
+            <VBox spacing="4.0" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label text="Note Moyenne"/>
+                <Label fx:id="avgRatingLabel" text="0/5" styleClass="card-title"/>
+            </VBox>
+            <VBox spacing="4.0" styleClass="card" HBox.hgrow="ALWAYS">
+                <Label text="Total Commentaires"/>
+                <Label fx:id="totalCommentsLabel" text="0" styleClass="card-title"/>
+            </VBox>
+        </HBox>
+
+        <VBox spacing="6.0" styleClass="card">
+            <Label text="Top publications"/>
+            <Label fx:id="topPublicationLabel" text="-" wrapText="true"/>
+        </VBox>
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT">
+            <TextField fx:id="searchField" promptText="Rechercher une publication par titre..." HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <TableView fx:id="statsTable" VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="idCol" text="ID" prefWidth="70.0"/>
+                <TableColumn fx:id="titleCol" text="Titre" prefWidth="280.0"/>
+                <TableColumn fx:id="likesCol" text="Likes" prefWidth="80.0"/>
+                <TableColumn fx:id="dislikesCol" text="Dislikes" prefWidth="90.0"/>
+                <TableColumn fx:id="ratioCol" text="Ratio %" prefWidth="90.0"/>
+                <TableColumn fx:id="avgRatingCol" text="Note Moy." prefWidth="90.0"/>
+                <TableColumn fx:id="ratingCountCol" text="Nb Notes" prefWidth="90.0"/>
+                <TableColumn fx:id="commentsCol" text="Commentaires" prefWidth="110.0"/>
+                <TableColumn fx:id="scoreCol" text="Score" prefWidth="90.0"/>
+            </columns>
+        </TableView>
+
+        <HBox spacing="10.0" prefHeight="280.0">
+            <BarChart fx:id="ratingDistributionChart" title="Distribution des notes" animated="false" HBox.hgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Etoiles"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Total"/>
+                </yAxis>
+            </BarChart>
+
+            <LineChart fx:id="trendChart" title="Tendance (7 derniers jours)" createSymbols="true" animated="false" HBox.hgrow="ALWAYS">
+                <xAxis>
+                    <CategoryAxis label="Jour"/>
+                </xAxis>
+                <yAxis>
+                    <NumberAxis label="Volume"/>
+                </yAxis>
+            </LineChart>
+        </HBox>
+    </VBox>
+</AnchorPane>

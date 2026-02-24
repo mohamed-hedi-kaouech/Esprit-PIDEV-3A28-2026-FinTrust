@@ -6,7 +6,7 @@
 <?import javafx.scene.text.*?>
 <?import javafx.scene.effect.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/MenuStyle.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.MenuGUIController">
+<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/MenuStyle.css"  xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.MenuGUIController">
 
     <!-- Background Container -->
     <VBox styleClass="main-container" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">

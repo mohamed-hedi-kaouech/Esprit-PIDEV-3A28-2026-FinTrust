@@ -1,0 +1,202 @@
+/* BlueThemeModern.css - Modern blue UI for JavaFX */
+
+/* ---------- Base ---------- */
+.root {
+    -fx-font-family: "Segoe UI", Roboto, Arial;
+    -fx-background-color: #f6f9ff;
+}
+
+/* Smooth scrolling background */
+.scroll-pane {
+    -fx-background: transparent;
+    -fx-background-color: transparent;
+}
+.scroll-pane > .viewport {
+    -fx-background-color: transparent;
+}
+
+/* ---------- Topbar ---------- */
+.topbar {
+    -fx-padding: 14 18 14 18;
+    -fx-background-radius: 0 0 18 18;
+    -fx-background-color: linear-gradient(to right, #1e90ff, #4facfe);
+    -fx-effect: dropshadow(gaussian, rgba(15, 35, 80, 0.20), 18, 0.18, 0, 6);
+}
+
+.topbar-title {
+    -fx-text-fill: white;
+    -fx-font-size: 18px;
+    -fx-font-weight: 800;
+}
+
+.topbar-subtitle {
+    -fx-text-fill: rgba(255,255,255,0.80);
+    -fx-font-size: 12px;
+}
+
+/* ---------- Buttons ---------- */
+.btn-ghost {
+    -fx-background-color: rgba(255,255,255,0.18);
+    -fx-text-fill: white;
+    -fx-font-weight: 700;
+    -fx-background-radius: 10;
+    -fx-padding: 8 12 8 12;
+    -fx-cursor: hand;
+}
+.btn-ghost:hover { -fx-background-color: rgba(255,255,255,0.26); }
+
+.btn-primary {
+    -fx-background-color: linear-gradient(to right, #1e90ff, #4facfe);
+    -fx-text-fill: white;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+.btn-primary:hover { -fx-opacity: 0.95; }
+
+.btn-outline {
+    -fx-background-color: transparent;
+    -fx-border-color: rgba(30,144,255,0.35);
+    -fx-border-radius: 12;
+    -fx-text-fill: #0b5ed7;
+    -fx-font-weight: 700;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+.btn-outline:hover {
+    -fx-background-color: rgba(30,144,255,0.08);
+}
+
+.btn-danger {
+    -fx-background-color: rgba(255, 72, 72, 0.12);
+    -fx-text-fill: #c1121f;
+    -fx-font-weight: 800;
+    -fx-background-radius: 12;
+    -fx-padding: 10 14 10 14;
+    -fx-cursor: hand;
+}
+.btn-danger:hover { -fx-background-color: rgba(255,72,72,0.18); }
+
+/* ---------- Search bar ---------- */
+.search-wrap {
+    -fx-padding: 10 18 0 18;
+}
+.search-field {
+    -fx-background-color: white;
+    -fx-background-radius: 14;
+    -fx-padding: 10 12 10 12;
+    -fx-border-color: rgba(10, 86, 200, 0.12);
+    -fx-border-radius: 14;
+    -fx-effect: dropshadow(gaussian, rgba(20,40,90,0.08), 10, 0.20, 0, 2);
+}
+.search-field:focused {
+    -fx-border-color: rgba(30,144,255,0.6);
+}
+
+/* ---------- Cards ---------- */
+.card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 14;
+    -fx-border-color: rgba(10, 86, 200, 0.10);
+    -fx-border-radius: 16;
+    -fx-effect: dropshadow(gaussian, rgba(15,35,80,0.08), 18, 0.18, 0, 6);
+}
+
+.card-header {
+    -fx-alignment: center-left;
+    -fx-spacing: 10;
+}
+
+.badge-id {
+    -fx-background-color: rgba(30,144,255,0.10);
+    -fx-text-fill: #0b5ed7;
+    -fx-font-weight: 900;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+}
+
+.card-title {
+    -fx-text-fill: #06224a;
+    -fx-font-size: 16px;
+    -fx-font-weight: 900;
+}
+
+.card-text {
+    -fx-text-fill: #2a3b52;
+    -fx-font-size: 13px;
+}
+
+/* ---------- Action row (chips) ---------- */
+.actions-row {
+    -fx-spacing: 10;
+    -fx-padding: 8 0 0 0;
+    -fx-alignment: center-left;
+}
+
+.chip {
+    -fx-background-color: rgba(30,144,255,0.08);
+    -fx-background-radius: 999;
+    -fx-padding: 7 10 7 10;
+    -fx-text-fill: #0b5ed7;
+    -fx-font-weight: 800;
+    -fx-cursor: hand;
+}
+.chip:hover { -fx-background-color: rgba(30,144,255,0.14); }
+
+.chip-neutral {
+    -fx-background-color: rgba(0,0,0,0.05);
+    -fx-text-fill: #3b4b61;
+}
+
+.counter {
+    -fx-text-fill: #0b5ed7;
+    -fx-font-weight: 900;
+    -fx-padding: 0 6 0 0;
+}
+
+.rating-avg {
+    -fx-text-fill: #1c2f4f;
+    -fx-font-weight: 800;
+}
+
+/* ---------- Comments area ---------- */
+.comment-box {
+    -fx-padding: 10 0 0 0;
+    -fx-spacing: 8;
+}
+
+.comment-row {
+    -fx-background-color: rgba(30,144,255,0.06);
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+    -fx-border-color: rgba(30,144,255,0.10);
+    -fx-border-radius: 12;
+}
+
+.comment-user {
+    -fx-text-fill: #0b5ed7;
+    -fx-font-weight: 900;
+}
+
+.comment-date {
+    -fx-text-fill: #6c7b89;
+    -fx-font-size: 11px;
+}
+
+.star {
+    -fx-font-size: 18px;
+    -fx-text-fill: #f5c518;
+    -fx-cursor: hand;
+}
+.star:hover { -fx-opacity: 0.85; }
+
+/* ---------- ListView polish (Admin) ---------- */
+.list-view {
+    -fx-background-color: transparent;
+}
+.list-cell {
+    -fx-background-color: transparent;
+    -fx-padding: 10 0 10 0;
+}

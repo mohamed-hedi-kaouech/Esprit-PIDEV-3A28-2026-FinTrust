@@ -13,8 +13,6 @@ class testMaconnexion {
     void testSingletonInstance() {
         MaConnexion instance1 = MaConnexion.getInstance();
         MaConnexion instance2 = MaConnexion.getInstance();
-
-        // Vérifie que c'est la même instance
         assertSame(instance1, instance2);
     }
 
@@ -22,7 +20,6 @@ class testMaconnexion {
     void testConnectionNotNull() {
         MaConnexion connexion = MaConnexion.getInstance();
         Connection cnx = connexion.getCnx();
-
         assertNotNull(cnx);
     }
 
@@ -32,4 +29,3 @@ class testMaconnexion {
         assertDoesNotThrow(connexion::loadDatabase);
     }
 }
-
