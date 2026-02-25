@@ -20,6 +20,7 @@ import org.example.Model.Budget.Item;
 import org.example.Service.BudgetService.ItemService;
 import org.example.Service.BudgetService.AlerteService;
 import org.example.Model.Budget.Alerte;
+import org.example.Utils.NotificationCenter;
 
 import java.io.IOException;
 import java.net.URL;
@@ -165,24 +166,44 @@ public class ItemListController implements Initializable {
 
     // Charge tous les items depuis le service
     public void loadItems() {
-        List<Item> itemList = itemService.ReadAll();
-        items = FXCollections.observableArrayList(itemList);
-        itemListView.setItems(items);
-        // Reset category context when showing all items
-        currentCategory = null;
-        seuilAlertShown = false;
-        updateStats(items);
+        try {
+            List<Item> itemList = itemService.ReadAll();
+            items = FXCollections.observableArrayList(itemList);
+            itemListView.setItems(items);
+            // Reset category context when showing all items
+            currentCategory = null;
+            seuilAlertShown = false;
+            updateStats(items);
+        } catch (Exception e) {
+            e.printStackTrace();
+            items = FXCollections.observableArrayList();
+            itemListView.setItems(items);
+            currentCategory = null;
+            seuilAlertShown = false;
+            updateStats(items);
+            showErrorAlert("Erreur de base de données", "Impossible de charger les items: " + e.getMessage());
+        }
     }
 
     // Charge les items d'une catégorie spécifique
     public void loadItemsForCategory(org.example.Model.Budget.Categorie categorie) {
-        List<Item> itemList = itemService.ReadByCategory(categorie.getIdCategorie());
-        items = FXCollections.observableArrayList(itemList);
-        itemListView.setItems(items);
-        // Set current category first so updateStats can evaluate seuil
-        currentCategory = categorie;
-        seuilAlertShown = false; // reset alert state when switching categories
-        updateStats(items);
+        try {
+            List<Item> itemList = itemService.ReadByCategory(categorie.getIdCategorie());
+            items = FXCollections.observableArrayList(itemList);
+            itemListView.setItems(items);
+            // Set current category first so updateStats can evaluate seuil
+            currentCategory = categorie;
+            seuilAlertShown = false; // reset alert state when switching categories
+            updateStats(items);
+        } catch (Exception e) {
+            e.printStackTrace();
+            items = FXCollections.observableArrayList();
+            itemListView.setItems(items);
+            currentCategory = categorie;
+            seuilAlertShown = false;
+            updateStats(items);
+            showErrorAlert("Erreur de base de données", "Impossible de charger les items pour la catégorie: " + e.getMessage());
+        }
     }
 
     // Met à jour le nombre d’items et le total
@@ -218,6 +239,8 @@ public class ItemListController implements Initializable {
                 if (!duplicate) {
                     Alerte a = new Alerte(currentCategory.getIdCategorie(), message, seuil);
                     alerteService.Add(a);
+                    // notify other controllers (UI) about new alert so they can refresh
+                    try { NotificationCenter.getInstance().postAlerte(a); } catch (Exception ignored) {}
                 }
             } catch (Exception ex) {
                 ex.printStackTrace();

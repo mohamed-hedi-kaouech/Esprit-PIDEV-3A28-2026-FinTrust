@@ -56,6 +56,13 @@ public class CategorieListeController implements Initializable {
 
         // load alerts into menu
         loadAlertsMenu();
+        // register to notification center so menu refreshes when new alerts are created elsewhere
+        try {
+            org.example.Utils.NotificationCenter.getInstance().addAlerteListener(a -> {
+                // run on FX thread
+                javafx.application.Platform.runLater(this::loadAlertsMenu);
+            });
+        } catch (Exception ignored) {}
 
         setupListView();
         setupSearchFilter();
@@ -359,9 +366,10 @@ public class CategorieListeController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Items de la catégorie: " + categorie.getNomCategorie());
             stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showErrorAlert("Erreur", "Impossible d'ouvrir la liste des items pour cette catégorie.");
+            String msg = e.getMessage() == null ? e.toString() : e.getMessage();
+            showErrorAlert("Erreur", "Impossible d'ouvrir la liste des items pour cette catégorie.\n" + msg);
         }
     }
 

@@ -7,6 +7,8 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.TextFormatter;
+import java.util.function.UnaryOperator;
 import javafx.stage.Stage;
 import java.io.IOException;
 import org.example.Model.Budget.Categorie;
@@ -31,6 +33,28 @@ public class CategorieCreateController {
 
     private final BudgetService budgetService = new BudgetService();
 
+    // Allow only numbers with optional decimal point (two decimals max)
+    private static boolean isValidDecimal(String s) {
+        if (s == null || s.trim().isEmpty()) return false;
+        return s.matches("\\d+(\\\\.\\d{1,2})?");
+    }
+
+    @FXML
+    private void initialize() {
+        UnaryOperator<TextFormatter.Change> filter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) return change; // allow clearing
+            // allow only digits and optional single dot with up to 2 decimals
+            if (newText.matches("\\d*(\\\\.\\d{0,2})?")) {
+                return change;
+            }
+            return null;
+        };
+
+        tfBudgetPrevu.setTextFormatter(new TextFormatter<>(filter));
+        tfSeuilAlerte.setTextFormatter(new TextFormatter<>(filter));
+    }
+
     // ==============================
     // AJOUTER CATEGORIE
     // ==============================
@@ -50,8 +74,18 @@ public class CategorieCreateController {
             }
 
             String nom = tfNomCategorie.getText().trim();
-            double budget = Double.parseDouble(tfBudgetPrevu.getText().trim());
-            double seuil = Double.parseDouble(tfSeuilAlerte.getText().trim());
+            String budgetText = tfBudgetPrevu.getText().trim();
+            String seuilText = tfSeuilAlerte.getText().trim();
+
+            if (!isValidDecimal(budgetText) || !isValidDecimal(seuilText)) {
+                showAlert(Alert.AlertType.ERROR,
+                        "Erreur de format",
+                        "Les champs 'Budget' et 'Seuil' doivent contenir uniquement des nombres (ex: 100.00).");
+                return;
+            }
+
+            double budget = Double.parseDouble(budgetText);
+            double seuil = Double.parseDouble(seuilText);
 
             if (budget <= 0 || seuil <= 0) {
                 showAlert(Alert.AlertType.ERROR,
@@ -59,6 +93,13 @@ public class CategorieCreateController {
                         "Budget et seuil doivent être supérieurs à 0 !");
                 return;
             }
+
+                if (!(seuil < budget)) {
+                showAlert(Alert.AlertType.ERROR,
+                    "Erreur de valeur",
+                    "Le Seuil d'Alerte doit être strictement inférieur au Budget Prévu.");
+                return;
+                }
 
             // 🟢 Création objet
             Categorie categorie = new Categorie();
