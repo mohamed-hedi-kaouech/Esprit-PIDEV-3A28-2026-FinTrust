@@ -13,6 +13,14 @@ public class BCryptPasswordHasher implements PasswordHasher {
         if (rawPassword == null || hashedPassword == null || hashedPassword.isBlank()) {
             return false;
         }
-        return BCrypt.checkpw(rawPassword, hashedPassword);
+        String hash = hashedPassword.trim();
+        try {
+            if (hash.startsWith("$2a$") || hash.startsWith("$2b$") || hash.startsWith("$2y$")) {
+                return BCrypt.checkpw(rawPassword, hash);
+            }
+            return rawPassword.equals(hash);
+        } catch (IllegalArgumentException e) {
+            return rawPassword.equals(hash);
+        }
     }
 }

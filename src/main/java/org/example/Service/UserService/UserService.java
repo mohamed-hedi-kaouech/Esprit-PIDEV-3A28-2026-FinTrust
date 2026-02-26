@@ -99,8 +99,8 @@ public class UserService {
     public PasswordResetResult resetPassword(String emailRaw, String codeRaw, String newPassword, String confirmPassword) {
         String email = normalizeEmail(emailRaw);
         String code = normalize(codeRaw);
-        String pass = newPassword == null ? "" : newPassword;
-        String confirm = confirmPassword == null ? "" : confirmPassword;
+        String pass = normalize(newPassword);
+        String confirm = normalize(confirmPassword);
 
         if (!EMAIL_PATTERN.matcher(email).matches()) {
             return PasswordResetResult.failure("Email invalide.");
@@ -302,7 +302,7 @@ public class UserService {
     public LoginResult login(String emailRaw, String rawPassword) {
         String emailInput = normalizeEmail(emailRaw);
         String email = emailInput;
-        String password = rawPassword == null ? "" : rawPassword;
+        String password = normalize(rawPassword);
 
         // Alias pratique: "admin" => cherche d'abord admin@pidev.local puis admin
         if ("admin".equals(emailInput)) {

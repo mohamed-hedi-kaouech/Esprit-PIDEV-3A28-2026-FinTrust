@@ -50,11 +50,17 @@ public class EmailService {
 
     public void sendWelcomeEmail(String to, String nom) {
         String safeNom = (nom == null || nom.isBlank()) ? "client" : nom.trim();
+        String loginUrl = firstNonBlank(
+                getCfg("FINTRUST_LOGIN_URL"),
+                getCfg("FINTRUST_WEB_LOGIN_URL"),
+                "http://localhost:8080/login"
+        );
         String subject = "Bienvenue chez FinTrust";
 
         String text = "Bienvenue " + safeNom + ",\n\n"
                 + "Votre inscription sur FinTrust est bien enregistree.\n"
                 + "Notre equipe vous souhaite la bienvenue.\n\n"
+                + "Lien de connexion: " + loginUrl + "\n\n"
                 + "FinTrust Team";
 
         String html = """
@@ -67,7 +73,10 @@ public class EmailService {
                       <p style="margin:0;color:#35537a;line-height:1.6;">
                         Bonjour <b>%s</b>,<br><br>
                         Votre inscription sur FinTrust est bien enregistree.<br>
-                        Notre equipe vous souhaite la bienvenue.
+                        Notre equipe vous souhaite la bienvenue.<br><br>
+                        <a href="%s" style="display:inline-block;padding:10px 16px;border-radius:10px;background:#2e6adf;color:#ffffff;text-decoration:none;font-weight:700;">
+                          Se connecter
+                        </a>
                       </p>
                     </div>
                     <p style="margin:14px 8px 0;color:#6e88ad;font-size:12px;">
@@ -76,7 +85,7 @@ public class EmailService {
                   </div>
                 </body>
                 </html>
-                """.formatted(safeNom);
+                """.formatted(safeNom, loginUrl);
 
         sendEmail(to, subject, text, html);
     }

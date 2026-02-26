@@ -10,14 +10,16 @@ public class KycStateResult {
     private final String cin;
     private final String adresse;
     private final LocalDate dateNaissance;
+    private final String signaturePath;
 
-    public KycStateResult(KycStatus status, String commentaireAdmin, int filesCount, String cin, String adresse, LocalDate dateNaissance) {
+    public KycStateResult(KycStatus status, String commentaireAdmin, int filesCount, String cin, String adresse, LocalDate dateNaissance, String signaturePath) {
         this.status = status;
         this.commentaireAdmin = commentaireAdmin;
         this.filesCount = filesCount;
         this.cin = cin;
         this.adresse = adresse;
         this.dateNaissance = dateNaissance;
+        this.signaturePath = signaturePath;
     }
 
     public KycStatus getStatus() {
@@ -42,6 +44,10 @@ public class KycStateResult {
 
     public LocalDate getDateNaissance() {
         return dateNaissance;
+    }
+
+    public String getSignaturePath() {
+        return signaturePath;
     }
 
     public boolean isApproved() {

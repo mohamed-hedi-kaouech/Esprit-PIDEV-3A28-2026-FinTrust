@@ -12,6 +12,8 @@ public class Kyc {
     private KycStatus statut;
     private String commentaireAdmin;
     private LocalDateTime dateSubmission;
+    private String signaturePath;
+    private LocalDateTime signatureUploadedAt;
 
     public int getId() {
         return id;
@@ -77,6 +79,22 @@ public class Kyc {
         this.dateSubmission = dateSubmission;
     }
 
+    public String getSignaturePath() {
+        return signaturePath;
+    }
+
+    public void setSignaturePath(String signaturePath) {
+        this.signaturePath = signaturePath;
+    }
+
+    public LocalDateTime getSignatureUploadedAt() {
+        return signatureUploadedAt;
+    }
+
+    public void setSignatureUploadedAt(LocalDateTime signatureUploadedAt) {
+        this.signatureUploadedAt = signatureUploadedAt;
+    }
+
     public static String SQLTable() {
         return """
                 CREATE TABLE IF NOT EXISTS kyc (
@@ -85,6 +103,8 @@ public class Kyc {
                     cin VARCHAR(20) NOT NULL UNIQUE,
                     adresse VARCHAR(255) NOT NULL,
                     date_naissance DATE NOT NULL,
+                    signature_path VARCHAR(255) NULL,
+                    signature_uploaded_at DATETIME NULL,
                     statut ENUM('EN_ATTENTE','APPROUVE','REFUSE') NOT NULL DEFAULT 'EN_ATTENTE',
                     commentaire_admin TEXT NULL,
                     date_submission DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP,

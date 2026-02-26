@@ -8,8 +8,12 @@ import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.stage.Stage;
+import org.example.Model.Kyc.KycStatus;
+import org.example.Model.User.UserRole;
+import org.example.Service.UserService.LoginResult;
 import org.example.Service.UserService.PasswordResetResult;
 import org.example.Service.UserService.UserService;
+import org.example.Utils.SessionContext;
 
 import java.net.URL;
 
@@ -57,7 +61,7 @@ public class PasswordResetController {
     private void handleResetPassword() {
         String email = emailField.getText() == null ? "" : emailField.getText().trim();
         String code = codeField.getText() == null ? "" : codeField.getText().trim();
-        String newPassword = newPasswordField.getText();
+        String newPassword = newPasswordField.getText() == null ? "" : newPasswordField.getText().trim();
         String confirmPassword = confirmPasswordField.getText();
 
         PasswordResetResult result = userService.resetPassword(email, code, newPassword, confirmPassword);
@@ -67,7 +71,24 @@ public class PasswordResetController {
             return;
         }
 
-        messageLabel.setText("Mot de passe reinitialise avec succes. Redirection vers connexion...");
+        LoginResult loginResult = userService.login(email, newPassword);
+        if (loginResult != null && loginResult.isSuccess() && loginResult.getUser() != null) {
+            SessionContext session = SessionContext.getInstance();
+            session.setCurrentUser(loginResult.getUser());
+            if (loginResult.getUser().getRole() == UserRole.CLIENT) {
+                KycStatus st = loginResult.getKycStatus() != null ? loginResult.getKycStatus() : KycStatus.EN_ATTENTE;
+                session.setCurrentKycStatus(st);
+                session.setCurrentKycComment(loginResult.getKycComment());
+                messageLabel.setText("Mot de passe reinitialise. Redirection vers votre dashboard...");
+                messageLabel.setStyle("-fx-text-fill: #1d6b34;");
+                navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+                return;
+            }
+            navigateTo("/Admin/UserDashboard.fxml", "Dashboard Admin", "/Styles/StyleWallet.css");
+            return;
+        }
+
+        messageLabel.setText("Mot de passe reinitialise avec succes. Connectez-vous.");
         messageLabel.setStyle("-fx-text-fill: #1d6b34;");
         navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
     }

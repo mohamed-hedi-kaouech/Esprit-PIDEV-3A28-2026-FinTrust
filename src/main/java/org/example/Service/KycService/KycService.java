@@ -48,7 +48,7 @@ public class KycService {
                 dateNaissance = null;
             }
         }
-        return new KycStateResult(kyc.getStatut(), kyc.getCommentaireAdmin(), filesCount, cin, adresse, dateNaissance);
+        return new KycStateResult(kyc.getStatut(), kyc.getCommentaireAdmin(), filesCount, cin, adresse, dateNaissance, kyc.getSignaturePath());
     }
 
     public List<KycFile> getClientKycFiles(User actor) {
