@@ -13,8 +13,10 @@ import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Repayment;
+import org.example.Model.Loan.LoanEnum.LoanStatus;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
 import org.example.Service.LoanService.EmailService;
+import org.example.Service.LoanService.LoanService;
 import org.example.Service.LoanService.PdfExportService;
 import org.example.Service.LoanService.RepaymentService;
 
@@ -34,8 +36,9 @@ public class RepaymentListController {
     @FXML private TableColumn<Repayment, Void> colPay;
 
     private final RepaymentService service = new RepaymentService();
+    private final LoanService loanService = new LoanService();
     private final ObservableList<Repayment> repaymentList = FXCollections.observableArrayList();
-
+    private LoanStatus currentLoanStatus;
     private int loanId;
 
     // ======================
@@ -43,8 +46,16 @@ public class RepaymentListController {
     // ======================
     public void setLoanId(int loanId) {
         this.loanId = loanId;
+
+        // 🔥 Load loan status
+        Loan loan = loanService.ReadId(loanId);
+        if (loan != null) {
+            currentLoanStatus = loan.getStatus();
+        }
+
         loadData();
     }
+
 
     // ======================
     // INITIALIZE
@@ -139,16 +150,31 @@ public class RepaymentListController {
 
                 if (empty) {
                     setGraphic(null);
-                } else {
-                    Repayment r = getTableView().getItems().get(getIndex());
-                    btn.setDisable(r.getStatus() == RepaymentStatus.PAID);
-                    setGraphic(btn);
-                    setAlignment(Pos.CENTER);
+                    return;
                 }
+
+                Repayment r = getTableView().getItems().get(getIndex());
+
+                // 🔥 Hide button if loan not ACTIVE
+                if (currentLoanStatus != LoanStatus.ACTIVE) {
+                    setGraphic(null);
+                    return;
+                }
+
+                // 🔥 Hide button if repayment already PAID
+                if (r.getStatus() == RepaymentStatus.PAID) {
+                    Label check = new Label("✔");
+                    check.setStyle("-fx-text-fill: green; -fx-font-weight: bold;");
+                    setGraphic(check);
+                    setAlignment(Pos.CENTER);
+                    return;
+                }
+
+                setGraphic(btn);
+                setAlignment(Pos.CENTER);
             }
         });
     }
-
     // ======================
     // LOAD DATA
     // ======================

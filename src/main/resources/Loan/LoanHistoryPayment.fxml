@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="1200" prefHeight="750"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.AdminLoanHistoryController"
+            styleClass="root">
+
+    <VBox spacing="30"
+          AnchorPane.topAnchor="30"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="50"
+          AnchorPane.bottomAnchor="30">
+
+        <HBox alignment="CENTER_LEFT">
+            <Label text="Loan Payment History"
+                   styleClass="page-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Back"
+                    styleClass="btn-back"
+                    onAction="#handleBack"/>
+        </HBox>
+
+        <!-- SUMMARY CARD -->
+        <VBox styleClass="header-container" spacing="15">
+
+            <Label fx:id="loanInfoLabel"/>
+            <Label fx:id="totalPaidLabel"/>
+            <Label fx:id="remainingLabel"/>
+
+            <ProgressBar fx:id="progressBar"
+                         prefWidth="400"/>
+
+        </VBox>
+
+        <!-- TABLE -->
+        <VBox styleClass="header-container" VBox.vgrow="ALWAYS">
+
+            <TableView fx:id="repaymentTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colMonth" text="Month"/>
+                    <TableColumn fx:id="colCapital" text="Capital"/>
+                    <TableColumn fx:id="colInterest" text="Interest"/>
+                    <TableColumn fx:id="colTotal" text="Total"/>
+                    <TableColumn fx:id="colStatus" text="Status"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+</AnchorPane>

@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+
+<AnchorPane prefWidth="1200" prefHeight="750"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.AdminDashboardController"
+            styleClass="root">
+
+    <VBox spacing="40"
+          AnchorPane.topAnchor="40"
+          AnchorPane.leftAnchor="60"
+          AnchorPane.rightAnchor="60"
+          AnchorPane.bottomAnchor="40">
+
+        <!-- ================= TITLE ================= -->
+        <HBox alignment="CENTER_LEFT">
+            <Label text="Admin Dashboard"
+                   styleClass="page-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Button text="Logout"
+                    styleClass="btn-back"
+                    onAction="#handleLogout"/>
+        </HBox>
+
+        <!-- ================= STATISTICS CARDS ================= -->
+        <HBox spacing="30" alignment="CENTER">
+
+            <VBox styleClass="loan-card loan-card-blue">
+                <Label text="Total Loans"/>
+                <Label fx:id="totalLoansLabel"/>
+            </VBox>
+
+            <VBox styleClass="loan-card loan-card-green">
+                <Label text="Active Loans"/>
+                <Label fx:id="activeLoansLabel"/>
+            </VBox>
+
+            <VBox styleClass="loan-card loan-card-red">
+                <Label text="Pending Loans"/>
+                <Label fx:id="pendingLoansLabel"/>
+            </VBox>
+
+            <VBox styleClass="loan-card loan-card-blue">
+                <Label text="Completed Loans"/>
+                <Label fx:id="completedLoansLabel"/>
+            </VBox>
+
+        </HBox>
+
+        <!-- ================= NAVIGATION ================= -->
+        <HBox spacing="30" alignment="CENTER">
+
+            <Button text="Voir Demandes"
+                    styleClass="btn-primary"
+                    onAction="#goToLoanList"/>
+        </HBox>
+
+    </VBox>
+
+</AnchorPane>

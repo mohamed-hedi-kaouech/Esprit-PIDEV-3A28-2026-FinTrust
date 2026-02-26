@@ -44,7 +44,7 @@ public class EmailService {
 
                 Votre paiement du mois %d a été reçu.
 
-                Montant payé: %.2f
+                Montant payé: %.2f DT
 
                 Merci.
                 """.formatted(month, amount));

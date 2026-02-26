@@ -101,11 +101,11 @@ public class LoanPreviewController {
 
         try {
 
-            loan.setStatus(LoanStatus.ACTIVE);
+            loan.setStatus(LoanStatus.PENDING);
 
             loanService.Add(loan);
 
-// Optional but clean
+            // Optional but clean
             Loan savedLoan = loanService.ReadId(loan.getLoanId());
 
             List<Repayment> plan =
@@ -115,7 +115,7 @@ public class LoanPreviewController {
                 repaymentService.Add(r);
             }
 
-            showSuccess("Prêt confirmé avec succès !");
+            showSuccess("Demande Prêt Ajouter avec succès ! ");
             goToLoanList();
 
         } catch (Exception e) {

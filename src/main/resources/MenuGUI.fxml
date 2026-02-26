@@ -39,7 +39,7 @@
                         <Font size="20.0" />
                     </font>
                 </Label>
-                <Label fx:id="userNameLabel" text="Administrateur" styleClass="user-name">
+                <Label fx:id="userNameLabel" text="Finthec APP" styleClass="user-name">
                     <font>
                         <Font name="System Bold" size="14.0" />
                     </font>

@@ -21,7 +21,7 @@
                    styleClass="page-title"/>
 
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Nouveau prêt"
+            <Button text="Demande de prêt"
                     styleClass="btn-primary"
                     onAction="#handleNewLoan"/>
 
