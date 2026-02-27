@@ -1,0 +1,106 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.RiskDashboardController"
+            style="-fx-background-color: #1a2639;">
+
+    <top>
+        <VBox spacing="15" style="-fx-padding: 20; -fx-background-color: #0a1929;">
+            <Label text="🧠 Risk Intelligence Dashboard - FinTrust"
+                   style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #64ffda;"/>
+
+            <!-- Statistiques -->
+            <HBox spacing="20" alignment="CENTER">
+                <VBox spacing="5" style="-fx-background-color: #1e2a3a; -fx-padding: 15; -fx-background-radius: 10; -fx-min-width: 150;">
+                    <Label text="🟢 Fiables" style="-fx-text-fill: #4caf50; -fx-font-size: 16px;"/>
+                    <Label fx:id="lblFiablesNombre" text="0" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblFiablesPourcent" text="0%" style="-fx-text-fill: #888;"/>
+                    <Label fx:id="lblFiablesEvolution" text="+0%" style="-fx-text-fill: #4caf50;"/>
+                </VBox>
+
+                <VBox spacing="5" style="-fx-background-color: #1e2a3a; -fx-padding: 15; -fx-background-radius: 10;">
+                    <Label text="🟡 Moyens" style="-fx-text-fill: #ffc107; -fx-font-size: 16px;"/>
+                    <Label fx:id="lblMoyensNombre" text="0" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblMoyensPourcent" text="0%" style="-fx-text-fill: #888;"/>
+                    <Label fx:id="lblMoyensEvolution" text="0%" style="-fx-text-fill: #ffc107;"/>
+                </VBox>
+
+                <VBox spacing="5" style="-fx-background-color: #1e2a3a; -fx-padding: 15; -fx-background-radius: 10;">
+                    <Label text="🔴 Risqués" style="-fx-text-fill: #f44336; -fx-font-size: 16px;"/>
+                    <Label fx:id="lblRisqueNombre" text="0" style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                    <Label fx:id="lblRisquePourcent" text="0%" style="-fx-text-fill: #888;"/>
+                    <Label fx:id="lblRisqueEvolution" text="+0%" style="-fx-text-fill: #f44336;"/>
+                </VBox>
+
+                <PieChart fx:id="pieChartRepartition" prefWidth="200" prefHeight="150"/>
+            </HBox>
+
+            <!-- Filtres -->
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="🔍 Filtres :" style="-fx-text-fill: #aaa;"/>
+                <ComboBox fx:id="comboNiveau" promptText="Niveau de risque">
+                    <items>
+                        <FXCollections fx:factory="observableArrayList">
+                            <String fx:value="Tous"/>
+                            <String fx:value="🔴 Risqué"/>
+                            <String fx:value="🟡 Moyen"/>
+                            <String fx:value="🟢 Fiable"/>
+                        </FXCollections>
+                    </items>
+                </ComboBox>
+
+                <TextField fx:id="txtScoreMin" promptText="Score min" prefWidth="80"/>
+                <TextField fx:id="txtScoreMax" promptText="Score max" prefWidth="80"/>
+
+                <CheckBox fx:id="chkSurveillance" text="Clients à surveiller" style="-fx-text-fill: white;"/>
+
+                <Button text="🔍 Appliquer" onAction="#appliquerFiltres"
+                        style="-fx-background-color: #64ffda; -fx-text-fill: #0a1929; -fx-font-weight: bold;"/>
+                <Button text="🔄 Reset" onAction="#resetFiltres"
+                        style="-fx-background-color: #f44336; -fx-text-fill: white;"/>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="15" style="-fx-padding: 20;">
+            <Label text="📋 Analyse des clients" style="-fx-text-fill: white; -fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <TableView fx:id="tableViewClients" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colClient" text="Client" prefWidth="150"/>
+                    <TableColumn fx:id="colScore" text="Score" prefWidth="70"/>
+                    <TableColumn fx:id="colNiveau" text="Niveau" prefWidth="100"/>
+                    <TableColumn fx:id="colPrivilege" text="Privilège" prefWidth="100"/>
+                    <TableColumn fx:id="colChequesRefuses" text="Chèques refusés" prefWidth="120"/>
+                    <TableColumn fx:id="colSolde" text="Solde" prefWidth="120"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+
+    <bottom>
+        <VBox spacing="10" style="-fx-padding: 20; -fx-background-color: #0a1929;">
+            <TitledPane text="🚨 CLIENTS À SURVEILLER" expanded="true">
+                <ListView fx:id="listSurveillance" prefHeight="100"/>
+            </TitledPane>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="🧠 Générer analyse IA" onAction="#genererAnalyseIA"
+                        style="-fx-background-color: #9c27b0; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20;"/>
+
+                <TextArea fx:id="txtAnalyseIA" promptText="L'analyse IA apparaîtra ici..."
+                          prefRowCount="4" HBox.hgrow="ALWAYS" editable="false"/>
+            </HBox>
+        </VBox>
+    </bottom>
+</BorderPane>

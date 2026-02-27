@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.Controlleurs.WalletControlleur.ChequierAdminController"
+      spacing="20" prefWidth="900" prefHeight="600"
+      style="-fx-background-color: #f4f7fc; -fx-padding: 20;">
+
+    <Label text="📒 Administration des chèques"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e3c72;"/>
+
+    <Label text="Gérer tous les chèques émis par les clients"
+           style="-fx-font-size: 14px; -fx-text-fill: #6B7280;"/>
+
+    <TableView fx:id="tableViewCheques" VBox.vgrow="ALWAYS">
+        <columns>
+            <TableColumn fx:id="colNumero" text="N° Chèque" prefWidth="100"/>
+            <TableColumn fx:id="colMontant" text="Montant" prefWidth="100"/>
+            <TableColumn fx:id="colBeneficiaire" text="Bénéficiaire" prefWidth="150"/>
+            <TableColumn fx:id="colProprietaire" text="Propriétaire" prefWidth="150"/>
+            <TableColumn fx:id="colDateEmission" text="Date émission" prefWidth="150"/>
+            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+            <TableColumn fx:id="colAction" text="Actions" prefWidth="200"/>
+        </columns>
+    </TableView>
+</VBox>

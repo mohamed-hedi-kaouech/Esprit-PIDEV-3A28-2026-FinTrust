@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.BudgetControlleur.ItemUpdateController"
+             prefWidth="900" prefHeight="600"
+            stylesheets="/Styles/StyleBudget.css"
+            styleClass="main-container">
+
+    <!-- TOP BAR -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar"
+          AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+
+        <Button text="⬅ Retour" onAction="#closeWindow" styleClass="btn-back">
+            <font><Font name="System Bold" size="13.0"/></font>
+        </Button>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label text="✏️ Modifier l'Item" styleClass="page-title">
+            <font><Font name="System Bold" size="24.0"/></font>
+        </Label>
+
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- SCROLL CONTENT -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                style="-fx-background-color: transparent;">
+        <VBox alignment="CENTER">
+            <padding><Insets top="30" right="40" bottom="40" left="40"/></padding>
+
+            <VBox spacing="25" styleClass="form-card" maxWidth="600">
+                <padding><Insets top="35" right="35" bottom="35" left="35"/></padding>
+
+                <!-- Form Title -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="✏️" style="-fx-font-size:32px;"/>
+                    <VBox>
+                        <Label text="Modification de l'Item" styleClass="form-title"/>
+                        <Label text="Mettez à jour les informations de l'item" styleClass="form-subtitle"/>
+                    </VBox>
+                </HBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Libellé -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Nom de l'Item *" styleClass="input-label"/>
+                    <TextField fx:id="tfNomItem" promptText="Libellé de l'item" styleClass="input-field"/>
+                </VBox>
+
+                <!-- Montant -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Montant (DT) *" styleClass="input-label"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfPrix" promptText="0.00" styleClass="input-field" HBox.hgrow="ALWAYS"/>
+                        <Label text="DT" styleClass="currency-label"/>
+                    </HBox>
+                </VBox>
+
+                <!-- Catégorie -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Catégorie *" styleClass="input-label"/>
+                    <ComboBox fx:id="cbCategorie" styleClass="input-field"/>
+                </VBox>
+
+                <!-- Preview Section -->
+                <VBox spacing="10" styleClass="preview-box">
+                    <Label text="📊 Nouveau Statut" styleClass="preview-title"/>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Montant / Catégorie:" styleClass="preview-label"/>
+                        <Label fx:id="lblPreviewStatut" text="-" styleClass="preview-value"/>
+                    </HBox>
+                </VBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Form Buttons -->
+                <HBox spacing="12" alignment="CENTER">
+                    <Button text="✅ Enregistrer" onAction="#enregistrer" styleClass="btn-save" prefWidth="160"/>
+                    <Button text="🔄 Réinitialiser" onAction="#reinitialiser" styleClass="btn-clear" prefWidth="140"/>
+                    <Button text="🗑️ Supprimer" onAction="#DeleteItem" styleClass="btn-danger" prefWidth="140"/>
+                </HBox>
+
+                <!-- Current Info Display -->
+                <VBox spacing="12" styleClass="current-info-display">
+                    <Label text="📋 Informations Actuelles" styleClass="current-info-title"/>
+                    <HBox spacing="30">
+                        <VBox spacing="4">
+                            <Label text="Libellé:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentLibelle" text="-" styleClass="current-value"/>
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Montant:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentMontant" text="-" styleClass="current-value-budget"/>
+                        </VBox>
+                        <VBox spacing="4">
+                            <Label text="Catégorie:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentCategorie" text="-" styleClass="current-value-seuil"/>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

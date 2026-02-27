@@ -1,0 +1,290 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieUpdateController"
+            prefWidth="900" prefHeight="600"
+            stylesheets="/Styles/StyleBudget.css"
+            styleClass="main-container">
+
+    <!-- TOP BAR -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <padding>
+            <Insets top="20" right="30" bottom="20" left="30"/>
+        </padding>
+
+        <Button text="⬅ Retour" onAction="#goBackToListe" styleClass="btn-back">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Button>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label text="✏️ Modifier la Catégorie" styleClass="page-title">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+
+        <Label fx:id="lblCategorieId" text="#0" styleClass="category-id-badge">
+            <font>
+                <Font name="System Bold" size="18.0" />
+            </font>
+        </Label>
+
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- SCROLLPANE CONTENT -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox alignment="CENTER">
+            <padding>
+                <Insets top="30" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <!-- Form Card -->
+            <VBox spacing="25" styleClass="form-card" maxWidth="600">
+                <padding>
+                    <Insets top="35" right="35" bottom="35" left="35"/>
+                </padding>
+
+                <!-- Form Title -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="✏️" style="-fx-font-size:32px;"/>
+                    <VBox>
+                        <Label text="Modification de Catégorie" styleClass="form-title">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                        <Label text="Mettez à jour les informations de la catégorie" styleClass="form-subtitle">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
+
+                <!-- Hidden ID Field -->
+                <TextField fx:id="tfIdCategorie" visible="false" managed="false"/>
+
+                <!-- Current Info Display -->
+                <VBox spacing="12" styleClass="current-info-display">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+
+                    <Label text="📋 Informations Actuelles" styleClass="current-info-title">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+
+                    <HBox spacing="30">
+                        <VBox spacing="4">
+                            <Label text="Nom:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentNom" text="-" styleClass="current-value">
+                                <font>
+                                    <Font name="System Bold" size="13.0" />
+                                </font>
+                            </Label>
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label text="Budget:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentBudget" text="-" styleClass="current-value-budget">
+                                <font>
+                                    <Font name="System Bold" size="13.0" />
+                                </font>
+                            </Label>
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label text="Seuil:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentSeuil" text="-" styleClass="current-value-seuil">
+                                <font>
+                                    <Font name="System Bold" size="13.0" />
+                                </font>
+                            </Label>
+                        </VBox>
+
+                        <VBox spacing="4">
+                            <Label text="Statut:" styleClass="current-label"/>
+                            <Label fx:id="lblCurrentStatut" text="-" styleClass="current-value-statut">
+                                <font>
+                                    <Font name="System Bold" size="12.0" />
+                                </font>
+                            </Label>
+                        </VBox>
+                    </HBox>
+                </VBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <Label text="Nouvelles Valeurs" styleClass="section-title">
+                    <font>
+                        <Font name="System Bold" size="15.0" />
+                    </font>
+                </Label>
+
+                <!-- Nom Catégorie -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Nom de la Catégorie *" styleClass="input-label">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="tfNomCategorie" promptText="Nom de la catégorie"
+                               styleClass="input-field">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </TextField>
+                </VBox>
+
+                <!-- Budget Prévu -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Budget Prévu (DT) *" styleClass="input-label">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfBudgetPrevu" promptText="0.00"
+                                   styleClass="input-field" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+                        <Label text="DT" styleClass="currency-label">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </VBox>
+
+                <!-- Seuil d'Alerte -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Seuil d'Alerte (DT) *" styleClass="input-label">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfSeuilAlerte" promptText="0.00"
+                                   styleClass="input-field" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+                        <Label text="DT" styleClass="currency-label-warning">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </VBox>
+
+                <!-- Preview Section -->
+                <VBox spacing="10" styleClass="preview-box">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <Label text="📊 Nouveau Statut" styleClass="preview-title">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Pourcentage:" styleClass="preview-label"/>
+                        <Label fx:id="lblPreviewPercentage" text="0%" styleClass="preview-value">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Statut:" styleClass="preview-label"/>
+                        <Label fx:id="lblPreviewStatut" text="-" styleClass="preview-statut">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </VBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Warning Box -->
+                <VBox spacing="8" styleClass="warning-box">
+                    <padding>
+                        <Insets top="12" right="12" bottom="12" left="12"/>
+                    </padding>
+                    <Label text="⚠️ Attention" styleClass="warning-title">
+                        <font>
+                            <Font name="System Bold" size="11.0" />
+                        </font>
+                    </Label>
+                    <Label text="• Les modifications seront appliquées immédiatement" wrapText="true" styleClass="warning-text">
+                        <font>
+                            <Font size="10.0" />
+                        </font>
+                    </Label>
+                    <Label text="• Vérifiez bien les valeurs avant d'enregistrer" wrapText="true" styleClass="warning-text">
+                        <font>
+                            <Font size="10.0" />
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Form Buttons -->
+                <HBox spacing="12" alignment="CENTER">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+
+                    <Button text="✅ Enregistrer" onAction="#updateCategorie"
+                            styleClass="btn-save" prefWidth="160">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+
+                    <Button text="🔄 Réinitialiser" onAction="#resetForm"
+                            styleClass="btn-clear" prefWidth="140">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+
+                    <Button text="🗑️ Supprimer" onAction="#deleteCategorie"
+                            styleClass="btn-danger" prefWidth="140">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+                </HBox>
+
+                <!-- Last Modified -->
+                <HBox alignment="CENTER" styleClass="last-modified-section">
+                    <Label fx:id="lblLastModified" text="Dernière modification: -" styleClass="last-modified-text">
+                        <font>
+                            <Font size="10.0" />
+                        </font>
+                    </Label>
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

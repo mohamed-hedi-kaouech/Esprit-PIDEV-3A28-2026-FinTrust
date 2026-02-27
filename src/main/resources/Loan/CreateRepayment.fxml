@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<AnchorPane prefWidth="600" prefHeight="400"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.CreateRepaymentController">
+
+    <VBox spacing="20" alignment="CENTER"
+          AnchorPane.topAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          AnchorPane.bottomAnchor="0">
+
+        <Label text="Ajouter Remboursement"
+               styleClass="page-title"/>
+
+        <VBox spacing="15" styleClass="form-container">
+
+            <TextField fx:id="numberField"
+                       promptText="Numéro échéance"/>
+
+            <TextField fx:id="amountField"
+                       promptText="Montant total"/>
+
+            <TextField fx:id="capitalField"
+                       promptText="Part capital"/>
+
+            <TextField fx:id="interestField"
+                       promptText="Part intérêt"/>
+
+            <HBox spacing="10" alignment="CENTER">
+                <Button text="Enregistrer"
+                        styleClass="btn-primary"
+                        onAction="#handleSave"/>
+
+                <Button text="⬅ Retour"
+                        styleClass="btn-back"
+                        onAction="#handleBack"/>
+            </HBox>
+
+        </VBox>
+    </VBox>
+</AnchorPane>

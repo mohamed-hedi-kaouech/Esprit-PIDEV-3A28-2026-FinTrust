@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<ScrollPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.ClientDashboardController"
+            fitToWidth="true"
+            style="-fx-background: #f4f7fc; -fx-border-color: transparent;">
+
+    <VBox spacing="20" alignment="TOP_CENTER"
+          style="-fx-background-color: #f4f7fc; -fx-padding: 30;">
+
+        <padding>
+            <Insets top="20" right="20" bottom="20" left="20"/>
+        </padding>
+
+        <Label fx:id="lblWelcome" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e3c72;"/>
+
+        <Separator/>
+
+        <!-- Infos compte -->
+        <VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+            <Label text="Mon Compte" style="-fx-font-size: 18px; -fx-font-weight: bold;"/>
+
+            <HBox spacing="10">
+                <Label text="Compte :" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblWalletName"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Solde actuel :" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblSolde"/>
+                <Label fx:id="lblDevise"/>
+            </HBox>
+
+            <HBox spacing="10" alignment="CENTER_LEFT">
+                <Label text="Plafond découvert :" style="-fx-font-weight: bold;"/>
+                <Label fx:id="lblPlafond" text="0.00"/>
+                <Label fx:id="lblDevisePlafond" text="TND"/>
+                <Label text="ⓘ" style="-fx-text-fill: #003366; -fx-font-size: 14px; -fx-cursor: hand;">
+                    <tooltip>
+                        <Tooltip text="Montant maximum autorisé en négatif"/>
+                    </tooltip>
+                </Label>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label text="Disponible :" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+                <Label fx:id="lblDisponible" text="0.00"/>
+                <Label fx:id="lblDeviseDispo" text="TND"/>
+            </HBox>
+
+            <HBox spacing="10">
+                <Label fx:id="lblStatutDecouvert" text="✅ Compte en positif"
+                       style="-fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+            </HBox>
+        </VBox>
+
+        <!-- SECTION SCORE DE CONFIANCE -->
+        <VBox spacing="15" style="-fx-background-color: linear-gradient(to right, #4776E6, #8E54E9); -fx-padding: 20; -fx-background-radius: 15;">
+            <Label text="🏆 Score de confiance FinTrust"
+                   style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+
+            <HBox alignment="CENTER" spacing="20">
+                <ProgressIndicator fx:id="progressScore" prefWidth="100" prefHeight="100"/>
+                <VBox alignment="CENTER">
+                    <Label fx:id="lblScore" text="0/100"
+                           style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label fx:id="lblNiveau" text="-"
+                           style="-fx-font-size: 14px; -fx-text-fill: rgba(255,255,255,0.9);"/>
+                </VBox>
+            </HBox>
+
+            <GridPane hgap="20" vgap="10" style="-fx-padding: 10 0;">
+                <Label text="Ancienneté:" style="-fx-text-fill: white;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+                <Label fx:id="lblAnciennete" text="0/15" style="-fx-text-fill: white; -fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="1"/>
+
+                <Label text="Transactions:" style="-fx-text-fill: white;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+                <Label fx:id="lblTransactionsScore" text="0/20" style="-fx-text-fill: white; -fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+
+                <Label text="Stabilité:" style="-fx-text-fill: white;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+                <Label fx:id="lblStabilite" text="0/25" style="-fx-text-fill: white; -fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+            </GridPane>
+
+            <Label fx:id="lblRecommandation"
+                   style="-fx-background-color: rgba(255,255,255,0.2); -fx-padding: 15; -fx-background-radius: 10; -fx-text-fill: white; -fx-wrap-text: true;"/>
+        </VBox>
+
+        <!-- TABLEVIEW DES TRANSACTIONS -->
+        <VBox spacing="10" VBox.vgrow="ALWAYS">
+            <Label text="📋 Historique détaillé des transactions"
+                   style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #003366;"/>
+
+            <TableView fx:id="tableViewTransactions" VBox.vgrow="ALWAYS" prefHeight="400">
+                <columns>
+                    <TableColumn fx:id="colDate" text="Date" prefWidth="140"/>
+                    <TableColumn fx:id="colType" text="Type" prefWidth="100"/>
+                    <TableColumn fx:id="colMontant" text="Montant" prefWidth="120"/>
+                    <TableColumn fx:id="colDevise" text="Devise" prefWidth="80"/>
+                    <TableColumn fx:id="colBeneficiaire" text="Bénéficiaire/Expéditeur" prefWidth="200"/>
+                    <TableColumn fx:id="colDescription" text="Description" prefWidth="250"/>
+                    <TableColumn fx:id="colStatut" text="Statut" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+
+        <!-- Boutons d'action -->
+        <HBox spacing="15" alignment="CENTER">
+            <Button text="➕ Nouvelle Transaction"
+                    onAction="#handleNewTransaction"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
+            <Button text="💱 Convertisseur"
+                    onAction="#handleOuvrirConvertisseur"
+                    style="-fx-background-color: #9b59b6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+
+            <Button text="📒 Mon Chéquier"
+                    onAction="#handleOuvrirChequier"
+                    style="-fx-background-color: #f39c12; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 10 20; -fx-background-radius: 5;"/>
+        </HBox>
+    </VBox>
+</ScrollPane>

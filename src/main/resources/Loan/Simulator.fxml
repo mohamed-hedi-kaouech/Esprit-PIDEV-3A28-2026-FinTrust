@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.layout.HBox?>
+<AnchorPane prefWidth="800" prefHeight="600"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.SimulatorControlleur">
+
+    <!-- HEADER -->
+    <HBox alignment="CENTER_LEFT" spacing="15"
+          AnchorPane.topAnchor="0"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0">
+
+        <padding>
+            <Insets top="20" left="30" right="30"/>
+        </padding>
+
+        <Button text="⬅ Retour"
+                styleClass="btn-back"
+                onAction="#handleBack"/>
+    </HBox>
+
+    <!-- MAIN CONTENT -->
+    <VBox spacing="20" alignment="CENTER"
+          AnchorPane.topAnchor="80"
+          AnchorPane.leftAnchor="0"
+          AnchorPane.rightAnchor="0"
+          AnchorPane.bottomAnchor="0">
+
+        <padding>
+            <Insets top="40" left="40" right="40" bottom="40"/>
+        </padding>
+
+        <Label text="Simulateur de Prêt" styleClass="page-title"/>
+
+        <VBox spacing="15" styleClass="form-container">
+
+            <TextField fx:id="ageField" promptText="Âge" styleClass="form-input numeric"/>
+            <TextField fx:id="incomeField" promptText="Revenu mensuel (DT)" styleClass="form-input numeric"/>
+            <TextField fx:id="amountField" promptText="Montant demandé (DT)" styleClass="form-input numeric"/>
+            <TextField fx:id="durationField" promptText="Durée (mois)" styleClass="form-input numeric"/>
+
+            <Button text="Vérifier"
+                    styleClass="btn-primary"
+                    onAction="#handleSimulation"/>
+
+        </VBox>
+
+    </VBox>
+
+</AnchorPane>
