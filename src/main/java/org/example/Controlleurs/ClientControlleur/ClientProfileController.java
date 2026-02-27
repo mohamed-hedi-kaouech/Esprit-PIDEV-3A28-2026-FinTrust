@@ -115,11 +115,7 @@ public class ClientProfileController {
             SessionContext.getInstance().setCurrentKycComment(state.getCommentaireAdmin());
             SessionContext.getInstance().setCurrentUser(current);
 
-            String msg = "Profil modifie avec succes.";
-            if (state.getStatus() == org.example.Model.Kyc.KycStatus.EN_ATTENTE) {
-                msg += " KYC remis en attente apres modification de date de naissance.";
-            }
-            setInfo(msg, false);
+            setInfo("Profil modifie avec succes.", false);
 
         } catch (Exception e) {
             e.printStackTrace();

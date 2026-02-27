@@ -72,10 +72,6 @@ public class KycService {
 
         KycStatus targetStatus = current.getStatut();
         String commentaire = current.getCommentaireAdmin();
-        if (targetStatus == KycStatus.APPROUVE && !dateNaissance.equals(current.getDateNaissance())) {
-            targetStatus = KycStatus.EN_ATTENTE;
-            commentaire = null;
-        }
 
         kycRepository.saveOrUpdateKyc(
                 actor.getId(),

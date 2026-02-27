@@ -88,6 +88,59 @@ public class AdminUserFormController {
     }
 
     @FXML
+    private void goToDashboard() {
+        goToUserList();
+    }
+
+    @FXML
+    private void goToAnalyticsDashboard() {
+        navigateTo("/Admin/AnalyticsDashboard.fxml", "Data Analytics Dashboard", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToAdminTasks() {
+        navigateTo("/Admin/AdminTasks.fxml", "Admin Productivity / Ops", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToKycValidation() {
+        navigateTo("/Admin/KycValidation.fxml", "Validation KYC", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToCreateUserForm() {
+        // deja sur la page
+    }
+
+    @FXML
+    private void goToWalletDashboard() {
+        navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToProducts() {
+        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToPublications() {
+        setInfo("Module Publications: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void goToBudget() {
+        setInfo("Module Budget: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void goToLoans() {
+        setInfo("Module Loans: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
     private void goToMenu() {
         navigateTo("/MenuGUI.fxml", "Menu Principal", "/Styles/MenuStyle.css");
     }

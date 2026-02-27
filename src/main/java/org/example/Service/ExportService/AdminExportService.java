@@ -17,10 +17,12 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Timestamp;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.EnumMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -109,6 +111,7 @@ public class AdminExportService {
         OtpAnalyticsSnapshot otp = analyticsService.getOtpAnalytics();
         List<FailedLoginUser> failed = analyticsService.getTopFailedLogins(10);
         DashboardStats stats = fetchDashboardStats();
+        List<DailyActivity> activity10Days = fetchUserActivity10Days();
 
         List<String> subtitle = List.of(
                 "Date: " + LocalDateTime.now().format(DATE_FORMAT),
@@ -124,6 +127,19 @@ public class AdminExportService {
         rows.add(List.of("STATUTS", "EN_ATTENTE", String.valueOf(stats.statusCount().getOrDefault(UserStatus.EN_ATTENTE, 0))));
         rows.add(List.of("STATUTS", "ACCEPTE", String.valueOf(stats.statusCount().getOrDefault(UserStatus.ACCEPTE, 0))));
         rows.add(List.of("STATUTS", "REFUSE", String.valueOf(stats.statusCount().getOrDefault(UserStatus.REFUSE, 0))));
+        rows.add(List.of("STATUT DES COMPTES", "Resume", "Accepte: "
+                + stats.statusCount().getOrDefault(UserStatus.ACCEPTE, 0)
+                + " | En attente: " + stats.statusCount().getOrDefault(UserStatus.EN_ATTENTE, 0)
+                + " | Refuse: " + stats.statusCount().getOrDefault(UserStatus.REFUSE, 0)));
+
+        rows.add(List.of("ACTIVITE UTILISATEURS (10 JOURS)", "Date", "Inscriptions | Valides"));
+        for (DailyActivity d : activity10Days) {
+            rows.add(List.of(
+                    "ACTIVITE_10J",
+                    d.day(),
+                    d.registrations() + " | " + d.validated()
+            ));
+        }
 
         for (Map.Entry<UserSegmentType, Integer> e : orderedSegments(segments).entrySet()) {
             rows.add(List.of("SEGMENTS", e.getKey().name(), String.valueOf(e.getValue())));
@@ -308,8 +324,53 @@ public class AdminExportService {
         return new DashboardStats(totalUsers, totalClients, totalAdmins, statuses);
     }
 
+    private List<DailyActivity> fetchUserActivity10Days() {
+        LocalDate today = LocalDate.now();
+        LocalDate start = today.minusDays(9);
+        Map<LocalDate, int[]> buckets = new LinkedHashMap<>();
+        for (int i = 0; i < 10; i++) {
+            LocalDate day = start.plusDays(i);
+            buckets.put(day, new int[]{0, 0});
+        }
+
+        String sql = """
+                SELECT DATE(createdAt) AS d,
+                       COUNT(*) AS registrations,
+                       SUM(CASE WHEN status = 'ACCEPTE' THEN 1 ELSE 0 END) AS validated
+                FROM users
+                WHERE createdAt >= ?
+                GROUP BY DATE(createdAt)
+                ORDER BY DATE(createdAt)
+                """;
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setTimestamp(1, Timestamp.valueOf(start.atStartOfDay()));
+            try (ResultSet rs = ps.executeQuery()) {
+                while (rs.next()) {
+                    java.sql.Date sqlDate = rs.getDate("d");
+                    if (sqlDate == null) continue;
+                    LocalDate day = sqlDate.toLocalDate();
+                    int[] values = buckets.get(day);
+                    if (values == null) continue;
+                    values[0] = rs.getInt("registrations");
+                    values[1] = rs.getInt("validated");
+                }
+            }
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur lecture activite 10 jours: " + e.getMessage(), e);
+        }
+
+        List<DailyActivity> rows = new ArrayList<>();
+        DateTimeFormatter dayFmt = DateTimeFormatter.ofPattern("dd/MM");
+        for (Map.Entry<LocalDate, int[]> e : buckets.entrySet()) {
+            rows.add(new DailyActivity(e.getKey().format(dayFmt), e.getValue()[0], e.getValue()[1]));
+        }
+        return rows;
+    }
+
     private record AuditLine(String createdAt, String type, String userId, String email, String channel, String success, String reason) { }
     private record DashboardStats(int totalUsers, int totalClients, int totalAdmins, Map<UserStatus, Integer> statusCount) { }
+    private record DailyActivity(String day, int registrations, int validated) { }
 
     private static final class TinyPdfWriter {
 
