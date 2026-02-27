@@ -294,22 +294,6 @@ public class ClientMarketControlleur implements Initializable {
         alert.showAndWait();
     }
 
-    @FXML
-    private void goBackToMenu(ActionEvent event) {
-        try {
-            Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/MenuProductGUI.fxml")
-            );
-            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
-            stage.setScene(new Scene(root));
-            stage.setTitle("Manager");
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
-
-
     // ==================== Custom ListView Cell ====================
     private class ProductListCell extends ListCell<Product> {
         private final VBox container;

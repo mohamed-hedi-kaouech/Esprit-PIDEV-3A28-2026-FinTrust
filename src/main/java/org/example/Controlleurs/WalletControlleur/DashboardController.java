@@ -376,11 +376,12 @@ public class DashboardController implements Initializable {
     // ✅ Méthodes pour la sidebar
     @FXML private void handleGestionClients() { ouvrirModule("Gestion des clients", "/Wallet/gestion_clients.fxml"); }
     @FXML private void handleGestionPublications() { ouvrirModule("Gestion des publications", "/Wallet/publications.fxml"); }
-    @FXML private void handleGestionProduits() { ouvrirModule("Gestion des produits", "/Wallet/produits.fxml"); }
+    @FXML private void handleGestionProduits() { ouvrirModule("Gestion des produits", "/Product/Admin/ListeProductGUI.fxml"); }
+    @FXML public void handleGestionSubs() {ouvrirModule("Gestion des Abonners", "/Product/Admin/ListeSubProductGUI.fxml");}
+    @FXML public void handleDashboardProduits() {ouvrirModule("Dashboard produits & Abonners", "/Product/Admin/AdminDashboardGUI.fxml");}
     @FXML private void handleGestionBudgets() { ouvrirModule("Gestion des budgets", "/Wallet/budgets.fxml"); }
     @FXML private void handleGestionLoans() { ouvrirModule("Gestion des prêts", "/Wallet/loans.fxml"); }
     @FXML private void handleGestionUsers() { ouvrirModule("Gestion des utilisateurs", "/Wallet/users.fxml"); }
-
     private void ouvrirModule(String titre, String fxmlPath) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
@@ -669,4 +670,7 @@ public class DashboardController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la liste des comptes bloqués");
         }
     }
+
+
+
 }

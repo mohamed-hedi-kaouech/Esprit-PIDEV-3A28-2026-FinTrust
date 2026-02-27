@@ -8,7 +8,9 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import org.example.Model.Wallet.Wallet;
+import org.example.Model.Wallet.ClassWallet.Wallet;
+import org.example.Model.Wallet.EnumWallet.WalletDevise;
+import org.example.Model.Wallet.EnumWallet.WalletStatut;
 import org.example.Service.WalletService.WalletService;
 
 import java.io.IOException;
@@ -37,10 +39,10 @@ public class WalletManagerGUI {
                 Wallet wallet = new Wallet();
                 wallet.setNomProprietaire(nomProprietaireField.getText());
                 wallet.setSolde(Double.parseDouble(soldeField.getText()));
-                wallet.setDevise(deviseComboBox.getValue());
-                wallet.setStatut(statutComboBox.getValue());
+                wallet.setDevise(WalletDevise.valueOf(deviseComboBox.getValue()));
+                wallet.setStatut(WalletStatut.valueOf(statutComboBox.getValue()));
 
-                ws.Add(wallet);
+                ws.ajouterWallet(wallet);
 
                 showAlert(Alert.AlertType.INFORMATION,
                         "Succès",

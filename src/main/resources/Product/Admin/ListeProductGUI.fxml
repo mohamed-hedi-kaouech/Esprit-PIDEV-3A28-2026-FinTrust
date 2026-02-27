@@ -18,11 +18,6 @@
 
         <!-- Header Section -->
         <HBox alignment="CENTER_LEFT" spacing="20.0" styleClass="header-container">
-            <Button onAction="#goBackToMenu" prefWidth="120.0" styleClass="btn-back" text="⬅ Retour">
-                <font>
-                    <Font name="System Bold" size="13.0" />
-                </font>
-            </Button>
             <Label styleClass="page-title" text="Liste des Produits">
                 <font>
                     <Font name="System Bold" size="24.0" />

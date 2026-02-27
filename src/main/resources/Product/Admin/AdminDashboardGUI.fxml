@@ -9,7 +9,7 @@
 <AnchorPane
         prefHeight="820.0"
         prefWidth="1200.0"
-        style="-fx-background-color: #0f1923;"
+        style="-fx-background-color: #f0f4f8;"
         xmlns="http://javafx.com/javafx/17.0.12"
         xmlns:fx="http://javafx.com/fxml/1"
         fx:controller="org.example.Controlleurs.ProductControlleur.Admin.AdminDashboardControlleur">
@@ -23,64 +23,65 @@
         <HBox
                 alignment="CENTER_LEFT"
                 spacing="14"
-                style="-fx-background-color: #111d2b;
-                   -fx-border-color: #1e3a5f;
-                   -fx-border-width: 0 0 1 0;">
+                style="-fx-background-color: #ffffff;
+                   -fx-border-color: #d1dce8;
+                   -fx-border-width: 0 0 1 0;
+                   -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 8, 0, 0, 2);">
             <padding><Insets top="16" left="28" right="28" bottom="16"/></padding>
 
-            <Button text="⬅ Retour" onAction="#goBackToMenu"
-                    style="-fx-background-color: #1e3a5f;
-                       -fx-text-fill: #3b9eff;
-                       -fx-font-size: 11px;
-                       -fx-background-radius: 6px;
-                       -fx-padding: 6px 14px;
-                       -fx-cursor: hand;"/>
 
-            <Label text="|" style="-fx-text-fill: #1e3a5f;"/>
+
+            <Label text="|" style="-fx-text-fill: #c5d4e3;"/>
 
             <Label text="📊"  style="-fx-font-size: 18px;"/>
             <Label text="Dashboard Analytique"
-                   style="-fx-text-fill: white; -fx-font-size: 17px; -fx-font-weight: bold;"/>
+                   style="-fx-text-fill: #1a2b3c; -fx-font-size: 17px; -fx-font-weight: bold;"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
             <Button text="⟳  Actualiser" onAction="#refreshData"
-                    style="-fx-background-color: #0d3b66;
-                       -fx-text-fill: #3b9eff;
+                    style="-fx-background-color: #e8f0fe;
+                       -fx-text-fill: #1a73e8;
                        -fx-font-size: 11px;
                        -fx-font-weight: bold;
                        -fx-background-radius: 8px;
                        -fx-padding: 7px 18px;
-                       -fx-cursor: hand;"/>
+                       -fx-cursor: hand;
+                       -fx-border-color: #c5d8f8;
+                       -fx-border-radius: 8px;
+                       -fx-border-width: 1;"/>
             <Button text="📧  Envoyer Rapport PDF"
                     onAction="#sendEmailReport"
-                    style="-fx-background-color: #1a472a;
-                           -fx-text-fill: #2ecc71;
+                    style="-fx-background-color: #e6f4ea;
+                           -fx-text-fill: #1e8e3e;
                            -fx-font-size: 11px;
                            -fx-font-weight: bold;
                            -fx-background-radius: 8px;
                            -fx-padding: 7px 18px;
-                           -fx-cursor: hand;"/>
+                           -fx-cursor: hand;
+                           -fx-border-color: #b7dfc4;
+                           -fx-border-radius: 8px;
+                           -fx-border-width: 1;"/>
         </HBox>
 
         <!-- ══ SCROLLABLE CONTENT ══ -->
         <ScrollPane
                 fitToWidth="true"
                 VBox.vgrow="ALWAYS"
-                style="-fx-background-color: #0f1923;
-                   -fx-background: #0f1923;
+                style="-fx-background-color: #f0f4f8;
+                   -fx-background: #f0f4f8;
                    -fx-border-color: transparent;">
 
-            <VBox spacing="24" style="-fx-background-color: #0f1923;">
+            <VBox spacing="24" style="-fx-background-color: #f0f4f8;">
                 <padding><Insets top="24" left="28" right="28" bottom="28"/></padding>
 
                 <!-- ══ SECTION LABEL: PRODUCTS ══ -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="▌" style="-fx-text-fill: #3b9eff; -fx-font-size: 18px;"/>
+                    <Label text="▌" style="-fx-text-fill: #1a73e8; -fx-font-size: 18px;"/>
                     <Label text="Produits Bancaires"
-                           style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #1a2b3c; -fx-font-size: 15px; -fx-font-weight: bold;"/>
                     <Separator HBox.hgrow="ALWAYS"
-                               style="-fx-background-color: #1e3a5f;"/>
+                               style="-fx-background-color: #d1dce8;"/>
                 </HBox>
 
                 <!-- ══ KPI ROW 1 — PRODUCTS ══ -->
@@ -88,99 +89,99 @@
 
                     <!-- Total Products -->
                     <VBox fx:id="kpiTotalProducts" spacing="6" prefWidth="200" prefHeight="110"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 12px;
                                -fx-border-width: 1;
-                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="📦  Produits Total"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelTotalProducts" text="—"
-                               style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 32px; -fx-font-weight: bold;"/>
                         <Label fx:id="labelProductsGrowth" text="dans le catalogue"
-                               style="-fx-text-fill: #2ecc71; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #1e8e3e; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Avg Price -->
                     <VBox fx:id="kpiAvgPrice" spacing="6" prefWidth="200" prefHeight="110"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 12px;
                                -fx-border-width: 1;
-                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="💰  Prix Moyen"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelAvgPrice" text="—"
-                               style="-fx-text-fill: #f5a623; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #d97706; -fx-font-size: 32px; -fx-font-weight: bold;"/>
                         <Label text="DT / produit"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Most Popular Category -->
                     <VBox fx:id="kpiTopCategory" spacing="6" prefWidth="220" prefHeight="110"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 12px;
                                -fx-border-width: 1;
-                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="🏆  Catégorie Top"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelTopCategory" text="—"
-                               style="-fx-text-fill: white; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 20px; -fx-font-weight: bold;"/>
                         <Label fx:id="labelTopCategoryCount" text="abonnements"
-                               style="-fx-text-fill: #3b9eff; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #1a73e8; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Price Range -->
                     <VBox fx:id="kpiPriceRange" spacing="6" prefWidth="220" prefHeight="110"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 12px;
                                -fx-border-width: 1;
-                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="📉 → 📈  Fourchette Prix"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelPriceRange" text="—"
-                               style="-fx-text-fill: #2ecc71; -fx-font-size: 20px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1e8e3e; -fx-font-size: 20px; -fx-font-weight: bold;"/>
                         <Label text="min → max DT"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Newest Product -->
                     <VBox fx:id="kpiNewest" spacing="6" prefWidth="220" prefHeight="110"
                           HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 12px;
                                -fx-border-width: 1;
-                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.3), 10, 0, 0, 2);">
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="🆕  Dernier Produit"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelNewestProduct" text="—"
-                               style="-fx-text-fill: white; -fx-font-size: 16px; -fx-font-weight: bold;"
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 16px; -fx-font-weight: bold;"
                                wrapText="true"/>
                         <Label fx:id="labelNewestDate" text="—"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                     </VBox>
                 </HBox>
 
                 <!-- ══ SECTION LABEL: SUBSCRIPTIONS ══ -->
                 <HBox alignment="CENTER_LEFT" spacing="10">
-                    <Label text="▌" style="-fx-text-fill: #f5a623; -fx-font-size: 18px;"/>
+                    <Label text="▌" style="-fx-text-fill: #d97706; -fx-font-size: 18px;"/>
                     <Label text="Abonnements"
-                           style="-fx-text-fill: white; -fx-font-size: 15px; -fx-font-weight: bold;"/>
+                           style="-fx-text-fill: #1a2b3c; -fx-font-size: 15px; -fx-font-weight: bold;"/>
                     <Separator HBox.hgrow="ALWAYS"
-                               style="-fx-background-color: #1e3a5f;"/>
+                               style="-fx-background-color: #d1dce8;"/>
                 </HBox>
 
                 <!-- ══ KPI ROW 2 — SUBSCRIPTIONS ══ -->
@@ -188,64 +189,68 @@
 
                     <!-- Total Subs -->
                     <VBox spacing="6" prefWidth="190" prefHeight="110"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #2d4a00;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 12px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="📋  Total Abonnements"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelTotalSubs" text="—"
-                               style="-fx-text-fill: white; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 32px; -fx-font-weight: bold;"/>
                         <Label text="tous statuts"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Active Subs -->
                     <VBox spacing="6" prefWidth="190" prefHeight="110"
-                          style="-fx-background-color: #0a1f0a;
+                          style="-fx-background-color: #f0faf3;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1a4a1a;
+                               -fx-border-color: #a8d5b5;
                                -fx-border-radius: 12px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="✅  Actifs"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelActiveSubs" text="—"
-                               style="-fx-text-fill: #2ecc71; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1e8e3e; -fx-font-size: 32px; -fx-font-weight: bold;"/>
                         <Label fx:id="labelActiveRate" text="—% du total"
                                style="-fx-text-fill: #27ae60; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Suspended -->
                     <VBox spacing="6" prefWidth="190" prefHeight="110"
-                          style="-fx-background-color: #1f1500;
+                          style="-fx-background-color: #fffbf0;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #4a3000;
+                               -fx-border-color: #f0d08a;
                                -fx-border-radius: 12px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="⏸  Suspendus"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelSuspendedSubs" text="—"
-                               style="-fx-text-fill: #f5a623; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #d97706; -fx-font-size: 32px; -fx-font-weight: bold;"/>
                         <Label fx:id="labelSuspendedRate" text="—% du total"
                                style="-fx-text-fill: #e67e22; -fx-font-size: 11px;"/>
                     </VBox>
 
                     <!-- Closed -->
                     <VBox spacing="6" prefWidth="190" prefHeight="110"
-                          style="-fx-background-color: #1f0a0a;
+                          style="-fx-background-color: #fff5f5;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #4a1a1a;
+                               -fx-border-color: #f5b8b8;
                                -fx-border-radius: 12px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="❌  Fermés"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelClosedSubs" text="—"
-                               style="-fx-text-fill: #e74c3c; -fx-font-size: 32px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #dc2626; -fx-font-size: 32px; -fx-font-weight: bold;"/>
                         <Label fx:id="labelClosedRate" text="—% du total"
                                style="-fx-text-fill: #c0392b; -fx-font-size: 11px;"/>
                     </VBox>
@@ -253,19 +258,19 @@
                     <!-- Revenue KPI -->
                     <VBox spacing="6" prefWidth="220" prefHeight="110"
                           HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #0d2137;
+                          style="-fx-background-color: #eff6ff;
                                -fx-background-radius: 12px;
-                               -fx-border-color: #1e5a9e;
+                               -fx-border-color: #93c5fd;
                                -fx-border-radius: 12px;
                                -fx-border-width: 2;
-                               -fx-effect: dropshadow(gaussian, rgba(59,158,255,0.1), 16, 0, 0, 0);">
+                               -fx-effect: dropshadow(gaussian, rgba(26,115,232,0.12), 16, 0, 0, 0);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="💎  Revenu Total Estimé"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                         <Label fx:id="labelTotalRevenue" text="—"
-                               style="-fx-text-fill: #3b9eff; -fx-font-size: 28px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a73e8; -fx-font-size: 28px; -fx-font-weight: bold;"/>
                         <Label text="DT (abonnements actifs)"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 11px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 11px;"/>
                     </VBox>
 
                 </HBox>
@@ -275,16 +280,17 @@
 
                     <!-- Pie: Subscriptions by Status -->
                     <VBox spacing="12" prefWidth="380"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 14px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 14px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="Abonnements par Statut"
-                               style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 13px; -fx-font-weight: bold;"/>
                         <Label text="Répartition ACTIVE / SUSPENDED / CLOSED / DRAFT"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 10px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 10px;"/>
                         <PieChart fx:id="chartSubsByStatus"
                                   prefHeight="260"
                                   animated="true"
@@ -293,26 +299,27 @@
 
                     <!-- Bar: Products by Category -->
                     <VBox spacing="12" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 14px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 14px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="Produits par Catégorie"
-                               style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 13px; -fx-font-weight: bold;"/>
                         <Label text="Nombre de produits dans chaque catégorie bancaire"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 10px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 10px;"/>
                         <BarChart fx:id="chartProductsByCategory"
                                   prefHeight="260"
                                   animated="true"
                                   style="-fx-background-color: transparent;
                                    -fx-plot-background-color: transparent;">
                             <xAxis>
-                                <CategoryAxis style="-fx-tick-label-fill: #4a7fa5; -fx-font-size: 9px;"/>
+                                <CategoryAxis style="-fx-tick-label-fill: #6b7f94; -fx-font-size: 9px;"/>
                             </xAxis>
                             <yAxis>
-                                <NumberAxis style="-fx-tick-label-fill: #4a7fa5;"/>
+                                <NumberAxis style="-fx-tick-label-fill: #6b7f94;"/>
                             </yAxis>
                         </BarChart>
                     </VBox>
@@ -324,42 +331,44 @@
 
                     <!-- Bar: Subscriptions by Type -->
                     <VBox spacing="12" prefWidth="460"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 14px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 14px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="Abonnements par Type"
-                               style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 13px; -fx-font-weight: bold;"/>
                         <Label text="MONTHLY / ANNUAL / TRANSACTION / ONE_TIME"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 10px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 10px;"/>
                         <BarChart fx:id="chartSubsByType"
                                   prefHeight="240"
                                   animated="true"
                                   style="-fx-background-color: transparent;
                                    -fx-plot-background-color: transparent;">
                             <xAxis>
-                                <CategoryAxis style="-fx-tick-label-fill: #4a7fa5;"/>
+                                <CategoryAxis style="-fx-tick-label-fill: #6b7f94;"/>
                             </xAxis>
                             <yAxis>
-                                <NumberAxis style="-fx-tick-label-fill: #4a7fa5;"/>
+                                <NumberAxis style="-fx-tick-label-fill: #6b7f94;"/>
                             </yAxis>
                         </BarChart>
                     </VBox>
 
                     <!-- Line: Subscriptions over time -->
                     <VBox spacing="12" HBox.hgrow="ALWAYS"
-                          style="-fx-background-color: #111d2b;
+                          style="-fx-background-color: #ffffff;
                                -fx-background-radius: 14px;
-                               -fx-border-color: #1e3a5f;
+                               -fx-border-color: #d1dce8;
                                -fx-border-radius: 14px;
-                               -fx-border-width: 1;">
+                               -fx-border-width: 1;
+                               -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 10, 0, 0, 2);">
                         <padding><Insets top="20" left="20" right="20" bottom="20"/></padding>
                         <Label text="Abonnements dans le Temps"
-                               style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                               style="-fx-text-fill: #1a2b3c; -fx-font-size: 13px; -fx-font-weight: bold;"/>
                         <Label text="Évolution mensuelle des nouvelles souscriptions"
-                               style="-fx-text-fill: #4a7fa5; -fx-font-size: 10px;"/>
+                               style="-fx-text-fill: #6b7f94; -fx-font-size: 10px;"/>
                         <LineChart fx:id="chartSubsOverTime"
                                    prefHeight="240"
                                    animated="true"
@@ -367,11 +376,11 @@
                                    -fx-plot-background-color: transparent;">
                             <xAxis>
                                 <CategoryAxis label="Mois"
-                                              style="-fx-tick-label-fill: #4a7fa5;"/>
+                                              style="-fx-tick-label-fill: #6b7f94;"/>
                             </xAxis>
                             <yAxis>
                                 <NumberAxis label="Abonnements"
-                                            style="-fx-tick-label-fill: #4a7fa5;"/>
+                                            style="-fx-tick-label-fill: #6b7f94;"/>
                             </yAxis>
                         </LineChart>
                     </VBox>
@@ -380,20 +389,21 @@
 
                 <!-- ══ CHARTS ROW 3: JOINT CHART ══ -->
                 <VBox spacing="12"
-                      style="-fx-background-color: #0d2137;
+                      style="-fx-background-color: #eff6ff;
                            -fx-background-radius: 14px;
-                           -fx-border-color: #1e5a9e;
+                           -fx-border-color: #93c5fd;
                            -fx-border-radius: 14px;
-                           -fx-border-width: 2;">
+                           -fx-border-width: 2;
+                           -fx-effect: dropshadow(gaussian, rgba(26,115,232,0.10), 16, 0, 0, 0);">
                     <padding><Insets top="20" left="24" right="24" bottom="20"/></padding>
 
                     <HBox alignment="CENTER_LEFT" spacing="10">
                         <Label text="⭐" style="-fx-font-size: 14px;"/>
                         <VBox spacing="2">
                             <Label text="Revenu par Catégorie  ×  Nombre d'Abonnements"
-                                   style="-fx-text-fill: white; -fx-font-size: 13px; -fx-font-weight: bold;"/>
+                                   style="-fx-text-fill: #1a2b3c; -fx-font-size: 13px; -fx-font-weight: bold;"/>
                             <Label text="Graphique joint : chiffre d'affaires estimé (prix × abonnements actifs) par catégorie de produit"
-                                   style="-fx-text-fill: #4a7fa5; -fx-font-size: 10px;"/>
+                                   style="-fx-text-fill: #6b7f94; -fx-font-size: 10px;"/>
                         </VBox>
                     </HBox>
 
@@ -403,10 +413,10 @@
                               style="-fx-background-color: transparent;
                                -fx-plot-background-color: transparent;">
                         <xAxis>
-                            <CategoryAxis style="-fx-tick-label-fill: #4a7fa5; -fx-font-size: 9px;"/>
+                            <CategoryAxis style="-fx-tick-label-fill: #6b7f94; -fx-font-size: 9px;"/>
                         </xAxis>
                         <yAxis>
-                            <NumberAxis style="-fx-tick-label-fill: #4a7fa5;"/>
+                            <NumberAxis style="-fx-tick-label-fill: #6b7f94;"/>
                         </yAxis>
                     </BarChart>
                 </VBox>
@@ -418,15 +428,15 @@
         <HBox
                 alignment="CENTER_LEFT"
                 spacing="20"
-                style="-fx-background-color: #080f17;
-                   -fx-border-color: #1e3a5f;
+                style="-fx-background-color: #f8fafc;
+                   -fx-border-color: #d1dce8;
                    -fx-border-width: 1 0 0 0;">
             <padding><Insets top="10" bottom="10" left="28" right="28"/></padding>
             <Label fx:id="labelLastRefresh" text="Dernière actualisation : —"
-                   style="-fx-text-fill: #2a4a6b; -fx-font-size: 11px;"/>
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
             <Region HBox.hgrow="ALWAYS"/>
             <Label text="BankOS · Admin Analytics"
-                   style="-fx-text-fill: #2a4a6b; -fx-font-size: 11px;"/>
+                   style="-fx-text-fill: #94a3b8; -fx-font-size: 11px;"/>
         </HBox>
 
     </VBox>

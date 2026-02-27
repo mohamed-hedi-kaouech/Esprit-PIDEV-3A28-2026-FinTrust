@@ -19,13 +19,6 @@
             <padding>
                 <Insets top="20" right="30" bottom="20" left="30"/>
             </padding>
-
-            <Button text="⬅ Retour" onAction="#goBackToMenu" styleClass="btn-back">
-                <font>
-                    <Font name="System Bold" size="13.0" />
-                </font>
-            </Button>
-
             <Label text="📋 Liste des Abonnements" styleClass="page-title">
                 <font>
                     <Font name="System Bold" size="24.0" />

@@ -126,12 +126,6 @@ public class SubscriptionUpdateController implements Initializable {
         // Populate form fields
         tfSubscriptionId.setText(String.valueOf(subscription.getSubscriptionId()));
 
-        // Set client and product (by matching display format)
-//        if (subscription.getClientName() != null) {
-//            cbClient.setValue(subscription.getClientName());
-//        } else {
-//            cbClient.setValue("Client #" + subscription.getClient());
-//        }
 
         // Find and select the product in the combo box
         if (cbProduct != null) {
