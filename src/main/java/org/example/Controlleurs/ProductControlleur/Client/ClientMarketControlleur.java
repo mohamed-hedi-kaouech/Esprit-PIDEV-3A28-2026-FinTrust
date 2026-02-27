@@ -236,10 +236,61 @@ public class ClientMarketControlleur implements Initializable {
                                 System.out.println("✅ Body: " + response.body().string());
                             }
 
-                    } catch (Exception e) {
-                        System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                        e.printStackTrace();
-                    }
+
+                        } catch (Exception e) {
+                            System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                            e.printStackTrace();
+                        }
+                    });
+                    String invoiceNumber = "INV-" +
+                            java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
+                            + "-" +
+                            System.currentTimeMillis() % 1000;
+                    String jsonBody1 = String.format("""
+                            {
+                                "invoiceNumber": "%s",
+                                "subscriptionId": "%s",
+                                "customerName": "%s",
+                                "customerEmail": "%s",
+                                "productDescription": "%s",
+                                "productCategory": "%s",
+                                "price": %s,
+                                "TVA": %s
+                            }
+                            """, invoiceNumber, productSubscription.getSubscriptionId(), "customerName", "mohamedhedi322@gmail.com", product.getDescription(), productCategorie, price, 19);
+                    CompletableFuture.runAsync(() -> {
+                        String webhookUrl = "http://localhost:5680/webhook/generate-bankfintrust-invoice";
+                        // Step 1: Test basic connectivity first
+                        try {
+                            java.net.Socket socket = new java.net.Socket();
+                            socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
+                            socket.close();
+                            OkHttpClient client = new OkHttpClient.Builder()
+                                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                    .build();
+
+                            okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                                    jsonBody1,
+                                    okhttp3.MediaType.parse("application/json")
+                            );
+
+                            okhttp3.Request request = new okhttp3.Request.Builder()
+                                    .url(webhookUrl)
+                                    .post(body)
+                                    .build();
+
+                            try (okhttp3.Response response = client.newCall(request).execute()) {
+                                System.out.println("✅ Status: " + response.code());
+                                System.out.println("✅ Body: " + response.body().string());
+                            }
+
+
+                        } catch (Exception e) {
+                            System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                            e.printStackTrace();
+                        }
                     });
 
                 } else {
