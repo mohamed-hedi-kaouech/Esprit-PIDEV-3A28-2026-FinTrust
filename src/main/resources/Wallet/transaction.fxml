@@ -36,22 +36,31 @@
                             <TextField fx:id="txtMontant" promptText="0.00" styleClass="form-field" GridPane.rowIndex="0" GridPane.columnIndex="1" />
                             <Label fx:id="lblErrorMontant" styleClass="error-label" GridPane.rowIndex="1" GridPane.columnIndex="1" />
 
+                            <!-- Destinataire (visible uniquement pour transfert) -->
+                            <Label text="Destinataire" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                            <TextField fx:id="txtDestinataire" promptText="Téléphone du destinataire"
+                                       styleClass="form-field" GridPane.rowIndex="2" GridPane.columnIndex="1"
+                                       visible="false" managed="false" />
+                            <Label fx:id="lblDestinataireInfo" styleClass="info-label"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="2"
+                                   visible="false" managed="false" />
+
                             <!-- Type avec RadioButtons -->
-                            <Label text="Type" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                            <HBox spacing="20" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
+                            <Label text="Type" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                            <HBox spacing="20" alignment="CENTER_LEFT" GridPane.rowIndex="4" GridPane.columnIndex="1">
                                 <RadioButton fx:id="radioDepot" text="Dépôt" styleClass="transaction-radio" />
                                 <RadioButton fx:id="radioRetrait" text="Retrait" styleClass="transaction-radio" />
                                 <RadioButton fx:id="radioTransfert" text="Transfert" styleClass="transaction-radio" />
                             </HBox>
-                            <Label fx:id="lblErrorType" styleClass="error-label" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                            <Label fx:id="lblErrorType" styleClass="error-label" GridPane.rowIndex="5" GridPane.columnIndex="1" />
 
                             <!-- Wallet -->
-                            <Label text="Wallet" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                            <ComboBox fx:id="comboWallet" prefWidth="300" promptText="Sélectionner un compte" styleClass="form-combo" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-                            <Label fx:id="lblErrorWallet" styleClass="error-label" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                            <Label text="Wallet" styleClass="form-label" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                            <ComboBox fx:id="comboWallet" prefWidth="300" promptText="Sélectionner un compte" styleClass="form-combo" GridPane.rowIndex="6" GridPane.columnIndex="1" />
+                            <Label fx:id="lblErrorWallet" styleClass="error-label" GridPane.rowIndex="7" GridPane.columnIndex="1" />
 
                             <!-- Informations du wallet -->
-                            <HBox spacing="15" alignment="CENTER_LEFT" GridPane.rowIndex="6" GridPane.columnIndex="1">
+                            <HBox spacing="15" alignment="CENTER_LEFT" GridPane.rowIndex="8" GridPane.columnIndex="1">
                                 <VBox styleClass="info-card">
                                     <Label text="Compte sélectionné" styleClass="info-card-label" />
                                     <Label fx:id="lblWalletInfo" text="Aucun" styleClass="info-card-value" />

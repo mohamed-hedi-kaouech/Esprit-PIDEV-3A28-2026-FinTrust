@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<VBox xmlns="http://javafx.com/javafx/17"
+      xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="org.example.Controlleurs.WalletControlleur.ConversionController"
+      spacing="20" prefWidth="600" prefHeight="450">
+
+    <padding>
+        <Insets top="30" right="30" bottom="30" left="30"/>
+    </padding>
+
+    <Label text="Convertisseur de devises"
+           style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #1e3c72;"/>
+
+    <GridPane hgap="15" vgap="15">
+        <columnConstraints>
+            <ColumnConstraints percentWidth="40"/>
+            <ColumnConstraints percentWidth="30"/>
+            <ColumnConstraints percentWidth="30"/>
+        </columnConstraints>
+
+        <!-- Montant -->
+        <Label text="Montant à convertir :" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0"/>
+        <TextField fx:id="txtMontant" promptText="0.00" GridPane.rowIndex="0" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+        <!-- De -->
+        <Label text="De :" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboDeviseSource" prefWidth="150" GridPane.rowIndex="1" GridPane.columnIndex="1"/>
+        <Label fx:id="lblWalletSource" style="-fx-text-fill: #2c3e50;" GridPane.rowIndex="1" GridPane.columnIndex="2"/>
+
+        <!-- Vers -->
+        <Label text="Vers :" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0"/>
+        <ComboBox fx:id="comboDeviseCible" prefWidth="150" GridPane.rowIndex="2" GridPane.columnIndex="1"/>
+        <Label fx:id="lblWalletCible" style="-fx-text-fill: #2c3e50;" GridPane.rowIndex="2" GridPane.columnIndex="2"/>
+
+        <!-- Taux -->
+        <Label text="Taux de change :" style="-fx-font-weight: bold;" GridPane.rowIndex="3" GridPane.columnIndex="0"/>
+        <Label fx:id="lblTaux" text="1 TND = ? EUR" style="-fx-font-weight: bold; -fx-text-fill: #27ae60;" GridPane.rowIndex="3" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+    </GridPane>
+
+    <!-- Résultat -->
+    <VBox spacing="10" style="-fx-background-color: #e8f4fd; -fx-padding: 20; -fx-background-radius: 10; -fx-border-color: #3498db; -fx-border-radius: 10;">
+        <Label text="RÉSULTAT DE LA CONVERSION" style="-fx-font-weight: bold; -fx-text-fill: #1e3c72;"/>
+        <HBox spacing="10" alignment="CENTER">
+            <Label fx:id="lblMontantSource" text="0.00" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+            <Label fx:id="lblDeviseSource" text="TND" style="-fx-font-size: 18px;"/>
+            <Label text="=" style="-fx-font-size: 22px; -fx-font-weight: bold;"/>
+            <Label fx:id="lblMontantCible" text="0.00" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+            <Label fx:id="lblDeviseCible" text="EUR" style="-fx-font-size: 18px;"/>
+        </HBox>
+    </VBox>
+
+    <!-- Boutons d'action -->
+    <HBox spacing="15" alignment="CENTER">
+        <Button text="🔄 Convertir" onAction="#handleConvertir"
+                style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 25; -fx-background-radius: 5;"/>
+
+        <!-- ✅ BOUTON TRANSFERT (remplace "Simuler transfert") -->
+        <Button text="💰 Transférer" onAction="#handleTransfert"
+                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 25; -fx-background-radius: 5; -fx-font-weight: bold;"/>
+
+        <Button text="❌ Annuler" onAction="#handleAnnuler"
+                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 25; -fx-background-radius: 5;"/>
+    </HBox>
+
+    <!-- Message d'information -->
+    <Label fx:id="lblMessage" style="-fx-text-fill: #27ae60; -fx-font-weight: bold;" visible="false"/>
+</VBox>

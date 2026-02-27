@@ -5,6 +5,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
+import org.example.Controlleurs.WalletControlleur.ChoiceController;
 import java.util.Objects;
 
 public class MainFX extends Application {
@@ -12,24 +13,22 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            // Charge le fichier FXML du dashboard
-            Parent root = FXMLLoader.load(Objects.requireNonNull(
-                    getClass().getResource("/Wallet/dashboard.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/Wallet/Choice/ChoiceView.fxml")));
+
+            Parent root = loader.load();
+
+            // ✅ Récupérer le contrôleur et lui passer la fenêtre
+            ChoiceController controller = loader.getController();
+            controller.setChoiceStage(primaryStage);
 
             Scene scene = new Scene(root);
-
-            // Ajoute le CSS
-            String css = getClass().getResource("/Styles/StyleWallet.css").toExternalForm();
-            scene.getStylesheets().add(css);
-
-            primaryStage.setTitle("FinTrust - Gestion Bancaire");
-            primaryStage.setMaximized(true);
+            primaryStage.setTitle("FinTrust - Connexion");
             primaryStage.setScene(scene);
             primaryStage.show();
 
         } catch(Exception e) {
             e.printStackTrace();
-            System.err.println("Erreur lors du chargement de l'application : " + e.getMessage());
         }
     }
 
