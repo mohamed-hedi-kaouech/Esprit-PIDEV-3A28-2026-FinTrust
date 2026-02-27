@@ -37,8 +37,8 @@ public class CreationPubController  implements Initializable  {
     // Form Fields
     @FXML private TextField titreField;
     @FXML private TextArea contenuArea;
-    @FXML private TextField categorieField;
-    @FXML private TextField statutField;
+    @FXML private ComboBox<String> categorieField;
+    @FXML private ComboBox<String> statutField;
     @FXML private CheckBox estVisibleCheck;
     @FXML private DatePicker datePicker;
     @FXML private Label charCountLabel;
@@ -47,7 +47,24 @@ public class CreationPubController  implements Initializable  {
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        setupComboBoxes();
         setupContenuCounter();
+    }
+
+    private void setupComboBoxes() {
+        categorieField.setItems(FXCollections.observableArrayList(
+                "Finance",
+                "Crédit",
+                "Investissement",
+                "Épargne",
+                "Assurance",
+                "Bourse"
+        ));
+
+        statutField.setItems(FXCollections.observableArrayList(
+                "Publié",
+                "Brouillon"
+        ));
     }
 
     @FXML
@@ -84,8 +101,8 @@ public class CreationPubController  implements Initializable  {
                 publication.setTitre(titreField.getText());
                 publication.setContenu(contenuArea.getText());
                 // Fill optional fields with form values or sensible defaults
-                publication.setCategorie(categorieField.getText() == null ? "" : categorieField.getText());
-                publication.setStatut(statutField.getText() == null ? "" : statutField.getText());
+                publication.setCategorie(categorieField.getValue() == null ? "" : categorieField.getValue());
+                publication.setStatut(statutField.getValue() == null ? "" : statutField.getValue());
                 publication.setEstVisible(estVisibleCheck.isSelected());
                 if (datePicker.getValue() != null) {
                     publication.setDatePublication(datePicker.getValue().atStartOfDay());
@@ -171,11 +188,15 @@ public class CreationPubController  implements Initializable  {
     public void handleClear(ActionEvent actionEvent) {
         titreField.clear();
         contenuArea.clear();
+        categorieField.setValue(null);
+        statutField.setValue(null);
     }
 
     public void handleClear() {
         titreField.clear();
         contenuArea.clear();
+        categorieField.setValue(null);
+        statutField.setValue(null);
     }
 
     @FXML

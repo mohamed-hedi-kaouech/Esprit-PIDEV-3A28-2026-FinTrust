@@ -16,8 +16,9 @@ import org.apache.pdfbox.pdmodel.graphics.image.PDImageXObject;
 
 import java.io.BufferedWriter;
 import java.io.File;
-import java.io.FileWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
 import java.awt.BasicStroke;
 import java.awt.Color;
 import java.awt.Font;
@@ -39,6 +40,8 @@ import java.util.Map;
  * Service de gestion des Feedbacks
  */
 public class FeedbackService {
+    public static final String ADMIN_REPLY_TYPE = "ADMIN_REPLY";
+    private static final String ADMIN_REPLY_PREFIX = "REPLY_TO:";
 
     private Connection cnx;
     private boolean isConnected = false;
@@ -430,6 +433,62 @@ public class FeedbackService {
         return 0;
     }
 
+    public int countRatings(int idPublication) {
+        ensureConnection();
+
+        if (!isConnected) {
+            int c = 0;
+            for (Feedback f : offline) {
+                String type = f.getTypeReaction() == null ? "" : f.getTypeReaction().toUpperCase();
+                if (f.getIdPublication() == idPublication && type.startsWith("RATE")) c++;
+            }
+            return c;
+        }
+
+        String sql = "SELECT COUNT(*) FROM feedback WHERE id_publication = ? AND type_reaction LIKE 'RATE%'";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idPublication);
+            ResultSet rs = ps.executeQuery();
+            if (rs.next()) return rs.getInt(1);
+        } catch (SQLException e) {
+            System.out.println("Erreur count ratings : " + e.getMessage());
+        }
+        return 0;
+    }
+
+    public List<String> getRecentCommentTexts(int idPublication, int limit) {
+        ensureConnection();
+        List<String> comments = new ArrayList<>();
+        int cappedLimit = Math.max(1, Math.min(limit, 50));
+
+        if (!isConnected) {
+            for (int i = offline.size() - 1; i >= 0 && comments.size() < cappedLimit; i--) {
+                Feedback f = offline.get(i);
+                if (f.getIdPublication() == idPublication && "COMMENT".equalsIgnoreCase(f.getTypeReaction())) {
+                    String c = f.getCommentaire();
+                    if (c != null && !c.isBlank()) comments.add(c.trim());
+                }
+            }
+            return comments;
+        }
+
+        String sql = "SELECT commentaire FROM feedback WHERE id_publication=? AND type_reaction='COMMENT' " +
+                "AND commentaire IS NOT NULL AND TRIM(commentaire) <> '' ORDER BY date_feedback DESC LIMIT ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, idPublication);
+            ps.setInt(2, cappedLimit);
+            ResultSet rs = ps.executeQuery();
+            while (rs.next()) {
+                String c = rs.getString("commentaire");
+                if (c != null && !c.isBlank()) comments.add(c.trim());
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur getRecentCommentTexts : " + e.getMessage());
+        }
+
+        return comments;
+    }
+
     // ===============================
     // Notes (RATE) : moyenne (optionnel mais utile pour l'UI)
     // ===============================
@@ -459,12 +518,17 @@ public class FeedbackService {
         String sql = "SELECT id_feedback, id_user, type_reaction, commentaire, date_feedback " +
                 "FROM feedback WHERE id_publication=? ORDER BY date_feedback DESC";
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file));
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), java.nio.charset.StandardCharsets.UTF_8));
              PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, publicationId);
             ResultSet rs = ps.executeQuery();
 
-            bw.write("id_feedback,id_user,type_reaction,commentaire,date_feedback");
+            // UTF-8 BOM for better Excel compatibility on Windows.
+            bw.write('\uFEFF');
+            // Force Excel delimiter regardless of OS locale.
+            bw.write("sep=;");
+            bw.newLine();
+            bw.write("id_feedback;id_user;type_reaction;commentaire;date_feedback");
             bw.newLine();
 
             while (rs.next()) {
@@ -472,10 +536,10 @@ public class FeedbackService {
                 if (commentaire == null) commentaire = "";
                 commentaire = commentaire.replace("\"", "\"\"");
 
-                String line = rs.getInt("id_feedback") + "," +
-                        rs.getInt("id_user") + "," +
-                        safeCsv(rs.getString("type_reaction")) + "," +
-                        "\"" + commentaire + "\"," +
+                String line = rs.getInt("id_feedback") + ";" +
+                        rs.getInt("id_user") + ";" +
+                        safeCsv(rs.getString("type_reaction")) + ";" +
+                        "\"" + commentaire + "\";" +
                         rs.getTimestamp("date_feedback");
                 bw.write(line);
                 bw.newLine();
@@ -615,15 +679,20 @@ public class FeedbackService {
         List<MonthlyFeedbackStats> rows = getMonthlyStats(startInclusive, endExclusive);
         if (file == null) return false;
 
-        try (BufferedWriter bw = new BufferedWriter(new FileWriter(file))) {
-            bw.write("month,likes,dislikes,comments,avg_rating");
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(file), java.nio.charset.StandardCharsets.UTF_8))) {
+            bw.write('\uFEFF');
+            // Force Excel delimiter regardless of OS locale.
+            bw.write("sep=;");
+            bw.newLine();
+            bw.write("month;likes;dislikes;comments;avg_rating");
             bw.newLine();
             for (MonthlyFeedbackStats row : rows) {
-                bw.write(row.getMonth() + "," +
-                        row.getLikes() + "," +
-                        row.getDislikes() + "," +
-                        row.getComments() + "," +
-                        String.format(Locale.US, "%.2f", row.getAvgRating()));
+                String avg = String.format(Locale.FRANCE, "%.2f", row.getAvgRating());
+                bw.write(row.getMonth() + ";" +
+                        row.getLikes() + ";" +
+                        row.getDislikes() + ";" +
+                        row.getComments() + ";" +
+                        avg);
                 bw.newLine();
             }
             return true;
@@ -748,6 +817,106 @@ public class FeedbackService {
             System.out.println("Erreur getStatsByPublication : " + e.getMessage());
         }
         return list;
+    }
+
+    public boolean createAdminReply(int idPublication, int adminUserId, int parentFeedbackId, String replyText) {
+        if (replyText == null || replyText.isBlank()) {
+            return false;
+        }
+        ensureConnection();
+        int validAdminId = resolveValidUserId(adminUserId);
+        if (validAdminId <= 0) {
+            System.out.println("Erreur createAdminReply : aucun user valide disponible pour id_user.");
+            return false;
+        }
+        String payload = ADMIN_REPLY_PREFIX + parentFeedbackId + "|" + replyText.trim();
+        Feedback reply = new Feedback(idPublication, validAdminId, payload, ADMIN_REPLY_TYPE);
+        return createFeedback(reply);
+    }
+
+    public Map<Integer, List<Feedback>> getAdminRepliesGrouped(int idPublication) {
+        List<Feedback> all = getByPublication(idPublication);
+        Map<Integer, List<Feedback>> grouped = new LinkedHashMap<>();
+        for (Feedback f : all) {
+            String type = f.getTypeReaction() == null ? "" : f.getTypeReaction().toUpperCase();
+            if (!ADMIN_REPLY_TYPE.equals(type)) {
+                continue;
+            }
+            Integer parentId = extractReplyParentId(f.getCommentaire());
+            if (parentId == null) {
+                continue;
+            }
+            grouped.computeIfAbsent(parentId, k -> new ArrayList<>()).add(f);
+        }
+        return grouped;
+    }
+
+    public Integer extractReplyParentId(String commentaire) {
+        if (commentaire == null || !commentaire.startsWith(ADMIN_REPLY_PREFIX)) {
+            return null;
+        }
+        int sep = commentaire.indexOf('|');
+        if (sep < 0) {
+            return null;
+        }
+        String idPart = commentaire.substring(ADMIN_REPLY_PREFIX.length(), sep).trim();
+        try {
+            return Integer.parseInt(idPart);
+        } catch (NumberFormatException ex) {
+            return null;
+        }
+    }
+
+    public String extractReplyBody(String commentaire) {
+        if (commentaire == null) {
+            return "";
+        }
+        if (!commentaire.startsWith(ADMIN_REPLY_PREFIX)) {
+            return commentaire;
+        }
+        int sep = commentaire.indexOf('|');
+        if (sep < 0 || sep == commentaire.length() - 1) {
+            return "";
+        }
+        return commentaire.substring(sep + 1).trim();
+    }
+
+    private int resolveValidUserId(int preferredUserId) {
+        if (!isConnected) {
+            // Offline mode fallback: keep preferred ID.
+            return preferredUserId;
+        }
+        if (userExists(preferredUserId)) {
+            return preferredUserId;
+        }
+        return getAnyExistingUserId();
+    }
+
+    private boolean userExists(int userId) {
+        if (!isConnected || userId <= 0) return false;
+        String sql = "SELECT 1 FROM users WHERE id = ? LIMIT 1";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setInt(1, userId);
+            ResultSet rs = ps.executeQuery();
+            return rs.next();
+        } catch (SQLException e) {
+            System.out.println("Erreur userExists : " + e.getMessage());
+            return false;
+        }
+    }
+
+    private int getAnyExistingUserId() {
+        if (!isConnected) return -1;
+        String sql = "SELECT id FROM users ORDER BY id ASC LIMIT 1";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            if (rs.next()) {
+                return rs.getInt("id");
+            }
+        } catch (SQLException e) {
+            System.out.println("Erreur getAnyExistingUserId : " + e.getMessage());
+        }
+        return -1;
     }
 
     public Map<Integer, Integer> getRatingDistribution(Integer publicationId) {
@@ -881,7 +1050,9 @@ public class FeedbackService {
     }
 
     private String safeCsv(String value) {
-        return value == null ? "" : value.replace(",", " ");
+        if (value == null) return "";
+        String clean = value.replace("\"", "\"\"");
+        return "\"" + clean + "\"";
     }
 
     private String safeOneLine(String s, int max) {

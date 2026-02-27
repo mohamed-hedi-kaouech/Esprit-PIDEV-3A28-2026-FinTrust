@@ -10,12 +10,11 @@ import javafx.scene.layout.VBox;
 import org.example.Model.Publication.Feedback;
 import org.example.Model.Publication.Publication;
 import org.example.Service.PublicationService.FeedbackService;
-import org.example.Utils.BadWordsApiClient;
-import org.example.Utils.PiiApiClient;
 
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 public class FeedbackUserController implements Initializable {
@@ -24,22 +23,17 @@ public class FeedbackUserController implements Initializable {
     @FXML private Label titleLabel;
     @FXML private Label likeCount;
     @FXML private Label dislikeCount;
-    @FXML private Button likeBtn;
-    @FXML private Button dislikeBtn;
-    @FXML private TextArea commentArea;
-    @FXML private Button submitBtn;
+    @FXML private Label avgRatingLabel;
+    @FXML private Label ratingCountLabel;
     @FXML private Button backButton;
 
     private FeedbackService feedbackService;
     private Publication publication;
+    private static final int ADMIN_USER_ID = 9999;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         feedbackService = new FeedbackService();
-
-        submitBtn.setOnAction(e -> submitComment());
-        likeBtn.setOnAction(e -> sendReaction("LIKE"));
-        dislikeBtn.setOnAction(e -> sendReaction("DISLIKE"));
         backButton.setOnAction(e -> back());
     }
 
@@ -50,99 +44,97 @@ public class FeedbackUserController implements Initializable {
     }
 
     private void refreshAll() {
+        updateStats();
         loadFeedbacks();
-        updateCounts();
+    }
+
+    private void updateStats() {
+        int likes = feedbackService.countLikes(publication.getIdPublication());
+        int dislikes = feedbackService.countDislikes(publication.getIdPublication());
+        double avg = feedbackService.averageRating(publication.getIdPublication());
+        int ratingCount = feedbackService.countRatings(publication.getIdPublication());
+
+        likeCount.setText(String.valueOf(likes));
+        dislikeCount.setText(String.valueOf(dislikes));
+        avgRatingLabel.setText(String.format("%.1f/5", avg));
+        ratingCountLabel.setText(String.valueOf(ratingCount));
     }
 
     private void loadFeedbacks() {
         feedbackList.getChildren().clear();
         List<Feedback> list = feedbackService.getByPublication(publication.getIdPublication());
+        Map<Integer, List<Feedback>> replies = feedbackService.getAdminRepliesGrouped(publication.getIdPublication());
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
         for (Feedback f : list) {
+            String type = f.getTypeReaction() == null ? "" : f.getTypeReaction().toUpperCase();
+            if (!"COMMENT".equals(type)) {
+                continue;
+            }
+
+            VBox commentCard = new VBox(6);
+            commentCard.setStyle("-fx-background-color: white; -fx-padding:10; -fx-border-color: #dbe9ff; -fx-border-radius:8; -fx-background-radius:8;");
+
             HBox row = new HBox(10);
-            row.setStyle("-fx-background-color: white; -fx-padding:8; -fx-border-color: #e6f0ff; -fx-border-radius:4; -fx-background-radius:4;");
-            Label user = new Label("User#" + f.getIdUser());
+            Label user = new Label("Client#" + f.getIdUser());
             user.setStyle("-fx-font-weight: bold; -fx-text-fill: #0b5ed7;");
+
+            Label content = new Label(f.getCommentaire() == null ? "" : f.getCommentaire());
+            content.setWrapText(true);
+            content.setStyle("-fx-text-fill: #163a6b; -fx-font-size: 13px;");
+
             Label date = new Label(f.getDateFeedback().format(fmt));
             date.setStyle("-fx-text-fill: #7a8a9a; -fx-font-size:11px;");
+
+            Button replyBtn = new Button("Répondre");
+            replyBtn.getStyleClass().add("btn-outline");
+            replyBtn.setOnAction(e -> replyToComment(f));
+
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
+            row.getChildren().addAll(user, content, spacer, date, replyBtn);
+            commentCard.getChildren().add(row);
 
-            Label content = new Label(formatFeedbackText(f));
-            content.setWrapText(true);
-            content.setMaxWidth(520);
-
-            VBox left = new VBox(4, user, date);
-            row.getChildren().addAll(left, content, spacer);
-            feedbackList.getChildren().add(row);
-        }
-    }
-
-    private String formatFeedbackText(Feedback f) {
-        if (f.getTypeReaction() == null) return "";
-        String type = f.getTypeReaction().toUpperCase();
-
-        switch (type) {
-            case "LIKE":
-                return "👍 Like";
-            case "DISLIKE":
-                return "👎 Dislike";
-            case "COMMENT":
-                return f.getCommentaire() == null ? "" : f.getCommentaire();
-            default:
-                // compat: RATE ou RATE:4...
-                if (type.startsWith("RATE")) {
-                    String note = (f.getCommentaire() != null && !f.getCommentaire().isBlank())
-                            ? f.getCommentaire().trim()
-                            : type.contains(":") ? type.substring(type.indexOf(':') + 1) : "";
-                    return "⭐ Note: " + note + "/5";
+            List<Feedback> commentReplies = replies.get(f.getIdFeedback());
+            if (commentReplies != null) {
+                for (Feedback reply : commentReplies) {
+                    HBox repRow = new HBox(8);
+                    repRow.setStyle("-fx-background-color: #eef5ff; -fx-padding:8; -fx-background-radius:6; -fx-border-color:#d4e5ff; -fx-border-radius:6;");
+                    Label admin = new Label("Admin");
+                    admin.setStyle("-fx-font-weight: bold; -fx-text-fill: #1450a3;");
+                    Label repText = new Label(feedbackService.extractReplyBody(reply.getCommentaire()));
+                    repText.setWrapText(true);
+                    repText.setStyle("-fx-text-fill: #1f4b83;");
+                    repRow.getChildren().addAll(admin, repText);
+                    commentCard.getChildren().add(repRow);
                 }
-                return (f.getCommentaire() == null || f.getCommentaire().isBlank()) ? f.getTypeReaction() : f.getCommentaire();
+            }
+
+            feedbackList.getChildren().add(commentCard);
         }
     }
 
-    private void updateCounts() {
-        try {
-            int likes = feedbackService.countLikes(publication.getIdPublication());
-            int dislikes = feedbackService.countDislikes(publication.getIdPublication());
-            likeCount.setText(String.valueOf(likes));
-            dislikeCount.setText(String.valueOf(dislikes));
-        } catch (Exception ex) {
-            likeCount.setText("0");
-            dislikeCount.setText("0");
-        }
-    }
-
-    private void submitComment() {
-        String text = commentArea.getText();
-        if (text == null || text.trim().isEmpty()) {
-            new Alert(Alert.AlertType.WARNING, "Le commentaire est vide").showAndWait();
-            return;
-        }
-        String cleaned = text.trim();
-        if (!PiiApiClient.isAllowed(cleaned)) {
-            new Alert(Alert.AlertType.ERROR, "Interdit d'ajouter des données sensibles").showAndWait();
-            return;
-        }
-        if (!BadWordsApiClient.isAllowed(cleaned)) {
-            new Alert(Alert.AlertType.ERROR, "language innaproprié").showAndWait();
-            return;
-        }
-        Feedback f = new Feedback(publication.getIdPublication(), 1, cleaned, "COMMENT");
-        feedbackService.createFeedback(f);
-        commentArea.clear();
-        refreshAll();
-    }
-
-    private static final int CURRENT_USER_ID = 1;
-
-    private void sendReaction(String type) {
-        feedbackService.toggleReaction(
-                publication.getIdPublication(),
-                CURRENT_USER_ID,
-                type
-        );
-        refreshAll();
+    private void replyToComment(Feedback comment) {
+        TextInputDialog dialog = new TextInputDialog();
+        dialog.setTitle("Réponse admin");
+        dialog.setHeaderText("Répondre au commentaire de Client#" + comment.getIdUser());
+        dialog.setContentText("Votre réponse:");
+        dialog.showAndWait().ifPresent(text -> {
+            if (text == null || text.trim().isEmpty()) {
+                return;
+            }
+            boolean ok = feedbackService.createAdminReply(
+                    publication.getIdPublication(),
+                    ADMIN_USER_ID,
+                    comment.getIdFeedback(),
+                    text.trim()
+            );
+            if (!ok) {
+                new Alert(Alert.AlertType.ERROR, "Impossible d'ajouter la réponse admin (vérifier users.id en base).").showAndWait();
+                return;
+            }
+            refreshAll();
+        });
     }
 
     private void back() {

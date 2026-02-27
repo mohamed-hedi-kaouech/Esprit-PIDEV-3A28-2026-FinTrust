@@ -6,7 +6,9 @@ import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
 import java.util.Comparator;
 import java.time.format.DateTimeFormatter;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.ResourceBundle;
 
 import org.example.Model.Publication.Feedback;
@@ -15,6 +17,8 @@ import org.example.Service.PublicationService.FeedbackService;
 import org.example.Service.PublicationService.PublicationService;
 import org.example.Utils.BadWordsApiClient;
 import org.example.Utils.PiiApiClient;
+import org.example.Utils.SummaryApiClient;
+import org.example.Utils.SummaryResult;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -46,6 +50,7 @@ public class ClientController implements Initializable {
     private PublicationService publicationService;
     private FeedbackService feedbackService;
     private final ObservableList<Publication> publications = FXCollections.observableArrayList();
+    private final Map<Integer, SummaryResult> summaryCache = new HashMap<>();
     private static final int CURRENT_USER_ID = 1;
     // ✅ Placeholder tant que l'authentification n'est pas intégrée
     // Plus tard : remplace par l'id de l'utilisateur connecté (Session / Singleton / etc.)
@@ -139,10 +144,23 @@ public class ClientController implements Initializable {
         Button likeBtn = new Button("👍");
         Button dislikeBtn = new Button("👎");
         Button commentBtn = new Button("Commenter");
+        Button summaryBtn = new Button("Voir resume IA");
+        summaryBtn.getStyleClass().add("btn-outline");
 
         Label likeCount = new Label();
         Label dislikeCount = new Label();
         Label avgRating = new Label();
+        Label globalRatingLabel = new Label();
+        globalRatingLabel.setStyle("-fx-text-fill: #0f4ea5; -fx-font-weight: 700;");
+        Label globalSentimentLabel = new Label();
+        globalSentimentLabel.setStyle("-fx-text-fill: #184f90; -fx-font-weight: 800;");
+        Label engagementLabel = new Label();
+        engagementLabel.setStyle("-fx-text-fill: #2b5d99; -fx-font-size: 12px;");
+        Label summaryLabel = new Label("Resume IA non charge.");
+        summaryLabel.setWrapText(true);
+        summaryLabel.setStyle("-fx-text-fill: #2b4f7a; -fx-font-size: 12px;");
+        VBox insightsBox = new VBox(4, globalRatingLabel, globalSentimentLabel, engagementLabel, summaryLabel);
+        insightsBox.setPadding(new Insets(4, 0, 2, 0));
 
         // Feedback list under publication
         VBox feedbackBox = new VBox(6);
@@ -159,6 +177,24 @@ public class ClientController implements Initializable {
 
             double avg = feedbackService.averageRating(p.getIdPublication());
             avgRating.setText(avg > 0 ? String.format("⭐ %.1f", avg) : "⭐ -");
+
+            int ratingsCount = feedbackService.countRatings(p.getIdPublication());
+            int commentsCount = feedbackService.countComments(p.getIdPublication());
+            double avgForLabel = feedbackService.averageRating(p.getIdPublication());
+            globalRatingLabel.setText(String.format("Rating general: %.1f/5 (%d notes)", avgForLabel, ratingsCount));
+            engagementLabel.setText("Engagement: 👍 " + likeCount.getText() + " | 👎 " + dislikeCount.getText() + " | 💬 " + commentsCount);
+
+            SummaryResult cached = summaryCache.get(p.getIdPublication());
+            if (cached != null) {
+                globalSentimentLabel.setText("Avis global: " + cached.getRatingLabel());
+                summaryLabel.setText("Resume IA: " + cached.getSummary());
+            } else {
+                List<String> comments = feedbackService.getRecentCommentTexts(p.getIdPublication(), 20);
+                SummaryResult generated = SummaryApiClient.summarize(p.getIdPublication(), p.getTitre(), comments);
+                summaryCache.put(p.getIdPublication(), generated);
+                globalSentimentLabel.setText("Avis global: " + generated.getRatingLabel());
+                summaryLabel.setText("Resume IA: " + generated.getSummary());
+            }
 
             refreshFeedbackList(feedbackBox, p);
             trendScoreLabel.setText(String.format("Score: %.2f", calculateTrendingScore(p)));
@@ -208,22 +244,30 @@ public class ClientController implements Initializable {
             openCommentDialog(p);
             refreshUI.run();
         });
+        summaryBtn.setOnAction(e -> {
+            List<String> comments = feedbackService.getRecentCommentTexts(p.getIdPublication(), 20);
+            SummaryResult result = SummaryApiClient.summarize(p.getIdPublication(), p.getTitre(), comments);
+            summaryCache.put(p.getIdPublication(), result);
+            globalSentimentLabel.setText("Avis global: " + result.getRatingLabel());
+            summaryLabel.setText("Resume IA: " + result.getSummary());
+        });
 
         // UI order
         actions.getChildren().addAll(
                 likeBtn, likeCount,
                 dislikeBtn, dislikeCount,
                 starsBox, avgRating,
-                commentBtn
+                commentBtn, summaryBtn
         );
 
-        container.getChildren().addAll(header, content, actions, feedbackBox);
+        container.getChildren().addAll(header, content, insightsBox, actions, feedbackBox);
         return container;
     }
 
     private void refreshFeedbackList(VBox feedbackBox, Publication p) {
         feedbackBox.getChildren().clear();
         List<Feedback> list = feedbackService.getByPublication(p.getIdPublication());
+        Map<Integer, List<Feedback>> adminReplies = feedbackService.getAdminRepliesGrouped(p.getIdPublication());
         DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM HH:mm");
 
         for (Feedback f : list) {
@@ -231,7 +275,7 @@ public class ClientController implements Initializable {
             // (les LIKE/DISLIKE sont visibles via les compteurs)
             if (f.getTypeReaction() == null) continue;
             String type = f.getTypeReaction().toUpperCase();
-            if (type.equals("LIKE") || type.equals("DISLIKE")) continue;
+            if (type.equals("LIKE") || type.equals("DISLIKE") || FeedbackService.ADMIN_REPLY_TYPE.equals(type)) continue;
 
             VBox commentCard = new VBox(4);
             commentCard.setStyle("""
@@ -285,6 +329,24 @@ public class ClientController implements Initializable {
             }
 
             commentCard.getChildren().add(row);
+
+            if ("COMMENT".equals(type)) {
+                List<Feedback> replies = adminReplies.get(f.getIdFeedback());
+                if (replies != null) {
+                    for (Feedback reply : replies) {
+                        HBox replyRow = new HBox(8);
+                        replyRow.setStyle("-fx-background-color: #eaf2ff; -fx-padding:8; -fx-background-radius:6; -fx-border-color:#d5e6ff; -fx-border-radius:6;");
+                        Label admin = new Label("Admin:");
+                        admin.setStyle("-fx-font-weight: bold; -fx-text-fill: #1450a3;");
+                        Label replyText = new Label(feedbackService.extractReplyBody(reply.getCommentaire()));
+                        replyText.setWrapText(true);
+                        replyText.setStyle("-fx-text-fill: #234f86; -fx-font-size: 12px;");
+                        replyRow.getChildren().addAll(admin, replyText);
+                        commentCard.getChildren().add(replyRow);
+                    }
+                }
+            }
+
             feedbackBox.getChildren().add(commentCard);        }
     }
 
