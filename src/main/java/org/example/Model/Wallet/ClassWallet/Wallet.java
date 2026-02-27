@@ -261,19 +261,22 @@ public class Wallet {
 
     public static String getSQLCreateTable() {
         return """
-        CREATE TABLE IF NOT EXISTS wallet (
-            id_wallet INT PRIMARY KEY AUTO_INCREMENT,
-            nom_proprietaire VARCHAR(100) NOT NULL,
-            telephone VARCHAR(20),
-            email VARCHAR(100),
-            code_acces VARCHAR(10),
-            est_actif BOOLEAN DEFAULT FALSE,
-            solde DOUBLE NOT NULL,
-            plafond_decouvert DOUBLE DEFAULT 0,
-            devise VARCHAR(10) NOT NULL,
-            statut VARCHAR(20) NOT NULL,
-            date_creation DATETIME NOT NULL
-        )
+                CREATE TABLE IF NOT EXISTS wallet (
+                    id_wallet INT PRIMARY KEY AUTO_INCREMENT,
+                    nom_proprietaire VARCHAR(100) NOT NULL,
+                    telephone VARCHAR(20) NOT NULL UNIQUE,
+                    email VARCHAR(150) NOT NULL UNIQUE,
+                    code_acces VARCHAR(255) NOT NULL,
+                    est_actif BOOLEAN DEFAULT TRUE,
+                    solde DECIMAL(15,2) NOT NULL DEFAULT 0,
+                    plafond_decouvert DECIMAL(15,2) DEFAULT 0,
+                    devise ENUM('TND', 'USD', 'EUR') NOT NULL,
+                    statut ENUM('DRAFT', 'ACTIVE', 'SUSPENDED', 'CLOSED') NOT NULL,
+                    tentatives_echouees INT DEFAULT 0,
+                    date_derniere_tentative DATETIME,
+                    est_bloque BOOLEAN DEFAULT FALSE,
+                    date_creation DATETIME NOT NULL
+                );
         """;
     }
     private int tentativesEchouees;
