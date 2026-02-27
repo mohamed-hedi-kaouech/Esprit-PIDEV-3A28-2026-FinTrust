@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.WalletDetailController"
+            prefHeight="700" prefWidth="900"
+            style="-fx-background-color: #f4f7fc;">
+
+    <top>
+        <VBox style="-fx-background-color: #003366; -fx-padding: 15 20;">
+            <Label fx:id="lblNomProprietaire" style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold;">
+                <font>
+                    <Font size="24.0" />
+                </font>
+            </Label>
+            <Label text="Détails du compte" style="-fx-text-fill: #b0c4de; -fx-font-size: 14px;" />
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox spacing="20" style="-fx-padding: 25;">
+
+                <!-- Cartes d'information -->
+                <HBox spacing="20">
+                    <!-- Solde -->
+                    <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                        <Label text="Solde actuel" style="-fx-text-fill: #6B7280; -fx-font-size: 14px;" />
+                        <HBox spacing="5" alignment="CENTER_LEFT">
+                            <Label fx:id="lblSolde" text="0.00" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #003366;" />
+                            <Label fx:id="lblDevise" text="TND" style="-fx-font-size: 16px; -fx-text-fill: #6B7280;" />
+                        </HBox>
+                    </VBox>
+
+                    <!-- Statut -->
+                    <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                        <Label text="Statut" style="-fx-text-fill: #6B7280; -fx-font-size: 14px;" />
+                        <Label fx:id="lblStatut" text="ACTIF" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+                    </VBox>
+
+                    <!-- Découvert -->
+                    <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                        <Label text="Découvert" style="-fx-text-fill: #6B7280; -fx-font-size: 14px;" />
+                        <Label fx:id="lblDecouvert" text="✅ NON" style="-fx-font-size: 16px; -fx-font-weight: bold;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Informations détaillées -->
+                <GridPane hgap="20" vgap="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+                    <Label text="Email :" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                    <Label fx:id="lblEmail" text="-" GridPane.rowIndex="0" GridPane.columnIndex="1" />
+
+                    <Label text="Téléphone :" style="-fx-font-weight: bold;" GridPane.rowIndex="1" GridPane.columnIndex="0" />
+                    <Label fx:id="lblTelephone" text="-" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+
+                    <Label text="Date création :" style="-fx-font-weight: bold;" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                    <Label fx:id="lblDateCreation" text="-" GridPane.rowIndex="2" GridPane.columnIndex="1" />
+
+                    <Label text="Plafond découvert :" style="-fx-font-weight: bold;" GridPane.rowIndex="0" GridPane.columnIndex="2" />
+                    <Label fx:id="lblPlafond" text="0.00 €" GridPane.rowIndex="0" GridPane.columnIndex="3" />
+                </GridPane>
+
+                <!-- Statistiques -->
+                <HBox spacing="20">
+                    <VBox style="-fx-background-color: #e6f0ff; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+                        <Label text="Total Dépôts" style="-fx-text-fill: #003366; -fx-font-size: 12px;" />
+                        <Label fx:id="lblTotalDepots" text="0.00 €" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #27ae60;" />
+                    </VBox>
+
+                    <VBox style="-fx-background-color: #ffe6e6; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+                        <Label text="Total Retraits" style="-fx-text-fill: #c0392b; -fx-font-size: 12px;" />
+                        <Label fx:id="lblTotalRetraits" text="0.00 €" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #e74c3c;" />
+                    </VBox>
+
+                    <VBox style="-fx-background-color: #e6ffe6; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+                        <Label text="Total Transferts" style="-fx-text-fill: #047857; -fx-font-size: 12px;" />
+                        <Label fx:id="lblTotalTransferts" text="0.00 €" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #047857;" />
+                    </VBox>
+
+                    <VBox style="-fx-background-color: #fff2e6; -fx-padding: 15; -fx-background-radius: 8;" HBox.hgrow="ALWAYS">
+                        <Label text="Solde moyen" style="-fx-text-fill: #c2410c; -fx-font-size: 12px;" />
+                        <Label fx:id="lblSoldeMoyen" text="0.00 €" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #c2410c;" />
+                    </VBox>
+                </HBox>
+
+                <!-- Filtres -->
+                <VBox spacing="10" style="-fx-background-color: white; -fx-padding: 20; -fx-background-radius: 10;">
+                    <HBox alignment="CENTER_LEFT" spacing="20">
+                        <Label text="Filtrer par :" style="-fx-font-weight: bold;" />
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Mois :" />
+                            <ComboBox fx:id="comboMois" prefWidth="80" />
+                            <Label text="Année :" />
+                            <ComboBox fx:id="comboAnnee" prefWidth="100" />
+                            <Button text="Filtrer" onAction="#filtrerTransactions"
+                                    style="-fx-background-color: #003366; -fx-text-fill: white; -fx-font-weight: bold;" />
+                        </HBox>
+                        <Region HBox.hgrow="ALWAYS" />
+                        <Button text="📄 Exporter PDF" onAction="#exporterPDF"
+                                style="-fx-background-color: #e74c3c; -fx-text-fill: white; -fx-font-weight: bold;" />
+                        <Button text="📊 Exporter CSV" onAction="#exporterCSV"
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold;" />
+                    </HBox>
+                </VBox>
+
+                <!-- Tableau des transactions -->
+                <VBox spacing="10">
+                    <Label text="Transactions" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #003366;" />
+
+                    <TableView fx:id="tableViewTransactions" VBox.vgrow="ALWAYS" prefHeight="300">
+                        <columns>
+                            <TableColumn fx:id="colDate" text="Date" prefWidth="140" />
+                            <TableColumn fx:id="colType" text="Type" prefWidth="100" />
+                            <TableColumn fx:id="colMontant" text="Montant" prefWidth="120" />
+                            <TableColumn fx:id="colDescription" text="Description" prefWidth="300" />
+                            <TableColumn fx:id="colStatut" text="Statut" prefWidth="100" />
+                        </columns>
+                    </TableView>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+
+    <bottom>
+        <HBox alignment="CENTER_RIGHT" style="-fx-background-color: white; -fx-padding: 15; -fx-border-color: #e5e7eb; -fx-border-width: 1 0 0 0;">
+            <Button text="Fermer" onAction="#fermer"
+                    style="-fx-background-color: #6B7280; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 10 30;" />
+        </HBox>
+    </bottom>
+</BorderPane>

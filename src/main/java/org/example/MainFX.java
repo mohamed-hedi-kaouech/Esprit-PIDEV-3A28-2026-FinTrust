@@ -5,28 +5,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-
-import java.io.IOException;
+import org.example.Controlleurs.WalletControlleur.ChoiceController;
 import java.util.Objects;
 
 public class MainFX extends Application {
-
     public static void main(String[] args) {
         launch(args);
     }
-
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MenuGUI.fxml")));
+            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
+                    getClass().getResource("/Wallet/Choice/ChoiceView.fxml")));
+
+            Parent root = loader.load();
+
+            // ✅ Récupérer le contrôleur et lui passer la fenêtre
+            ChoiceController controller = loader.getController();
+            controller.setChoiceStage(primaryStage);
+
             Scene scene = new Scene(root);
-            primaryStage.setTitle("Product Manager");
+            primaryStage.setTitle("FinTrust - Connexion");
             primaryStage.setScene(scene);
             primaryStage.show();
-        } catch (IOException e) {
+
+        } catch(Exception e) {
             e.printStackTrace();
         }
     }
-
 
 }

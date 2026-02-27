@@ -5,8 +5,9 @@ import org.example.Model.Budget.Item;
 import org.example.Model.Budget.Alerte;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.ClassProduct.Product;
-import org.example.Model.Wallet.Transaction;
-import org.example.Model.Wallet.Wallet;
+import org.example.Model.Wallet.ClassWallet.Transaction;  // CORRIGÉ: ajout de .ClassWallet
+import org.example.Model.Wallet.ClassWallet.Wallet;      // CORRIGÉ: ajout de .ClassWallet
+import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanClass.Repayment;
 
@@ -54,23 +55,22 @@ public class MaConnexion {
         try {
             cnx = DriverManager.getConnection(URL, USR, PWD);
             try (Statement st = cnx.createStatement()) {
-
-                //PRODUCT TABLE
+                // PRODUCT TABLE
                 st.executeUpdate(Product.SQLTable());
 
-                //PRODUCT SUBSCRIPTION TABLE
+                // PRODUCT SUBSCRIPTION TABLE
                 st.executeUpdate(ProductSubscription.SQLTable());
 
                 //Categorie TABLE
                 st.executeUpdate(Categorie.SQLTable());
                 st.executeUpdate(Item.SQLTable());
                 st.executeUpdate(Alerte.SQLTable());
-                
 
-                //Wallet TABLE
-                st.executeUpdate(Wallet.SQLTable());
-                //Transaction TABLE
-                st.executeUpdate(Transaction.SQLTable());
+                // WALLET TABLE (créer d'abord wallet car transaction dépend de wallet)
+                st.executeUpdate(Wallet.getSQLCreateTable());  // CORRIGÉ: getSQLCreateTable() au lieu de SQLTable()
+                // TRANSACTION TABLE
+                st.executeUpdate(Transaction.getSQLCreateTable());  // CORRIGÉ: getSQLCreateTable() au lieu de SQLTable()
+
 
                 //Loan Table
                 st.executeUpdate(Loan.SQLTable());
@@ -80,9 +80,9 @@ public class MaConnexion {
 
 
                 System.out.println("Tables checked/created successfully.");
-
             }
         } catch (SQLException e) {
+            System.err.println("Erreur lors de la création des tables:");
             e.printStackTrace();
         }
     }

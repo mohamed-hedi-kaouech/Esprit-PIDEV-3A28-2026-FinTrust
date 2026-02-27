@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.image.ImageView?>
+<?import javafx.scene.image.Image?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.ChoiceController"
+            prefHeight="600" prefWidth="1000"
+            style="-fx-background-color: linear-gradient(to bottom, #f0f8ff, #e6f0ff);">
+
+    <center>
+        <VBox alignment="CENTER" spacing="30" maxWidth="900">
+            <padding>
+                <Insets top="40" right="50" bottom="40" left="50"/>
+            </padding>
+
+            <!-- Logo en grand -->
+            <HBox fx:id="logoContainer" alignment="CENTER" style="-fx-padding: 20;">
+                <!-- Le logo sera chargé dynamiquement par le contrôleur -->
+            </HBox>
+
+            <!-- Titre -->
+            <VBox alignment="CENTER" spacing="10">
+                <Label text="FinTrust"
+                       style="-fx-font-size: 48px; -fx-font-weight: 900; -fx-text-fill: #003366;"/>
+                <Label text="Haute Finance Numérique"
+                       style="-fx-font-size: 18px; -fx-text-fill: #0047ab; -fx-letter-spacing: 1px;"/>
+                <Label text="Pilotez vos comptes en toute sécurité !"
+                       style="-fx-font-size: 14px; -fx-text-fill: #1e3c72; -fx-padding: 10 0 0 0;"/>
+            </VBox>
+
+            <!-- Message sécurité -->
+            <HBox alignment="CENTER" spacing="10"
+                  style="-fx-background-color: linear-gradient(to right, #003366, #0047ab); -fx-padding: 15 25; -fx-background-radius: 50;">
+                <Label text="🔒" style="-fx-font-size: 20px; -fx-text-fill: white;"/>
+                <Label text="FinTrust est sécurisée de bout en bout"
+                       style="-fx-font-size: 14px; -fx-text-fill: white; -fx-font-weight: bold;"/>
+            </HBox>
+
+            <!-- Cartes de choix -->
+            <HBox spacing="40" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+
+                <!-- Carte Client -->
+                <VBox spacing="25"
+                      style="-fx-background-color: white; -fx-padding: 35; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,51,102,0.2), 15, 0, 0, 5); -fx-border-color: #c2d6ff; -fx-border-radius: 20;"
+                      prefWidth="280" prefHeight="320"
+                      alignment="TOP_CENTER">
+
+                    <Label text="👤" style="-fx-font-size: 64px;"/>
+
+                    <Label text="Espace Client"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #003366;"/>
+
+                    <Label text="Accédez à vos comptes, consultez vos transactions et gérez vos opérations courantes."
+                           wrapText="true"
+                           alignment="CENTER"
+                           maxWidth="220"
+                           style="-fx-font-size: 13px; -fx-text-fill: #4a5568; -fx-text-alignment: center;"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Button text="Se connecter"
+                            onAction="#handleClientChoice"
+                            onMouseEntered="#handleButtonHover"
+                            onMouseExited="#handleButtonExit"
+                            prefWidth="200" prefHeight="45"
+                            style="-fx-background-color: #0047ab; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand;"/>
+
+                    <Label text="Nouveau client ? Souscrire"
+                           style="-fx-text-fill: #0047ab; -fx-font-size: 12px; -fx-underline: true; -fx-cursor: hand;"
+                           onMouseClicked="#handleSouscrire"/>
+                </VBox>
+
+                <!-- Carte Admin -->
+                <VBox spacing="25"
+                      style="-fx-background-color: white; -fx-padding: 35; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,51,102,0.2), 15, 0, 0, 5); -fx-border-color: #c2d6ff; -fx-border-radius: 20;"
+                      prefWidth="280" prefHeight="320"
+                      alignment="TOP_CENTER">
+
+                    <Label text="⚙️" style="-fx-font-size: 64px;"/>
+
+                    <Label text="Portail Admin"
+                           style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #003366;"/>
+
+                    <Label text="Supervision et gouvernance du réseau. Outils de gestion avancés."
+                           wrapText="true"
+                           alignment="CENTER"
+                           maxWidth="220"
+                           style="-fx-font-size: 13px; -fx-text-fill: #4a5568; -fx-text-alignment: center;"/>
+
+                    <Region VBox.vgrow="ALWAYS"/>
+
+                    <Button text="Accès système"
+                            onAction="#handleAdminChoice"
+                            onMouseEntered="#handleButtonHover"
+                            onMouseExited="#handleButtonExit"
+                            prefWidth="200" prefHeight="45"
+                            style="-fx-background-color: #003366; -fx-text-fill: white; -fx-font-size: 14px; -fx-font-weight: bold; -fx-background-radius: 30; -fx-cursor: hand;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Footer avec navigation -->
+            <HBox alignment="CENTER" spacing="30" style="-fx-padding: 30 0 0 0;">
+                <Label text="Accueil" style="-fx-text-fill: #003366; -fx-cursor: hand; -fx-font-weight: 600;" onMouseClicked="#handleNavigation"/>
+                <Label text="|" style="-fx-text-fill: #c2d6ff; -fx-font-size: 16px;"/>
+                <Label text="À propos" style="-fx-text-fill: #003366; -fx-cursor: hand; -fx-font-weight: 600;" onMouseClicked="#handleNavigation"/>
+                <Label text="|" style="-fx-text-fill: #c2d6ff; -fx-font-size: 16px;"/>
+                <Label text="Sécurité" style="-fx-text-fill: #003366; -fx-cursor: hand; -fx-font-weight: 600;" onMouseClicked="#handleNavigation"/>
+                <Label text="|" style="-fx-text-fill: #c2d6ff; -fx-font-size: 16px;"/>
+                <Label text="Aide" style="-fx-text-fill: #003366; -fx-cursor: hand; -fx-font-weight: 600;" onMouseClicked="#handleNavigation"/>
+            </HBox>
+        </VBox>
+    </center>
+</BorderPane>
