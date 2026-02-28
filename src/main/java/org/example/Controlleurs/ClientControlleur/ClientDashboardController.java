@@ -164,6 +164,11 @@ public class ClientDashboardController {
     }
 
     @FXML
+    private void goToHome() {
+        navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
     private void goToSmartBreakFromProfile() {
         session.setSmartBreakContext("PROFILE");
         navigateTo("/Client/SmartBreakHub.fxml", "Pause Intelligente", "/Styles/StyleWallet.css");

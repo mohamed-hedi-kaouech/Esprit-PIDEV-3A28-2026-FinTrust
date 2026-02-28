@@ -1,15 +1,25 @@
-﻿package org.example.Controlleurs.KycControlleur;
+package org.example.Controlleurs.KycControlleur;
 
+import javafx.animation.KeyFrame;
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
+import javafx.concurrent.Task;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.PixelReader;
+import javafx.scene.image.WritableImage;
+import javafx.scene.input.MouseEvent;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 import org.example.Model.Kyc.KycFile;
 import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
@@ -21,6 +31,9 @@ import org.example.Service.KycService.KycSubmitResult;
 import org.example.Service.KycService.UploadDoc;
 import org.example.Utils.SessionContext;
 
+import javax.imageio.ImageIO;
+import java.awt.image.BufferedImage;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
@@ -56,6 +69,24 @@ public class KycFormController {
     private DatePicker dateNaissancePicker;
 
     @FXML
+    private Canvas signatureCanvas;
+
+    @FXML
+    private Label signatureInfoLabel;
+    @FXML
+    private ProgressBar submitProgressBar;
+    @FXML
+    private Label submitProgressLabel;
+    @FXML
+    private Button submitKycBtn;
+
+    @FXML
+    private Button saveSignatureBtn;
+
+    @FXML
+    private Button clearSignatureBtn;
+
+    @FXML
     private ListView<String> selectedFilesList;
 
     @FXML
@@ -78,6 +109,10 @@ public class KycFormController {
     private final List<File> selectedFiles = new ArrayList<>();
     private final List<KycFile> existingFiles = new ArrayList<>();
     private KycStatus currentStatus;
+    private GraphicsContext signatureGc;
+    private boolean signatureDirty;
+    private Timeline submitProgressTimeline;
+    private boolean submitInProgress;
 
     @FXML
     private void initialize() {
@@ -105,8 +140,42 @@ public class KycFormController {
         cinField.setTextFormatter(new TextFormatter<>(cinFilter));
         cinField.setPromptText("CIN (8 chiffres)");
 
+        initSignatureCanvas();
         loadState();
         loadExistingFiles();
+        if (submitProgressBar != null) {
+            submitProgressBar.setProgress(0);
+        }
+    }
+
+    @FXML
+    private void clearSignature() {
+        resetSignatureCanvas();
+        signatureDirty = false;
+        signatureInfoLabel.setText("Signature effacee.");
+    }
+
+    @FXML
+    private void saveSignature() {
+        if (currentStatus == KycStatus.APPROUVE) {
+            setInfo("KYC approuve: signature verrouillee.", true);
+            return;
+        }
+        if (isSignatureBlank()) {
+            setInfo("Veuillez dessiner votre signature avant enregistrement.", true);
+            return;
+        }
+
+        try {
+            byte[] png = signatureToPng();
+            String path = kycService.saveClientSignature(session.getCurrentUser(), png);
+            signatureInfoLabel.setText("Signature enregistree: " + path);
+            setInfo("Signature KYC enregistree avec succes.", false);
+            signatureDirty = false;
+            loadState();
+        } catch (Exception e) {
+            setInfo("Erreur sauvegarde signature: " + e.getMessage(), true);
+        }
     }
 
     @FXML
@@ -137,6 +206,10 @@ public class KycFormController {
 
     @FXML
     private void submitKyc() {
+            if (submitInProgress) {
+                setInfo("Soumission deja en cours...", false);
+                return;
+            }
             if (selectedFiles.isEmpty()) {
                 setInfo("Selectionnez des fichiers avant soumission.", true);
                 return;
@@ -152,31 +225,56 @@ public class KycFormController {
                 return;
             }
 
-            List<UploadDoc> docs = new ArrayList<>();
-            try {
-                for (File file : selectedFiles) {
-                    byte[] data = Files.readAllBytes(file.toPath());
-                    String mime = Files.probeContentType(file.toPath());
-                    docs.add(new UploadDoc(file.getName(), mime, file.length(), data));
-                }
+            String adresse = adresseField.getText();
+            LocalDate dateNaissance = dateNaissancePicker.getValue();
+            startSubmitProgress();
 
-                String adresse = adresseField.getText();
-                LocalDate dateNaissance = dateNaissancePicker.getValue();
-                KycSubmitResult result = kycService.submitOrUpdateClientKyc(session.getCurrentUser(), cin, adresse, dateNaissance, docs);
-                if (!result.isSuccess()) {
-                    setInfo(result.getMessage(), true);
-                    return;
+            Task<KycSubmitResult> submitTask = new Task<>() {
+                @Override
+                protected KycSubmitResult call() throws Exception {
+                    List<UploadDoc> docs = new ArrayList<>();
+                    for (File file : selectedFiles) {
+                        byte[] data = Files.readAllBytes(file.toPath());
+                        String mime = Files.probeContentType(file.toPath());
+                        docs.add(new UploadDoc(file.getName(), mime, file.length(), data));
+                    }
+                    return kycService.submitOrUpdateClientKyc(session.getCurrentUser(), cin, adresse, dateNaissance, docs);
                 }
+            };
 
-                session.setCurrentKycStatus(KycStatus.EN_ATTENTE);
-                session.setCurrentKycComment(null);
-                setInfo(result.getMessage(), false);
-                selectedFiles.clear();
-                loadState();
-                loadExistingFiles();
-            } catch (IOException e) {
-                setInfo("Erreur lecture fichiers: " + e.getMessage(), true);
-            }
+            submitTask.setOnSucceeded(evt -> {
+                KycSubmitResult result = submitTask.getValue();
+                if (result == null || !result.isSuccess()) {
+                    String msg = result == null ? "Soumission KYC echouee." : result.getMessage();
+                    finishSubmitProgress(false, msg);
+                    setInfo(msg, true);
+                } else {
+                    session.setCurrentKycStatus(KycStatus.EN_ATTENTE);
+                    session.setCurrentKycComment(null);
+                    selectedFiles.clear();
+                    loadState();
+                    loadExistingFiles();
+                    finishSubmitProgress(true, "Soumission terminee.");
+                    setInfo(result.getMessage(), false);
+                }
+                submitInProgress = false;
+                if (submitKycBtn != null) submitKycBtn.setDisable(false);
+            });
+
+            submitTask.setOnFailed(evt -> {
+                Throwable ex = submitTask.getException();
+                String msg = ex == null ? "Erreur soumission KYC." : ex.getMessage();
+                finishSubmitProgress(false, msg);
+                setInfo("Erreur soumission: " + msg, true);
+                submitInProgress = false;
+                if (submitKycBtn != null) submitKycBtn.setDisable(false);
+            });
+
+            submitInProgress = true;
+            if (submitKycBtn != null) submitKycBtn.setDisable(true);
+            Thread t = new Thread(submitTask, "kyc-submit-thread");
+            t.setDaemon(true);
+            t.start();
     }
 
     @FXML
@@ -232,10 +330,19 @@ public class KycFormController {
             cinField.setText(state.getCin() == null ? "" : state.getCin());
             adresseField.setText(state.getAdresse() == null ? "" : state.getAdresse());
             dateNaissancePicker.setValue(state.getDateNaissance());
+            String signaturePath = state.getSignaturePath();
+            if (signaturePath == null || signaturePath.isBlank()) {
+                signatureInfoLabel.setText("Aucune signature enregistree.");
+            } else {
+                signatureInfoLabel.setText("Signature: " + signaturePath);
+            }
             boolean readOnly = state.getStatus() == KycStatus.APPROUVE;
             cinField.setDisable(readOnly);
             adresseField.setDisable(readOnly);
             dateNaissancePicker.setDisable(readOnly);
+            signatureCanvas.setDisable(readOnly);
+            saveSignatureBtn.setDisable(readOnly);
+            clearSignatureBtn.setDisable(readOnly);
         } catch (Exception e) {
             setInfo("Erreur chargement KYC: " + e.getMessage(), true);
         }
@@ -297,6 +404,79 @@ public class KycFormController {
         return null;
     }
 
+    private void initSignatureCanvas() {
+        signatureGc = signatureCanvas.getGraphicsContext2D();
+        signatureGc.setStroke(Color.web("#0f3b7a"));
+        signatureGc.setLineWidth(2.5);
+        resetSignatureCanvas();
+
+        signatureCanvas.addEventHandler(MouseEvent.MOUSE_PRESSED, e -> {
+            if (signatureCanvas.isDisabled()) {
+                return;
+            }
+            signatureGc.beginPath();
+            signatureGc.moveTo(e.getX(), e.getY());
+            signatureGc.stroke();
+            signatureDirty = true;
+        });
+
+        signatureCanvas.addEventHandler(MouseEvent.MOUSE_DRAGGED, e -> {
+            if (signatureCanvas.isDisabled()) {
+                return;
+            }
+            signatureGc.lineTo(e.getX(), e.getY());
+            signatureGc.stroke();
+            signatureDirty = true;
+        });
+    }
+
+    private void resetSignatureCanvas() {
+        signatureGc.setFill(Color.WHITE);
+        signatureGc.fillRect(0, 0, signatureCanvas.getWidth(), signatureCanvas.getHeight());
+        signatureGc.setStroke(Color.web("#c7d8f8"));
+        signatureGc.setLineWidth(1);
+        signatureGc.strokeRect(0.5, 0.5, signatureCanvas.getWidth() - 1, signatureCanvas.getHeight() - 1);
+        signatureGc.setStroke(Color.web("#0f3b7a"));
+        signatureGc.setLineWidth(2.5);
+    }
+
+    private boolean isSignatureBlank() {
+        if (!signatureDirty) {
+            return true;
+        }
+        WritableImage img = new WritableImage((int) signatureCanvas.getWidth(), (int) signatureCanvas.getHeight());
+        signatureCanvas.snapshot(null, img);
+        PixelReader reader = img.getPixelReader();
+        int w = (int) img.getWidth();
+        int h = (int) img.getHeight();
+        for (int y = 0; y < h; y += 6) {
+            for (int x = 0; x < w; x += 6) {
+                int rgb = reader.getArgb(x, y) & 0xFFFFFF;
+                if (rgb != 0xFFFFFF) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+    private byte[] signatureToPng() throws IOException {
+        WritableImage img = new WritableImage((int) signatureCanvas.getWidth(), (int) signatureCanvas.getHeight());
+        signatureCanvas.snapshot(null, img);
+        PixelReader reader = img.getPixelReader();
+        int w = (int) img.getWidth();
+        int h = (int) img.getHeight();
+        BufferedImage bi = new BufferedImage(w, h, BufferedImage.TYPE_INT_ARGB);
+        for (int y = 0; y < h; y++) {
+            for (int x = 0; x < w; x++) {
+                bi.setRGB(x, y, reader.getArgb(x, y));
+            }
+        }
+        ByteArrayOutputStream out = new ByteArrayOutputStream();
+        ImageIO.write(bi, "png", out);
+        return out.toByteArray();
+    }
+
     private void navigateTo(String fxmlPath, String title, String stylesheetPath) {
         try {
             Parent root = FXMLLoader.load(getClass().getResource(fxmlPath));
@@ -320,6 +500,44 @@ public class KycFormController {
 
     private Stage getStage() {
         return (Stage) statusLabel.getScene().getWindow();
+    }
+
+    private void startSubmitProgress() {
+        if (submitProgressBar == null || submitProgressLabel == null) return;
+        submitProgressBar.setProgress(0.02);
+        submitProgressLabel.setText("Envoi des documents... 2%");
+        submitProgressLabel.setStyle("-fx-text-fill: #0f4e96; -fx-font-weight: 700;");
+
+        if (submitProgressTimeline != null) {
+            submitProgressTimeline.stop();
+        }
+        submitProgressTimeline = new Timeline(new KeyFrame(Duration.millis(120), e -> {
+            double p = submitProgressBar.getProgress();
+            if (p < 0.92) {
+                p = Math.min(0.92, p + 0.025);
+                submitProgressBar.setProgress(p);
+                submitProgressLabel.setText("Envoi des documents... " + (int) Math.round(p * 100) + "%");
+            }
+        }));
+        submitProgressTimeline.setCycleCount(Timeline.INDEFINITE);
+        submitProgressTimeline.play();
+    }
+
+    private void finishSubmitProgress(boolean success, String message) {
+        if (submitProgressTimeline != null) {
+            submitProgressTimeline.stop();
+        }
+        if (submitProgressBar == null || submitProgressLabel == null) return;
+
+        if (success) {
+            submitProgressBar.setProgress(1.0);
+            submitProgressLabel.setText("Soumission terminee ✔");
+            submitProgressLabel.setStyle("-fx-text-fill: #0f7a3b; -fx-font-weight: 800;");
+        } else {
+            submitProgressBar.setProgress(0);
+            submitProgressLabel.setText("Soumission echouee: " + (message == null ? "Erreur." : message));
+            submitProgressLabel.setStyle("-fx-text-fill: #b91c1c; -fx-font-weight: 700;");
+        }
     }
 }
 

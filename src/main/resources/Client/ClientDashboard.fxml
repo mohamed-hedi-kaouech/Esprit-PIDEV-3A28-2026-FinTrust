@@ -7,6 +7,7 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
@@ -16,8 +17,20 @@
     <top>
         <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
             <children>
-                <Label text="Dashboard Client" styleClass="logo-text"/>
+                <StackPane styleClass="header-logo-badge">
+                    <children>
+                        <Label text="FT" styleClass="header-logo-mark"/>
+                    </children>
+                </StackPane>
+                <VBox spacing="1" styleClass="header-brand-block">
+                    <children>
+                        <Label text="FinTrust" styleClass="header-brand-title"/>
+                        <Label text="Dashboard Client" styleClass="header-brand-subtitle"/>
+                    </children>
+                </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
+                <Button text="⌂" onAction="#goToHome" styleClass="header-quick-icon" />
+                <Button text="👤" onAction="#goToProfile" styleClass="header-quick-icon" />
                 <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
             </children>
         </HBox>
@@ -59,14 +72,16 @@
                 <Label fx:id="rewardBadgesLabel" text="Aucun badge pour le moment" wrapText="true" styleClass="client-reward-badges"/>
             </VBox>
 
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
-                <Label text="AI" styleClass="assistant-ia-icon"/>
-                <Label text="Assistant IA:" styleClass="form-label"/>
-                <Label text="Besoin d'aide rapide sur votre compte ?" styleClass="section-subtitle"/>
+            <HBox spacing="12" alignment="CENTER_LEFT" styleClass="status-banner assistant-banner">
+                <Label text="IA" styleClass="assistant-ia-icon"/>
+                <VBox spacing="2">
+                    <Label text="FinTrust Assistant IA" styleClass="assistant-ai-title"/>
+                    <Label text="Besoin d'aide rapide sur votre compte ?" styleClass="assistant-ai-subtitle"/>
+                </VBox>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Ouvrir l'assistant IA" onAction="#goToChatbot" styleClass="button-primary assistant-ai-btn">
+                <Button text="Ouvrir FinTrust Assistant IA" onAction="#goToChatbot" styleClass="assistant-ai-btn">
                     <graphic>
-                        <Label text="AI" styleClass="assistant-ai-btn-icon"/>
+                        <Label text="IA" styleClass="assistant-ai-btn-icon"/>
                     </graphic>
                 </Button>
             </HBox>

@@ -15,13 +15,13 @@
             fx:controller="org.example.Controlleurs.ClientControlleur.ClientChatbotController">
 
     <top>
-        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+        <HBox styleClass="header-panel assistant-chat-header" alignment="CENTER_LEFT" spacing="12">
             <children>
-                <Label text="AI" styleClass="assistant-ia-icon"/>
-                <Label text="Assistant IA Client FinTrust" styleClass="logo-text"/>
+                <Label text="IA" styleClass="assistant-ia-icon"/>
+                <Label text="FinTrust Assistant IA" styleClass="logo-text"/>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Retour Dashboard" onAction="#handleBack" styleClass="button-secondary"/>
-                <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
+                <Button text="Retour Dashboard" onAction="#handleBack" styleClass="assistant-header-btn"/>
+                <Button text="Deconnexion" onAction="#handleLogout" styleClass="assistant-header-btn assistant-header-btn-danger"/>
             </children>
         </HBox>
     </top>
@@ -30,8 +30,11 @@
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
             <content>
         <VBox spacing="12" style="-fx-padding: 24;" styleClass="bank-card chatbot-panel">
-            <Label text="FinTrust est une plateforme de gestion financiere digitale: comptes, KYC, wallet, notifications et assistance securisee."
-                   styleClass="section-subtitle" wrapText="true"/>
+            <VBox spacing="4" styleClass="assistant-chat-hero">
+                <Label text="FinTrust Assistant IA" styleClass="assistant-ai-title"/>
+                <Label text="Assistance intelligente pour votre compte, KYC, securite et services FinTrust."
+                       styleClass="assistant-ai-subtitle" wrapText="true"/>
+            </VBox>
             <Label text="Comment voulez-vous vous aider ?" styleClass="chatbot-help-title"/>
 
             <HBox spacing="8" alignment="CENTER_LEFT">
@@ -44,8 +47,8 @@
 
             <HBox spacing="10">
                 <TextField fx:id="messageField" promptText="Ecrivez votre message..." HBox.hgrow="ALWAYS"/>
-                <Button text="Envoyer" onAction="#handleSend" styleClass="button-primary chatbot-send-btn"/>
-                <Button text="Pause et Jeux" onAction="#goToSmartBreakFromChatbot" styleClass="button-secondary"/>
+                <Button text="Envoyer" onAction="#handleSend" styleClass="chatbot-send-btn"/>
+                <Button text="Pause et Jeux" onAction="#goToSmartBreakFromChatbot" styleClass="chatbot-pause-btn"/>
             </HBox>
 
             <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
