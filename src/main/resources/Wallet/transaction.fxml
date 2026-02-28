@@ -4,27 +4,39 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane stylesheets="@../Styles/StyleWallet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.WalletControlleur.TransactionController">
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.TransactionController"
+            style="-fx-background-color: linear-gradient(to bottom, #f0f7ff, #e6f0ff);">
 
     <top>
-        <VBox styleClass="header-panel" spacing="5">
-            <padding><Insets bottom="20" left="30" right="30" top="20" /></padding>
-            <Label text="Gestion des Transactions" styleClass="header-title" />
-            <Label text="Effectuez vos opérations bancaires en toute sécurité" styleClass="header-subtitle" />
+        <VBox spacing="5" style="-fx-background-color: linear-gradient(to right, #003366, #1e3b5c); -fx-padding: 25 35; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 5, 0, 0, 2);">
+            <Label text="Gestion des Transactions"
+                   style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 800; -fx-font-family: 'System';"/>
+            <Label text="Effectuez vos opérations bancaires en toute sécurité"
+                   style="-fx-text-fill: #b0c4de; -fx-font-size: 14px; -fx-font-family: 'System';"/>
         </VBox>
     </top>
 
     <center>
         <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-            <VBox spacing="25" style="-fx-background-color: #f8fafc;" VBox.vgrow="ALWAYS">
-                <padding><Insets bottom="30" left="30" right="30" top="30" /></padding>
+            <VBox spacing="30" style="-fx-background-color: transparent;" VBox.vgrow="ALWAYS">
+                <padding><Insets bottom="30" left="35" right="35" top="30" /></padding>
 
                 <children>
                     <!-- Formulaire Transaction -->
-                    <VBox spacing="20" styleClass="form-container">
-                        <Label text="➕ Nouvelle Transaction" styleClass="form-title" />
+                    <VBox spacing="20" style="-fx-background-color: white; -fx-background-radius: 24; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 5);">
 
-                        <GridPane hgap="20" vgap="15">
+                        <!-- En-tête du formulaire -->
+                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 0 0 10 0;">
+                            <Label text="➕" style="-fx-font-size: 24px; -fx-text-fill: #003366;"/>
+                            <Label text="Nouvelle Transaction"
+                                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System';"/>
+                        </HBox>
+
+                        <Separator style="-fx-background-color: #e0e7ff; -fx-pref-height: 2;"/>
+
+                        <GridPane hgap="20" vgap="15" style="-fx-padding: 15 0 0 0;">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="-Infinity" minWidth="150" />
                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="300" />
@@ -32,72 +44,101 @@
                             </columnConstraints>
 
                             <!-- Montant -->
-                            <Label text="Montant" styleClass="form-label" GridPane.rowIndex="0" GridPane.columnIndex="0" />
-                            <TextField fx:id="txtMontant" promptText="0.00" styleClass="form-field" GridPane.rowIndex="0" GridPane.columnIndex="1" />
-                            <Label fx:id="lblErrorMontant" styleClass="error-label" GridPane.rowIndex="1" GridPane.columnIndex="1" />
+                            <Label text="Montant" style="-fx-font-weight: bold; -fx-text-fill: #2f75d8; -fx-font-size: 14px; -fx-font-family: 'System';" GridPane.rowIndex="0" GridPane.columnIndex="0" />
+                            <TextField fx:id="txtMontant" promptText="0.00"
+                                       style="-fx-background-color: #f8faff; -fx-background-radius: 16; -fx-border-color: #cbd5e1; -fx-border-radius: 16; -fx-padding: 12 18; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-prompt-text-fill: #94a3b8;"
+                                       GridPane.rowIndex="0" GridPane.columnIndex="1" />
+                            <Label fx:id="lblErrorMontant" style="-fx-text-fill: #e53e3e; -fx-font-size: 12px; -fx-font-weight: 500;" GridPane.rowIndex="1" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
+
+                            <!-- Destinataire (visible uniquement pour transfert) -->
+                            <Label text="Destinataire" style="-fx-font-weight: bold; -fx-text-fill: #2e8b57; -fx-font-size: 14px; -fx-font-family: 'System';" GridPane.rowIndex="2" GridPane.columnIndex="0" />
+                            <TextField fx:id="txtDestinataire" promptText="Téléphone du destinataire"
+                                       style="-fx-background-color: #f8faff; -fx-background-radius: 16; -fx-border-color: #cbd5e1; -fx-border-radius: 16; -fx-padding: 12 18; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-prompt-text-fill: #94a3b8;"
+                                       GridPane.rowIndex="2" GridPane.columnIndex="1"
+                                       visible="false" managed="false" />
+                            <Label fx:id="lblDestinataireInfo" style="-fx-text-fill: #2e8b57; -fx-font-size: 12px; -fx-font-style: italic;"
+                                   GridPane.rowIndex="2" GridPane.columnIndex="2"
+                                   visible="false" managed="false" />
 
                             <!-- Type avec RadioButtons -->
-                            <Label text="Type" styleClass="form-label" GridPane.rowIndex="2" GridPane.columnIndex="0" />
-                            <HBox spacing="20" alignment="CENTER_LEFT" GridPane.rowIndex="2" GridPane.columnIndex="1">
-                                <RadioButton fx:id="radioDepot" text="Dépôt" styleClass="transaction-radio" />
-                                <RadioButton fx:id="radioRetrait" text="Retrait" styleClass="transaction-radio" />
-                                <RadioButton fx:id="radioTransfert" text="Transfert" styleClass="transaction-radio" />
+                            <Label text="Type" style="-fx-font-weight: bold; -fx-text-fill: #ff8c00; -fx-font-size: 14px; -fx-font-family: 'System';" GridPane.rowIndex="4" GridPane.columnIndex="0" />
+                            <HBox spacing="25" alignment="CENTER_LEFT" GridPane.rowIndex="4" GridPane.columnIndex="1" GridPane.columnSpan="2">
+                                <RadioButton fx:id="radioDepot" text="Dépôt" style="-fx-text-fill: #2f75d8; -fx-font-size: 14px; -fx-font-family: 'System';">
+                                    <toggleGroup>
+                                        <ToggleGroup fx:id="typeGroupe" />
+                                    </toggleGroup>
+                                </RadioButton>
+                                <RadioButton fx:id="radioRetrait" text="Retrait" toggleGroup="$typeGroupe" style="-fx-text-fill: #2e8b57; -fx-font-size: 14px; -fx-font-family: 'System';"/>
+                                <RadioButton fx:id="radioTransfert" text="Transfert" toggleGroup="$typeGroupe" style="-fx-text-fill: #ff8c00; -fx-font-size: 14px; -fx-font-family: 'System';"/>
                             </HBox>
-                            <Label fx:id="lblErrorType" styleClass="error-label" GridPane.rowIndex="3" GridPane.columnIndex="1" />
+                            <Label fx:id="lblErrorType" style="-fx-text-fill: #e53e3e; -fx-font-size: 12px;" GridPane.rowIndex="5" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
 
                             <!-- Wallet -->
-                            <Label text="Wallet" styleClass="form-label" GridPane.rowIndex="4" GridPane.columnIndex="0" />
-                            <ComboBox fx:id="comboWallet" prefWidth="300" promptText="Sélectionner un compte" styleClass="form-combo" GridPane.rowIndex="4" GridPane.columnIndex="1" />
-                            <Label fx:id="lblErrorWallet" styleClass="error-label" GridPane.rowIndex="5" GridPane.columnIndex="1" />
+                            <Label text="Wallet" style="-fx-font-weight: bold; -fx-text-fill: #1f4ea0; -fx-font-size: 14px; -fx-font-family: 'System';" GridPane.rowIndex="6" GridPane.columnIndex="0" />
+                            <ComboBox fx:id="comboWallet" prefWidth="300" promptText="Sélectionner un compte"
+                                      style="-fx-background-color: #f8faff; -fx-background-radius: 16; -fx-border-color: #cbd5e1; -fx-border-radius: 16; -fx-padding: 8 15; -fx-font-size: 14px; -fx-font-family: 'System';"
+                                      GridPane.rowIndex="6" GridPane.columnIndex="1" />
+                            <Label fx:id="lblErrorWallet" style="-fx-text-fill: #e53e3e; -fx-font-size: 12px;" GridPane.rowIndex="7" GridPane.columnIndex="1" GridPane.columnSpan="2"/>
 
                             <!-- Informations du wallet -->
-                            <HBox spacing="15" alignment="CENTER_LEFT" GridPane.rowIndex="6" GridPane.columnIndex="1">
-                                <VBox styleClass="info-card">
-                                    <Label text="Compte sélectionné" styleClass="info-card-label" />
-                                    <Label fx:id="lblWalletInfo" text="Aucun" styleClass="info-card-value" />
+                            <HBox spacing="20" alignment="CENTER_LEFT" GridPane.rowIndex="8" GridPane.columnIndex="1" GridPane.columnSpan="2" style="-fx-padding: 10 0 0 0;">
+                                <VBox style="-fx-background-color: #e6f0ff; -fx-background-radius: 16; -fx-padding: 15 25; -fx-min-width: 220; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 5, 0, 0, 2);">
+                                    <Label text="Compte sélectionné" style="-fx-text-fill: #2f75d8; -fx-font-size: 12px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                                    <Label fx:id="lblWalletInfo" text="Aucun" style="-fx-text-fill: #1a2d44; -fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'System'; -fx-padding: 5 0 0 0;"/>
                                 </VBox>
-                                <VBox styleClass="info-card">
-                                    <Label text="Solde disponible" styleClass="info-card-label" />
-                                    <Label fx:id="lblSoldeActuel" text="0.00" styleClass="info-card-value" />
+                                <VBox style="-fx-background-color: #e6f0ff; -fx-background-radius: 16; -fx-padding: 15 25; -fx-min-width: 220; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.02), 5, 0, 0, 2);">
+                                    <Label text="Solde disponible" style="-fx-text-fill: #2f75d8; -fx-font-size: 12px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                                    <Label fx:id="lblSoldeActuel" text="0.00" style="-fx-text-fill: #1a2d44; -fx-font-size: 15px; -fx-font-weight: bold; -fx-font-family: 'System'; -fx-padding: 5 0 0 0;"/>
                                 </VBox>
                             </HBox>
                         </GridPane>
 
                         <!-- Boutons -->
-                        <HBox styleClass="button-container">
-                            <Button text="Effectuer" onAction="#handleAjouter" styleClass="primary-button">
-                                <graphic><Label text="✓" styleClass="button-icon" /></graphic>
+                        <HBox spacing="15" alignment="CENTER" style="-fx-padding: 25 0 5 0;">
+                            <Button text="Effectuer" onAction="#handleAjouter"
+                                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 12 30; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.3), 8, 0, 0, 2);">
+                                <graphic><Label text="✓" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 8 0 0;"/></graphic>
                             </Button>
-                            <Button text="Modifier" onAction="#handleModifier" styleClass="secondary-button">
-                                <graphic><Label text="✎" styleClass="button-icon" /></graphic>
+                            <Button text="Modifier" onAction="#handleModifier"
+                                    style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 12 30; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(31,78,160,0.3), 8, 0, 0, 2);">
+                                <graphic><Label text="✎" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 8 0 0;"/></graphic>
                             </Button>
-                            <Button text="Supprimer" onAction="#handleSupprimer" styleClass="danger-button">
-                                <graphic><Label text="🗑" styleClass="button-icon" /></graphic>
+                            <Button text="Supprimer" onAction="#handleSupprimer"
+                                    style="-fx-background-color: #c0392b; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 12 30; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(192,57,43,0.3), 8, 0, 0, 2);">
+                                <graphic><Label text="🗑" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 8 0 0;"/></graphic>
                             </Button>
-                            <Button text="Vider" onAction="#handleVider" styleClass="secondary-button">
-                                <graphic><Label text="⟲" styleClass="button-icon" /></graphic>
+                            <Button text="Vider" onAction="#handleVider"
+                                    style="-fx-background-color: #7f8c8d; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 12 30; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(127,140,141,0.3), 8, 0, 0, 2);">
+                                <graphic><Label text="⟲" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 8 0 0;"/></graphic>
                             </Button>
-                            <Button text="Rafraîchir" onAction="#handleRefresh" styleClass="secondary-button">
-                                <graphic><Label text="↻" styleClass="button-icon" /></graphic>
+                            <Button text="Rafraîchir" onAction="#handleRefresh"
+                                    style="-fx-background-color: #2f75d8; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 14px; -fx-padding: 12 30; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(47,117,216,0.3), 8, 0, 0, 2);">
+                                <graphic><Label text="↻" style="-fx-text-fill: white; -fx-font-size: 16px; -fx-padding: 0 8 0 0;"/></graphic>
                             </Button>
                         </HBox>
                     </VBox>
 
                     <!-- Historique des Transactions -->
-                    <VBox spacing="20" styleClass="table-container">
-                        <HBox alignment="CENTER_LEFT" spacing="10">
-                            <Label text="📊 Historique des Transactions" styleClass="table-title" />
+                    <VBox spacing="20" style="-fx-background-color: white; -fx-background-radius: 24; -fx-padding: 25; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 15, 0, 0, 5);">
+                        <HBox alignment="CENTER_LEFT" spacing="10" style="-fx-padding: 0 0 5 0;">
+                            <Label text="📊" style="-fx-font-size: 24px; -fx-text-fill: #003366;"/>
+                            <Label text="Historique des Transactions"
+                                   style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System';"/>
                             <Region HBox.hgrow="ALWAYS" />
-                            <Label fx:id="lblTotalTransactions" text="Total: 0 transactions" styleClass="table-stats" />
+                            <Label fx:id="lblTotalTransactions" text="Total: 0 transactions"
+                                   style="-fx-text-fill: #2f75d8; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System'; -fx-background-color: #e6f0ff; -fx-padding: 6 15; -fx-background-radius: 20;"/>
                         </HBox>
 
-                        <TableView fx:id="tableViewTransaction" VBox.vgrow="ALWAYS" styleClass="modern-table">
+                        <Separator style="-fx-background-color: #e0e7ff;"/>
+
+                        <TableView fx:id="tableViewTransaction" VBox.vgrow="ALWAYS" prefHeight="300"
+                                   style="-fx-background-color: transparent; -fx-background-radius: 12;">
                             <columns>
-                                <TableColumn fx:id="colId" prefWidth="60" text="ID" />
-                                <TableColumn fx:id="colMontant" prefWidth="120" text="Montant" />
-                                <TableColumn fx:id="colType" prefWidth="100" text="Type" />
-                                <TableColumn fx:id="colDate" prefWidth="150" text="Date" />
-                                <TableColumn fx:id="colWalletId" prefWidth="100" text="Wallet ID" />
+                                <TableColumn fx:id="colId" prefWidth="60" text="ID" style="-fx-alignment: CENTER; -fx-background-color: #f8faff;"/>
+                                <TableColumn fx:id="colMontant" prefWidth="120" text="Montant" style="-fx-alignment: CENTER-RIGHT; -fx-background-color: #f8faff;"/>
+                                <TableColumn fx:id="colType" prefWidth="100" text="Type" style="-fx-alignment: CENTER; -fx-background-color: #f8faff;"/>
+                                <TableColumn fx:id="colDate" prefWidth="150" text="Date" style="-fx-alignment: CENTER; -fx-background-color: #f8faff;"/>
+                                <TableColumn fx:id="colWalletId" prefWidth="100" text="Wallet ID" style="-fx-alignment: CENTER; -fx-background-color: #f8faff;"/>
                             </columns>
                         </TableView>
                     </VBox>

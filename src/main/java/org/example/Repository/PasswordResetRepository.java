@@ -115,4 +115,3 @@ public class PasswordResetRepository {
     public record ResetCodeRow(int id, String codeHash, LocalDateTime expiresAt, int attempts) {
     }
 }
-

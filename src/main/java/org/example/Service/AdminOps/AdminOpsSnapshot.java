@@ -16,4 +16,3 @@ public record AdminOpsSnapshot(
         List<AdminTaskAuditEntry> auditEntries
 ) {
 }
-

@@ -23,8 +23,8 @@
                   prefWidth="350" prefHeight="500"
                   style="-fx-background-color: linear-gradient(to bottom, #2a68c8, #3f8efc); -fx-padding: 50;">
 
-                     <Label text ="FinTrust"
-                        style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                <Label text ="FinTrust"
+                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
                 <VBox alignment="CENTER" spacing="15" style="-fx-padding: 30 0 0 0;">
                     <Label text="&#128274;" style="-fx-font-size: 40px;"/>
                     <Label text="Connexion securisee"

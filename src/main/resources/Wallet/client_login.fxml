@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.ClientLoginController"
+            style="-fx-background-color: linear-gradient(to bottom, #f0f7ff, #e6f0ff);">
+
+    <top>
+        <VBox spacing="10" style="-fx-background-color: linear-gradient(to right, #003366, #1e3b5c); -fx-padding: 20 30;">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <!-- ✅ BOUTON RETOUR avec onMouseClicked -->
+                <Button text="← Retour" onMouseClicked="#handleRetour"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-size: 14px;"/>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="Connexion Wallet Client"
+                       style="-fx-text-fill: white; -fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: 'System';"/>
+            </HBox>
+            <Label text="Accédez à votre espace client sécurisé"
+                   style="-fx-text-fill: #b0c4de; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-padding: 0 0 0 50;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="30" alignment="CENTER" style="-fx-padding: 40;">
+            <VBox spacing="20" maxWidth="400" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 5);">
+
+                <Label text="🔐 Connexion Wallet" style="-fx-font-size: 22px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System';"/>
+
+                <Separator style="-fx-background-color: #e0e7ff;"/>
+
+                <VBox spacing="15">
+                    <Label text="Identifiant (Email ou Téléphone)" style="-fx-font-weight: bold; -fx-text-fill: #2f75d8; -fx-font-size: 14px;"/>
+                    <TextField fx:id="txtIdentifiant" promptText="exemple@email.com"
+                               style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+
+                    <Label text="Code d'accès" style="-fx-font-weight: bold; -fx-text-fill: #2e8b57; -fx-font-size: 14px; -fx-padding: 10 0 0 0;"/>
+                    <PasswordField fx:id="txtCode" promptText="Entrez votre code"
+                                   style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+
+                    <HBox spacing="10" alignment="CENTER" style="-fx-padding: 20 0 0 0;">
+                        <!-- ✅ BOUTON Se connecter avec onMouseClicked -->
+                        <Button text="Se connecter" onMouseClicked="#handleLogin"
+                                style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px; -fx-padding: 12 40; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.3), 8, 0, 0, 2);"
+                                onMouseEntered="#handleButtonHover" onMouseExited="#handleButtonExit"/>
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER" style="-fx-padding: 10 0 0 0;">
+                        <!-- ✅ BOUTON Souscrire avec onMouseClicked -->
+                        <Button text="Souscrire" onMouseClicked="#handleSouscrire"
+                                style="-fx-background-color: transparent; -fx-text-fill: #2f75d8; -fx-border-color: #2f75d8; -fx-border-radius: 20; -fx-padding: 8 20; -fx-cursor: hand;"/>
+                        <Label text="|" style="-fx-text-fill: #cbd5e1;"/>
+                        <!-- ✅ BOUTON Aide avec onMouseClicked -->
+                        <Button text="Aide" onMouseClicked="#handleNavigation"
+                                style="-fx-background-color: transparent; -fx-text-fill: #2f75d8; -fx-border-color: #2f75d8; -fx-border-radius: 20; -fx-padding: 8 20; -fx-cursor: hand;"/>
+                    </HBox>
+                </VBox>
+            </VBox>
+        </VBox>
+    </center>
+</BorderPane>

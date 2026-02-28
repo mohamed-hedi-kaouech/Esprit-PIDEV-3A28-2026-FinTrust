@@ -27,7 +27,7 @@
                 <Button text="Mes taches" onAction="#goToAdminTasks" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                 <Button text="Validation KYC" onAction="#goToKycValidation" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                 <Button text="Creer utilisateur" onAction="#goToCreateUserForm" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
-                
+
                 <Label text="Modules metier" style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 8 0 0 0;"/>
                 <Button text="Gestion Wallet" onAction="#goToWalletDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                 <Button text="Publications" onAction="#goToPublications" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
@@ -55,51 +55,51 @@
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
             <content>
-        <VBox spacing="12" alignment="TOP_LEFT" style="-fx-padding: 24 28;" styleClass="bank-card">
-            <HBox styleClass="section-header">
-                <Label text="Formulaire d'ajout" styleClass="section-title"/>
-            </HBox>
-            <Label text="L'admin peut creer des comptes ADMIN ou CLIENT" styleClass="section-subtitle"/>
+                <VBox spacing="12" alignment="TOP_LEFT" style="-fx-padding: 24 28;" styleClass="bank-card">
+                    <HBox styleClass="section-header">
+                        <Label text="Formulaire d'ajout" styleClass="section-title"/>
+                    </HBox>
+                    <Label text="L'admin peut creer des comptes ADMIN ou CLIENT" styleClass="section-subtitle"/>
 
-            <VBox spacing="8">
-                <Label text="Nom complet" styleClass="form-label"/>
-                <TextField fx:id="nomField" promptText="Nom" prefWidth="420"/>
-            </VBox>
+                    <VBox spacing="8">
+                        <Label text="Nom complet" styleClass="form-label"/>
+                        <TextField fx:id="nomField" promptText="Nom" prefWidth="420"/>
+                    </VBox>
 
-            <VBox spacing="8">
-                <Label text="Email" styleClass="form-label"/>
-                <TextField fx:id="emailField" promptText="email@domaine.com" prefWidth="420"/>
-            </VBox>
+                    <VBox spacing="8">
+                        <Label text="Email" styleClass="form-label"/>
+                        <TextField fx:id="emailField" promptText="email@domaine.com" prefWidth="420"/>
+                    </VBox>
 
-            <HBox spacing="12">
-                <VBox spacing="8">
-                    <Label text="Mot de passe" styleClass="form-label"/>
-                    <PasswordField fx:id="passwordField" prefWidth="205"/>
+                    <HBox spacing="12">
+                        <VBox spacing="8">
+                            <Label text="Mot de passe" styleClass="form-label"/>
+                            <PasswordField fx:id="passwordField" prefWidth="205"/>
+                        </VBox>
+                        <VBox spacing="8">
+                            <Label text="Confirmer" styleClass="form-label"/>
+                            <PasswordField fx:id="confirmPasswordField" prefWidth="205"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12">
+                        <VBox spacing="8">
+                            <Label text="Role" styleClass="form-label"/>
+                            <ComboBox fx:id="roleCombo" prefWidth="205"/>
+                        </VBox>
+                        <VBox spacing="8">
+                            <Label text="Statut" styleClass="form-label"/>
+                            <ComboBox fx:id="statusCombo" prefWidth="205"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="12" alignment="CENTER_LEFT">
+                        <Button text="Creer utilisateur" onAction="#handleCreateUser" styleClass="button-primary"/>
+                        <Button text="Voir la liste" onAction="#goToUserList" styleClass="button-secondary"/>
+                    </HBox>
+
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
                 </VBox>
-                <VBox spacing="8">
-                    <Label text="Confirmer" styleClass="form-label"/>
-                    <PasswordField fx:id="confirmPasswordField" prefWidth="205"/>
-                </VBox>
-            </HBox>
-
-            <HBox spacing="12">
-                <VBox spacing="8">
-                    <Label text="Role" styleClass="form-label"/>
-                    <ComboBox fx:id="roleCombo" prefWidth="205"/>
-                </VBox>
-                <VBox spacing="8">
-                    <Label text="Statut" styleClass="form-label"/>
-                    <ComboBox fx:id="statusCombo" prefWidth="205"/>
-                </VBox>
-            </HBox>
-
-            <HBox spacing="12" alignment="CENTER_LEFT">
-                <Button text="Creer utilisateur" onAction="#handleCreateUser" styleClass="button-primary"/>
-                <Button text="Voir la liste" onAction="#goToUserList" styleClass="button-secondary"/>
-            </HBox>
-
-            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
-        </VBox>
             </content>
         </ScrollPane>
     </center>

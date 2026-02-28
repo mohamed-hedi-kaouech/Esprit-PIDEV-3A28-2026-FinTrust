@@ -89,131 +89,131 @@
         <ScrollPane fitToWidth="true" fitToHeight="false" pannable="true"
                     hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
             <content>
-        <VBox spacing="14" fillWidth="true" style="-fx-padding: 22 26;" styleClass="bank-card">
-            <HBox styleClass="section-header">
-                <Label fx:id="usersSectionTitleLabel" text="Liste des utilisateurs" styleClass="section-title"/>
-            </HBox>
-            <Label fx:id="usersSectionSubtitleLabel" text="Validation et suivi des statuts" styleClass="section-subtitle"/>
+                <VBox spacing="14" fillWidth="true" style="-fx-padding: 22 26;" styleClass="bank-card">
+                    <HBox styleClass="section-header">
+                        <Label fx:id="usersSectionTitleLabel" text="Liste des utilisateurs" styleClass="section-title"/>
+                    </HBox>
+                    <Label fx:id="usersSectionSubtitleLabel" text="Validation et suivi des statuts" styleClass="section-subtitle"/>
 
-            <HBox spacing="16" alignment="TOP_LEFT">
-                <VBox spacing="12" HBox.hgrow="ALWAYS">
-                    <HBox spacing="12">
-                        <VBox styleClass="admin-stat-card admin-stat-card-1" HBox.hgrow="ALWAYS">
-                            <Label text="Total utilisateurs" styleClass="admin-stat-title"/>
-                            <Label fx:id="totalUsersLabel" text="0" styleClass="admin-stat-value"/>
+                    <HBox spacing="16" alignment="TOP_LEFT">
+                        <VBox spacing="12" HBox.hgrow="ALWAYS">
+                            <HBox spacing="12">
+                                <VBox styleClass="admin-stat-card admin-stat-card-1" HBox.hgrow="ALWAYS">
+                                    <Label text="Total utilisateurs" styleClass="admin-stat-title"/>
+                                    <Label fx:id="totalUsersLabel" text="0" styleClass="admin-stat-value"/>
+                                </VBox>
+                                <VBox styleClass="admin-stat-card admin-stat-card-2" HBox.hgrow="ALWAYS">
+                                    <Label text="Clients" styleClass="admin-stat-title"/>
+                                    <Label fx:id="totalClientsLabel" text="0" styleClass="admin-stat-value"/>
+                                </VBox>
+                                <VBox styleClass="admin-stat-card admin-stat-card-3" HBox.hgrow="ALWAYS">
+                                    <Label text="Admins" styleClass="admin-stat-title"/>
+                                    <Label fx:id="totalAdminsLabel" text="0" styleClass="admin-stat-value"/>
+                                </VBox>
+                            </HBox>
                         </VBox>
-                        <VBox styleClass="admin-stat-card admin-stat-card-2" HBox.hgrow="ALWAYS">
-                            <Label text="Clients" styleClass="admin-stat-title"/>
-                            <Label fx:id="totalClientsLabel" text="0" styleClass="admin-stat-value"/>
-                        </VBox>
-                        <VBox styleClass="admin-stat-card admin-stat-card-3" HBox.hgrow="ALWAYS">
-                            <Label text="Admins" styleClass="admin-stat-title"/>
-                            <Label fx:id="totalAdminsLabel" text="0" styleClass="admin-stat-value"/>
+
+                        <VBox spacing="10" styleClass="admin-pie-card" prefWidth="560">
+                            <Label fx:id="statusChartTitleLabel" text="Statut des comptes" styleClass="admin-pie-title"/>
+                            <HBox spacing="12" alignment="TOP_LEFT">
+                                <VBox spacing="8">
+                                    <PieChart fx:id="statusPieChart" prefWidth="260" prefHeight="210" legendVisible="true" labelsVisible="true" styleClass="admin-status-pie"/>
+                                    <Label fx:id="quickStatsLabel" text="Stats rapides" style="-fx-text-fill: #334155; -fx-font-weight: 700;"/>
+                                </VBox>
+                                <VBox spacing="8" style="-fx-background-color: #f8fbff; -fx-background-radius: 12; -fx-padding: 10; -fx-border-color: #dbe7f8; -fx-border-radius: 12;">
+                                    <Label fx:id="activityTitleLabel" text="Activite utilisateurs (10 jours)" style="-fx-font-weight: 700; -fx-text-fill: #1d3553;"/>
+                                    <BarChart fx:id="activityBarChart" prefWidth="270" prefHeight="190" legendVisible="true" animated="false">
+                                        <xAxis>
+                                            <CategoryAxis />
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis />
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+                            </HBox>
                         </VBox>
                     </HBox>
-                </VBox>
 
-                <VBox spacing="10" styleClass="admin-pie-card" prefWidth="560">
-                    <Label fx:id="statusChartTitleLabel" text="Statut des comptes" styleClass="admin-pie-title"/>
-                    <HBox spacing="12" alignment="TOP_LEFT">
-                        <VBox spacing="8">
-                            <PieChart fx:id="statusPieChart" prefWidth="260" prefHeight="210" legendVisible="true" labelsVisible="true" styleClass="admin-status-pie"/>
-                            <Label fx:id="quickStatsLabel" text="Stats rapides" style="-fx-text-fill: #334155; -fx-font-weight: 700;"/>
-                        </VBox>
-                        <VBox spacing="8" style="-fx-background-color: #f8fbff; -fx-background-radius: 12; -fx-padding: 10; -fx-border-color: #dbe7f8; -fx-border-radius: 12;">
-                            <Label fx:id="activityTitleLabel" text="Activite utilisateurs (10 jours)" style="-fx-font-weight: 700; -fx-text-fill: #1d3553;"/>
-                            <BarChart fx:id="activityBarChart" prefWidth="270" prefHeight="190" legendVisible="true" animated="false">
-                                <xAxis>
-                                    <CategoryAxis />
-                                </xAxis>
-                                <yAxis>
-                                    <NumberAxis />
-                                </yAxis>
-                            </BarChart>
-                        </VBox>
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                        <Label text="Recherche:" styleClass="form-label"/>
+                        <TextField fx:id="searchField" promptText="Nom, email, role, statut, id..." prefWidth="320"/>
+
+                        <Label text="Trier par:" styleClass="form-label"/>
+                        <ComboBox fx:id="sortByCombo" prefWidth="170"/>
+
+                        <Label text="Ordre:" styleClass="form-label"/>
+                        <ComboBox fx:id="sortOrderCombo" prefWidth="120"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Reset filtre" onAction="#handleResetFilter" styleClass="button-secondary"/>
+                    </HBox>
+
+                    <VBox VBox.vgrow="ALWAYS" styleClass="admin-users-table-wrap">
+                        <TableView fx:id="usersTable" styleClass="admin-users-table"
+                                   minHeight="260.0" prefHeight="360.0" maxHeight="1.7976931348623157E308"
+                                   VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="idColumn" text="ID" prefWidth="80"/>
+                                <TableColumn fx:id="nomColumn" text="Nom" prefWidth="180"/>
+                                <TableColumn fx:id="emailColumn" text="Email" prefWidth="280"/>
+                                <TableColumn fx:id="roleColumn" text="Role" prefWidth="120"/>
+                                <TableColumn fx:id="statusColumn" text="Statut" prefWidth="140"/>
+                                <TableColumn fx:id="createdAtColumn" text="Cree le" prefWidth="180"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                        <Label text="Nouveau statut:" styleClass="form-label"/>
+                        <ComboBox fx:id="statusComboBox" prefWidth="180"/>
+                        <Button text="Appliquer" onAction="#handleApplyStatus" styleClass="button-primary"/>
+                        <Button text="Rafraichir" onAction="#handleRefresh" styleClass="button-secondary"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button text="Modifier" onAction="#handleEditUser" styleClass="button-secondary"/>
+                        <Button text="Supprimer" onAction="#handleDeleteUser" styleClass="button-danger"/>
+                    </HBox>
+
+                    <VBox spacing="8" styleClass="export-block">
+                        <Label text="Exports admin (Excel/PDF)" styleClass="export-title"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Utilisateurs" styleClass="export-label"/>
+                            <Button text="Excel" onAction="#handleExportUsersExcel" styleClass="button-secondary export-btn"/>
+                            <Button text="PDF" onAction="#handleExportUsersPdf" styleClass="button-secondary export-btn"/>
+
+                            <Label text="Statistiques" styleClass="export-label"/>
+                            <Button text="Excel" onAction="#handleExportAnalyticsExcel" styleClass="button-secondary export-btn"/>
+                            <Button text="PDF" onAction="#handleExportAnalyticsPdf" styleClass="button-secondary export-btn"/>
+
+                            <Label text="Audit logs" styleClass="export-label"/>
+                            <Button text="Excel" onAction="#handleExportAuditExcel" styleClass="button-secondary export-btn"/>
+                            <Button text="PDF" onAction="#handleExportAuditPdf" styleClass="button-secondary export-btn"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox fx:id="notificationBar" spacing="8" visible="false" managed="false"
+                          style="-fx-background-color: #eef7ff; -fx-border-color: #cbe4ff; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;">
+                        <Label text="Centre de notifications clients" style="-fx-font-weight: 800; -fx-text-fill: #1f4778;"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Destinataire:" styleClass="form-label"/>
+                            <ComboBox fx:id="notificationTargetCombo" prefWidth="240"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Message:" styleClass="form-label"/>
+                            <TextField fx:id="notificationMessageField" promptText="Votre compte a ete mis a jour..." HBox.hgrow="ALWAYS"/>
+                            <Button text="Envoyer notification" onAction="#handleSendPanelNotification" styleClass="button-primary"/>
+                        </HBox>
+                    </VBox>
+
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Retour" onAction="#handleBack" styleClass="button-secondary"/>
                     </HBox>
                 </VBox>
-            </HBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
-                <Label text="Recherche:" styleClass="form-label"/>
-                <TextField fx:id="searchField" promptText="Nom, email, role, statut, id..." prefWidth="320"/>
-
-                <Label text="Trier par:" styleClass="form-label"/>
-                <ComboBox fx:id="sortByCombo" prefWidth="170"/>
-
-                <Label text="Ordre:" styleClass="form-label"/>
-                <ComboBox fx:id="sortOrderCombo" prefWidth="120"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-                <Button text="Reset filtre" onAction="#handleResetFilter" styleClass="button-secondary"/>
-            </HBox>
-
-            <VBox VBox.vgrow="ALWAYS" styleClass="admin-users-table-wrap">
-                <TableView fx:id="usersTable" styleClass="admin-users-table"
-                           minHeight="260.0" prefHeight="360.0" maxHeight="1.7976931348623157E308"
-                           VBox.vgrow="ALWAYS">
-                <columns>
-                    <TableColumn fx:id="idColumn" text="ID" prefWidth="80"/>
-                    <TableColumn fx:id="nomColumn" text="Nom" prefWidth="180"/>
-                    <TableColumn fx:id="emailColumn" text="Email" prefWidth="280"/>
-                    <TableColumn fx:id="roleColumn" text="Role" prefWidth="120"/>
-                    <TableColumn fx:id="statusColumn" text="Statut" prefWidth="140"/>
-                    <TableColumn fx:id="createdAtColumn" text="Cree le" prefWidth="180"/>
-                </columns>
-                </TableView>
-            </VBox>
-
-            <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
-                <Label text="Nouveau statut:" styleClass="form-label"/>
-                <ComboBox fx:id="statusComboBox" prefWidth="180"/>
-                <Button text="Appliquer" onAction="#handleApplyStatus" styleClass="button-primary"/>
-                <Button text="Rafraichir" onAction="#handleRefresh" styleClass="button-secondary"/>
-
-                <Region HBox.hgrow="ALWAYS"/>
-
-                <Button text="Modifier" onAction="#handleEditUser" styleClass="button-secondary"/>
-                <Button text="Supprimer" onAction="#handleDeleteUser" styleClass="button-danger"/>
-            </HBox>
-
-            <VBox spacing="8" styleClass="export-block">
-                <Label text="Exports admin (Excel/PDF)" styleClass="export-title"/>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Utilisateurs" styleClass="export-label"/>
-                    <Button text="Excel" onAction="#handleExportUsersExcel" styleClass="button-secondary export-btn"/>
-                    <Button text="PDF" onAction="#handleExportUsersPdf" styleClass="button-secondary export-btn"/>
-
-                    <Label text="Statistiques" styleClass="export-label"/>
-                    <Button text="Excel" onAction="#handleExportAnalyticsExcel" styleClass="button-secondary export-btn"/>
-                    <Button text="PDF" onAction="#handleExportAnalyticsPdf" styleClass="button-secondary export-btn"/>
-
-                    <Label text="Audit logs" styleClass="export-label"/>
-                    <Button text="Excel" onAction="#handleExportAuditExcel" styleClass="button-secondary export-btn"/>
-                    <Button text="PDF" onAction="#handleExportAuditPdf" styleClass="button-secondary export-btn"/>
-                </HBox>
-            </VBox>
-
-            <VBox fx:id="notificationBar" spacing="8" visible="false" managed="false"
-                  style="-fx-background-color: #eef7ff; -fx-border-color: #cbe4ff; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;">
-                <Label text="Centre de notifications clients" style="-fx-font-weight: 800; -fx-text-fill: #1f4778;"/>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Destinataire:" styleClass="form-label"/>
-                    <ComboBox fx:id="notificationTargetCombo" prefWidth="240"/>
-                    <Region HBox.hgrow="ALWAYS"/>
-                </HBox>
-                <HBox spacing="10" alignment="CENTER_LEFT">
-                    <Label text="Message:" styleClass="form-label"/>
-                    <TextField fx:id="notificationMessageField" promptText="Votre compte a ete mis a jour..." HBox.hgrow="ALWAYS"/>
-                    <Button text="Envoyer notification" onAction="#handleSendPanelNotification" styleClass="button-primary"/>
-                </HBox>
-            </VBox>
-
-            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
-
-            <HBox spacing="10" alignment="CENTER_LEFT">
-                <Button text="Retour" onAction="#handleBack" styleClass="button-secondary"/>
-            </HBox>
-        </VBox>
             </content>
         </ScrollPane>
     </center>

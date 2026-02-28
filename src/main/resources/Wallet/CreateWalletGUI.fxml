@@ -5,86 +5,94 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<?import java.lang.String?>
-<AnchorPane prefHeight="600.0" prefWidth="800.0"
+<AnchorPane prefHeight="650.0" prefWidth="850.0"
             stylesheets="/Styles/StyleWallet.css"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.WalletControlleur.WalletManagerGUI">
 
-    <!-- HEADER -->
-    <VBox alignment="CENTER"
-          prefHeight="100.0"
-          styleClass="header"
-          AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0"
-          AnchorPane.topAnchor="0">
+    <!-- BACKGROUND COLOR -->
+    <AnchorPane style="-fx-background-color: #f0f7ff;" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
 
-        <Label text="Gestion des Wallets" styleClass="header-title">
+    <!-- HEADER STYLE USER -->
+    <VBox style="-fx-background-color: linear-gradient(to right, #2f75d8, #4a9df7); -fx-padding: 25 0; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);"
+          alignment="CENTER" prefHeight="120.0" AnchorPane.leftAnchor="0" AnchorPane.rightAnchor="0" AnchorPane.topAnchor="0">
+
+        <Label text="➕ Nouveau Wallet" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 800; -fx-font-family: 'System';">
             <font>
-                <Font name="System Bold" size="26"/>
+                <Font name="System Bold" size="28"/>
+            </font>
+        </Label>
+
+        <Label text="Créez un nouveau portefeuille en remplissant les informations ci-dessous"
+               style="-fx-text-fill: #e7f3ff; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-padding: 5 0 0 0;">
+            <font>
+                <Font size="14"/>
             </font>
         </Label>
     </VBox>
 
-    <!-- FORM -->
-    <VBox spacing="25"
+    <!-- FORM CARD -->
+    <VBox spacing="20"
           alignment="CENTER"
-          layoutY="120"
-          AnchorPane.leftAnchor="150"
-          AnchorPane.rightAnchor="150">
+          layoutY="140"
+          AnchorPane.leftAnchor="200"
+          AnchorPane.rightAnchor="200"
+          AnchorPane.bottomAnchor="30"
+          style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
 
-        <padding>
-            <Insets top="30" bottom="30"/>
-        </padding>
+        <!-- Titre du formulaire -->
+        <Label text="Informations du wallet" style="-fx-font-size: 18px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System'; -fx-padding: 0 0 10 0;"/>
 
         <!-- Nom propriétaire -->
-        <VBox spacing="5">
-            <Label text="Nom du Propriétaire *" styleClass="form-label"/>
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <Label text="Nom du Propriétaire *" style="-fx-text-fill: #2f75d8; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
             <TextField fx:id="nomProprietaireField"
                        promptText="Ex: Feryel Ben Ali"
-                       styleClass="form-input"/>
+                       style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #e0e7ff; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px; -fx-font-family: 'System';"/>
         </VBox>
 
         <!-- Solde -->
-        <VBox spacing="5">
-            <Label text="Solde Initial *" styleClass="form-label"/>
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <Label text="Solde Initial *" style="-fx-text-fill: #2e8b57; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
             <TextField fx:id="soldeField"
                        promptText="0.00"
-                       styleClass="form-input"/>
+                       style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #e0e7ff; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px; -fx-font-family: 'System';"/>
         </VBox>
 
         <!-- Devise -->
-        <VBox spacing="5">
-            <Label text="Devise *" styleClass="form-label"/>
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <Label text="Devise *" style="-fx-text-fill: #ff8c00; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
             <ComboBox fx:id="deviseComboBox"
                       promptText="Choisir une devise"
-                      styleClass="form-input"/>
+                      style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #e0e7ff; -fx-border-radius: 12; -fx-padding: 8 15; -fx-font-size: 14px; -fx-font-family: 'System';"/>
         </VBox>
 
         <!-- Statut -->
-        <VBox spacing="5">
-            <Label text="Statut *" styleClass="form-label"/>
+        <VBox spacing="8" VBox.vgrow="ALWAYS">
+            <Label text="Statut *" style="-fx-text-fill: #1f4ea0; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
             <ComboBox fx:id="statutComboBox"
                       promptText="Choisir un statut"
-                      styleClass="form-input"/>
+                      style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #e0e7ff; -fx-border-radius: 12; -fx-padding: 8 15; -fx-font-size: 14px; -fx-font-family: 'System';"/>
         </VBox>
 
         <!-- Buttons -->
-        <HBox spacing="30" alignment="CENTER">
-
+        <HBox spacing="20" alignment="CENTER" VBox.vgrow="ALWAYS" style="-fx-padding: 20 0 10 0;">
             <Button text="Enregistrer"
                     onAction="#CreateWallet"
-                    prefWidth="160"
-                    styleClass="btn-primary"/>
+                    prefWidth="180"
+                    prefHeight="45"
+                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12; -fx-font-size: 15px; -fx-font-family: 'System'; -fx-cursor: hand;"/>
 
             <Button text="Réinitialiser"
                     onAction="#handleClear"
-                    prefWidth="160"
-                    styleClass="btn-secondary"/>
-
+                    prefWidth="180"
+                    prefHeight="45"
+                    style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12; -fx-font-size: 15px; -fx-font-family: 'System'; -fx-cursor: hand;"/>
         </HBox>
 
+        <!-- Note champ obligatoire -->
+        <Label text="* Champs obligatoires" style="-fx-text-fill: #8fa8c5; -fx-font-size: 12px; -fx-font-family: 'System'; -fx-padding: 10 0 0 0;"/>
     </VBox>
 
 </AnchorPane>

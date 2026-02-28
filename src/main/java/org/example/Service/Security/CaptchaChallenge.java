@@ -9,4 +9,3 @@ public record CaptchaChallenge(
         int expiresInSeconds
 ) {
 }
-

@@ -1,4 +1,5 @@
 package org.example.Controlleurs.ClientControlleur;
+
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;
 import javafx.animation.Timeline;
@@ -217,4 +218,3 @@ public class MemoryGameController {
         }
     }
 }
-

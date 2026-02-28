@@ -28,7 +28,7 @@
                 <Button text="Mes taches" onAction="#goToAdminTasks" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                 <Button text="Validation KYC" onAction="#goToKycValidation" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                 <Button text="Creer utilisateur" onAction="#goToCreateUserForm" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
-                
+
                 <Label text="Modules metier" style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 8 0 0 0;"/>
                 <Button text="Gestion Wallet" onAction="#goToWalletDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                 <Button text="Publications" onAction="#goToPublications" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>

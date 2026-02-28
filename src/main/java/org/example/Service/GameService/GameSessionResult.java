@@ -6,4 +6,3 @@ public record GameSessionResult(
         String message
 ) {
 }
-

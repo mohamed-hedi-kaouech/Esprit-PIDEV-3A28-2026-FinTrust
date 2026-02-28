@@ -28,6 +28,7 @@ import org.example.Model.User.UserRole;
 import org.example.Service.KycService.KycAdminRow;
 import org.example.Service.KycService.KycFileDownload;
 import org.example.Service.KycService.KycService;
+// ✅ IMPORT CORRIGÉ
 import org.example.Service.QrService.AdminQrScanService;
 import org.example.Utils.SessionContext;
 
@@ -63,6 +64,7 @@ public class AdminKycValidationController {
     @FXML private Label infoLabel;
 
     private final KycService kycService = new KycService();
+    // ✅ MAINTENANT CORRECT - le service est trouvé
     private final AdminQrScanService qrScanService = new AdminQrScanService();
     private final SessionContext session = SessionContext.getInstance();
     private static final DateTimeFormatter DT = DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm");
@@ -202,6 +204,7 @@ public class AdminKycValidationController {
             File image = chooser.showOpenDialog(getStage());
             if (image == null) return;
 
+            // ✅ Ces méthodes existent maintenant dans AdminQrScanService
             String rawPayload = qrScanService.decodeTokenFromImage(image);
             int userId = qrScanService.resolveUserIdAndConsume(rawPayload);
 

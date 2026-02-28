@@ -1,4 +1,5 @@
 package org.example.Controlleurs.ClientControlleur;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -176,4 +177,3 @@ public class ClientProfileController {
         return s == null ? "" : s;
     }
 }
-

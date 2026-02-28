@@ -26,14 +26,14 @@
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
             <content>
-        <VBox spacing="12" style="-fx-padding: 26;" styleClass="bank-card">
-            <Label text="Historique" styleClass="section-title"/>
-            <ListView fx:id="notifList" VBox.vgrow="ALWAYS"/>
-            <HBox spacing="12">
-                <Button text="Marquer tout comme lu" onAction="#markAllRead" styleClass="button-secondary"/>
-            </HBox>
-            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
-        </VBox>
+                <VBox spacing="12" style="-fx-padding: 26;" styleClass="bank-card">
+                    <Label text="Historique" styleClass="section-title"/>
+                    <ListView fx:id="notifList" VBox.vgrow="ALWAYS"/>
+                    <HBox spacing="12">
+                        <Button text="Marquer tout comme lu" onAction="#markAllRead" styleClass="button-secondary"/>
+                    </HBox>
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+                </VBox>
             </content>
         </ScrollPane>
     </center>

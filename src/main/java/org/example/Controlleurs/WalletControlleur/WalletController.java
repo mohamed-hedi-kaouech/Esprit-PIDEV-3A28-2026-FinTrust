@@ -8,34 +8,48 @@ import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.HBox;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.geometry.Insets;
+import javafx.beans.property.SimpleStringProperty;
 import java.net.URL;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.*;
 
 public class WalletController implements Initializable {
 
     @FXML private TextField txtNomProprietaire;
+    @FXML private TextField txtTelephone;
+    @FXML private TextField txtEmail;
     @FXML private TextField txtSolde;
+    @FXML private TextField txtPlafondDecouvert;
     @FXML private ComboBox<WalletDevise> comboDevise;
     @FXML private ComboBox<WalletStatut> comboStatut;
+    @FXML private Label lblErrorNom;
+    @FXML private Label lblErrorTelephone;
+    @FXML private Label lblErrorEmail;
+    @FXML private Label lblErrorSolde;
+    @FXML private Label lblErrorPlafond;
+    @FXML private HBox codeInfoBox;
+    @FXML private Label lblCodeInfo;
+
+    // ✅ NOUVEAU : Champ caché pour stocker l'ID utilisateur
+    private int currentUserId;
+
     @FXML private TableView<Wallet> tableViewWallet;
     @FXML private TableColumn<Wallet, Integer> colId;
     @FXML private TableColumn<Wallet, String> colNom;
+    @FXML private TableColumn<Wallet, String> colTelephone;
+    @FXML private TableColumn<Wallet, String> colEmail;
     @FXML private TableColumn<Wallet, Double> colSolde;
-    @FXML private TableColumn<Wallet, WalletDevise> colDevise;
-    @FXML private TableColumn<Wallet, WalletStatut> colStatut;
+    @FXML private TableColumn<Wallet, Double> colPlafond;
+    @FXML private TableColumn<Wallet, String> colDevise;
+    @FXML private TableColumn<Wallet, String> colStatut;
     @FXML private TableColumn<Wallet, String> colDate;
-    @FXML private Label lblErrorNom;
-    @FXML private Label lblErrorSolde;
-    @FXML private Label lblErrorDevise;
-    @FXML private Label lblErrorStatut;
 
     private WalletService walletService;
     private ObservableList<Wallet> walletList;
-    private Wallet walletConnecte;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
 
     @Override
@@ -47,109 +61,39 @@ public class WalletController implements Initializable {
         setupTableColumns();
         loadWallets();
         setupListeners();
+        setupTooltips();
 
-        // Ajouter des listeners pour la validation en temps réel
-        setupValidationListeners();
+        if (codeInfoBox != null) {
+            codeInfoBox.setVisible(false);
+        }
+    }
+
+    // ✅ NOUVELLE MÉTHODE : Pour définir l'utilisateur courant
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
     }
 
     private void setupComboBoxes() {
         comboDevise.setItems(FXCollections.observableArrayList(WalletDevise.values()));
         comboStatut.setItems(FXCollections.observableArrayList(WalletStatut.values()));
-
-        // Style des combobox
-        comboDevise.setPromptText("Sélectionner une devise");
-        comboStatut.setPromptText("Sélectionner un statut");
     }
 
     private void setupTableColumns() {
-        colId.setCellValueFactory(new PropertyValueFactory<>("id_wallet"));
-        colNom.setCellValueFactory(new PropertyValueFactory<>("nom_proprietaire"));
+        colId.setCellValueFactory(new PropertyValueFactory<>("idWallet"));
+        colNom.setCellValueFactory(new PropertyValueFactory<>("nomProprietaire"));
+        colTelephone.setCellValueFactory(new PropertyValueFactory<>("telephone"));
+        colEmail.setCellValueFactory(new PropertyValueFactory<>("email"));
         colSolde.setCellValueFactory(new PropertyValueFactory<>("solde"));
-        colSolde.setCellFactory(column -> new TableCell<Wallet, Double>() {
-            @Override
-            protected void updateItem(Double solde, boolean empty) {
-                super.updateItem(solde, empty);
-                if (empty || solde == null) {
-                    setText(null);
-                } else {
-                    setText(String.format("%,.2f", solde));
-                }
-            }
-        });
-        colDevise.setCellValueFactory(new PropertyValueFactory<>("devise"));
-        colStatut.setCellValueFactory(new PropertyValueFactory<>("statut"));
-        colStatut.setCellFactory(column -> new TableCell<Wallet, WalletStatut>() {
-            @Override
-            protected void updateItem(WalletStatut statut, boolean empty) {
-                super.updateItem(statut, empty);
-                if (empty || statut == null) {
-                    setText(null);
-                    setGraphic(null);
-                } else {
-                    Label badge = new Label(statut.toString());
-                    badge.setPadding(new Insets(4, 12, 4, 12));
-                    badge.setStyle("-fx-background-radius: 20; -fx-font-size: 11px; -fx-font-weight: 600;");
-
-                    switch (statut) {
-                        case ACTIVE:
-                            badge.setStyle(badge.getStyle() + "-fx-background-color: #d1fae5; -fx-text-fill: #059669;");
-                            break;
-                        case DRAFT:
-                            badge.setStyle(badge.getStyle() + "-fx-background-color: #fff3cd; -fx-text-fill: #b45309;");
-                            break;
-                        case SUSPENDED:
-                            badge.setStyle(badge.getStyle() + "-fx-background-color: #fee2e2; -fx-text-fill: #b91c1c;");
-                            break;
-                        case CLOSED:
-                            badge.setStyle(badge.getStyle() + "-fx-background-color: #e2e8f0; -fx-text-fill: #475569;");
-                            break;
-                    }
-
-                    setGraphic(badge);
-                    setText(null);
-                }
-            }
-        });
+        colPlafond.setCellValueFactory(new PropertyValueFactory<>("plafondDecouvert"));
+        colDevise.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getDevise().toString()));
+        colStatut.setCellValueFactory(cellData ->
+                new SimpleStringProperty(cellData.getValue().getStatut().toString()));
         colDate.setCellValueFactory(cellData ->
-                new javafx.beans.property.SimpleStringProperty(
-                        cellData.getValue().getDate_creation().format(dateFormatter))
-        );
+                new SimpleStringProperty(
+                        cellData.getValue().getDateCreation().format(dateFormatter)));
 
         tableViewWallet.setItems(walletList);
-    }
-
-    private void setupValidationListeners() {
-        // Validation du nom (pas de chiffres ni symboles)
-        txtNomProprietaire.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
-                if (!newValue.matches("[a-zA-Z\\s]+")) {
-                    lblErrorNom.setText("Le nom ne doit contenir que des lettres");
-                    txtNomProprietaire.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
-                } else {
-                    lblErrorNom.setText("");
-                    txtNomProprietaire.setStyle("");
-                }
-            }
-        });
-
-        // Validation du solde (nombre positif)
-        txtSolde.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.isEmpty()) {
-                try {
-                    double solde = Double.parseDouble(newValue.replace(",", "."));
-                    if (solde < 0) {
-                        lblErrorSolde.setText("Le solde doit être positif");
-                        txtSolde.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
-                    } else {
-                        lblErrorSolde.setText("");
-                        txtSolde.setStyle("");
-                    }
-                } catch (NumberFormatException e) {
-                    lblErrorSolde.setText("Format de nombre invalide");
-                    txtSolde.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
-                }
-            }
-        });
     }
 
     private void loadWallets() {
@@ -161,16 +105,33 @@ public class WalletController implements Initializable {
         tableViewWallet.getSelectionModel().selectedItemProperty().addListener(
                 (obs, oldSelection, newSelection) -> {
                     if (newSelection != null) {
-                        showWalletDetails(newSelection);
+                        afficherWallet(newSelection);
                     }
                 });
     }
 
-    private void showWalletDetails(Wallet wallet) {
-        txtNomProprietaire.setText(wallet.getNom_proprietaire());
+    private void setupTooltips() {
+        Tooltip plafondTooltip = new Tooltip(
+                "Le plafond de découvert est le montant maximum autorisé en négatif.\n" +
+                        "Exemple : Si le solde est de 1000 TND et le plafond de 500 TND,\n" +
+                        "vous pouvez descendre jusqu'à -500 TND (découvert total de 1500 TND).\n" +
+                        "Au-delà, les transactions seront bloquées."
+        );
+        txtPlafondDecouvert.setTooltip(plafondTooltip);
+    }
+
+    private void afficherWallet(Wallet wallet) {
+        txtNomProprietaire.setText(wallet.getNomProprietaire());
+        txtTelephone.setText(wallet.getTelephone());
+        txtEmail.setText(wallet.getEmail());
         txtSolde.setText(String.valueOf(wallet.getSolde()));
+        txtPlafondDecouvert.setText(String.valueOf(wallet.getPlafondDecouvert()));
         comboDevise.setValue(wallet.getDevise());
         comboStatut.setValue(wallet.getStatut());
+        currentUserId = wallet.getIdUser(); // ✅ Stocker l'ID utilisateur
+        if (codeInfoBox != null) {
+            codeInfoBox.setVisible(false);
+        }
     }
 
     @FXML
@@ -178,19 +139,39 @@ public class WalletController implements Initializable {
         if (!validateInputs()) return;
 
         try {
-            Wallet wallet = new Wallet();
-            wallet.setNom_proprietaire(txtNomProprietaire.getText().trim());
-            wallet.setSolde(Double.parseDouble(txtSolde.getText().trim().replace(",", ".")));
-            wallet.setDevise(comboDevise.getValue());
-            wallet.setStatut(comboStatut.getValue() != null ? comboStatut.getValue() : WalletStatut.DRAFT);
+            double solde = Double.parseDouble(txtSolde.getText().trim().replace(",", "."));
+            double plafond = Double.parseDouble(txtPlafondDecouvert.getText().trim().replace(",", "."));
+
+            Wallet wallet = new Wallet(
+                    txtNomProprietaire.getText().trim(),
+                    txtTelephone.getText().trim(),
+                    txtEmail.getText().trim(),
+                    solde,
+                    comboDevise.getValue()
+            );
+            wallet.setStatut(comboStatut.getValue());
+            wallet.setPlafondDecouvert(plafond);
+            wallet.setIdUser(currentUserId); // ✅ Associer l'utilisateur
 
             if (walletService.ajouterWallet(wallet)) {
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Wallet ajouté avec succès");
+                showSuccess("Wallet ajouté avec succès !");
+
+                String code = wallet.getCodeAcces();
+                lblCodeInfo.setText("✅ Code d'accès généré : " + code +
+                        " (envoyé au client) - Plafond découvert: " + plafond);
+                if (codeInfoBox != null) {
+                    codeInfoBox.setVisible(true);
+                }
+
                 loadWallets();
                 clearForm();
+            } else {
+                showError("Échec", "L'ajout du wallet a échoué");
             }
+
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+            e.printStackTrace();
+            showError("Erreur", e.getMessage());
         }
     }
 
@@ -198,24 +179,33 @@ public class WalletController implements Initializable {
     private void handleModifier() {
         Wallet selected = tableViewWallet.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez sélectionner un wallet");
+            showWarning("Sélectionnez un wallet");
             return;
         }
 
         if (!validateInputs()) return;
 
         try {
-            selected.setNom_proprietaire(txtNomProprietaire.getText().trim());
+            selected.setNomProprietaire(txtNomProprietaire.getText().trim());
+            selected.setTelephone(txtTelephone.getText().trim());
+            selected.setEmail(txtEmail.getText().trim());
             selected.setSolde(Double.parseDouble(txtSolde.getText().trim().replace(",", ".")));
+            selected.setPlafondDecouvert(Double.parseDouble(txtPlafondDecouvert.getText().trim().replace(",", ".")));
             selected.setDevise(comboDevise.getValue());
             selected.setStatut(comboStatut.getValue());
+            selected.setIdUser(currentUserId); // ✅ Mettre à jour l'ID utilisateur
 
             if (walletService.modifierWallet(selected)) {
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Wallet modifié avec succès");
+                showSuccess("Wallet modifié");
                 loadWallets();
+                clearForm();
+                if (codeInfoBox != null) {
+                    codeInfoBox.setVisible(false);
+                }
             }
+
         } catch (Exception e) {
-            showAlert(Alert.AlertType.ERROR, "Erreur", e.getMessage());
+            showError("Erreur", e.getMessage());
         }
     }
 
@@ -223,21 +213,22 @@ public class WalletController implements Initializable {
     private void handleSupprimer() {
         Wallet selected = tableViewWallet.getSelectionModel().getSelectedItem();
         if (selected == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Veuillez sélectionner un wallet");
+            showWarning("Sélectionnez un wallet");
             return;
         }
 
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
         confirm.setTitle("Confirmation");
-        confirm.setHeaderText(null);
-        confirm.setContentText("Voulez-vous vraiment supprimer ce wallet ?");
+        confirm.setContentText("Supprimer ce wallet ?");
 
-        Optional<ButtonType> result = confirm.showAndWait();
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-            if (walletService.supprimerWallet(selected.getId_wallet())) {
-                showAlert(Alert.AlertType.INFORMATION, "Succès", "Wallet supprimé avec succès");
+        if (confirm.showAndWait().get() == ButtonType.OK) {
+            if (walletService.supprimerWallet(selected.getIdWallet())) {
+                showSuccess("Wallet supprimé");
                 loadWallets();
                 clearForm();
+                if (codeInfoBox != null) {
+                    codeInfoBox.setVisible(false);
+                }
             }
         }
     }
@@ -245,64 +236,60 @@ public class WalletController implements Initializable {
     @FXML
     private void handleVider() {
         clearForm();
+        if (codeInfoBox != null) {
+            codeInfoBox.setVisible(false);
+        }
     }
 
     private boolean validateInputs() {
         boolean isValid = true;
 
-        // Validation du nom (obligatoire et lettres uniquement)
-        String nom = txtNomProprietaire.getText();
-        if (nom == null || nom.trim().isEmpty()) {
-            lblErrorNom.setText("Le nom est obligatoire");
-            txtNomProprietaire.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
-            isValid = false;
-        } else if (!nom.matches("[a-zA-Z\\s]+")) {
-            lblErrorNom.setText("Le nom ne doit contenir que des lettres");
-            txtNomProprietaire.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
+        if (txtNomProprietaire.getText().trim().isEmpty()) {
+            lblErrorNom.setText("Nom obligatoire");
             isValid = false;
         } else {
             lblErrorNom.setText("");
-            txtNomProprietaire.setStyle("");
         }
 
-        // Validation du solde (obligatoire et positif)
-        String soldeText = txtSolde.getText();
-        if (soldeText == null || soldeText.trim().isEmpty()) {
-            lblErrorSolde.setText("Le solde est obligatoire");
-            txtSolde.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
+        String tel = txtTelephone.getText().trim();
+        if (!tel.isEmpty() && !tel.matches("\\+?[0-9]{8,15}")) {
+            lblErrorTelephone.setText("Format invalide");
             isValid = false;
         } else {
-            try {
-                double solde = Double.parseDouble(soldeText.trim().replace(",", "."));
-                if (solde < 0) {
-                    lblErrorSolde.setText("Le solde doit être positif");
-                    txtSolde.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
-                    isValid = false;
-                } else {
-                    lblErrorSolde.setText("");
-                    txtSolde.setStyle("");
-                }
-            } catch (NumberFormatException e) {
-                lblErrorSolde.setText("Format de nombre invalide");
-                txtSolde.setStyle("-fx-border-color: #ef4444; -fx-border-width: 2;");
+            lblErrorTelephone.setText("");
+        }
+
+        String email = txtEmail.getText().trim();
+        if (!email.isEmpty() && !email.matches("^[A-Za-z0-9+_.-]+@(.+)$")) {
+            lblErrorEmail.setText("Email invalide");
+            isValid = false;
+        } else {
+            lblErrorEmail.setText("");
+        }
+
+        try {
+            Double.parseDouble(txtSolde.getText().trim().replace(",", "."));
+            lblErrorSolde.setText("");
+        } catch (NumberFormatException e) {
+            lblErrorSolde.setText("Montant invalide");
+            isValid = false;
+        }
+
+        try {
+            double plafond = Double.parseDouble(txtPlafondDecouvert.getText().trim().replace(",", "."));
+            if (plafond < 0) {
+                lblErrorPlafond.setText("Plafond doit être ≥ 0");
                 isValid = false;
+            } else {
+                lblErrorPlafond.setText("");
             }
+        } catch (NumberFormatException e) {
+            lblErrorPlafond.setText("Plafond invalide");
+            isValid = false;
         }
 
-        // Validation de la devise
         if (comboDevise.getValue() == null) {
-            lblErrorDevise.setText("La devise est obligatoire");
             isValid = false;
-        } else {
-            lblErrorDevise.setText("");
-        }
-
-        // Validation du statut
-        if (comboStatut.getValue() == null) {
-            lblErrorStatut.setText("Le statut est obligatoire");
-            isValid = false;
-        } else {
-            lblErrorStatut.setText("");
         }
 
         return isValid;
@@ -310,27 +297,58 @@ public class WalletController implements Initializable {
 
     private void clearForm() {
         txtNomProprietaire.clear();
+        txtTelephone.clear();
+        txtEmail.clear();
         txtSolde.clear();
+        txtPlafondDecouvert.clear();
         comboDevise.setValue(null);
         comboStatut.setValue(null);
-        tableViewWallet.getSelectionModel().clearSelection();
         lblErrorNom.setText("");
+        lblErrorTelephone.setText("");
+        lblErrorEmail.setText("");
         lblErrorSolde.setText("");
-        lblErrorDevise.setText("");
-        lblErrorStatut.setText("");
-        txtNomProprietaire.setStyle("");
-        txtSolde.setStyle("");
+        lblErrorPlafond.setText("");
+        tableViewWallet.getSelectionModel().clearSelection();
+        currentUserId = 0; // ✅ Réinitialiser l'ID utilisateur
     }
 
-    private void showAlert(Alert.AlertType type, String title, String content) {
-        Alert alert = new Alert(type);
-        alert.setTitle(title);
-        alert.setHeaderText(null);
-        alert.setContentText(content);
+    private void showSuccess(String message) {
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+        alert.setTitle("Succès");
+        alert.setHeaderText("✅ Opération réussie");
+        alert.setContentText(message);
         alert.showAndWait();
     }
 
-    public void setWalletConnecte(Wallet wallet) {
-        this.walletConnecte = wallet;
+    private void showError(String title, String message) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Erreur");
+        alert.setHeaderText("❌ " + title);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    private void showWarning(String message) {
+        Alert alert = new Alert(Alert.AlertType.WARNING);
+        alert.setTitle("Attention");
+        alert.setHeaderText(null);
+        alert.setContentText(message);
+        alert.showAndWait();
+    }
+
+    public void preRemplirCreation(String nom, String devise, double soldeInitial) {
+        txtNomProprietaire.setText(nom);
+
+        for (WalletDevise d : comboDevise.getItems()) {
+            if (d.toString().equals(devise)) {
+                comboDevise.setValue(d);
+                break;
+            }
+        }
+
+        txtSolde.setText(String.valueOf(soldeInitial));
+        txtPlafondDecouvert.setText("0");
+
+        System.out.println("Formulaire pré-rempli pour " + nom + " - " + devise);
     }
 }

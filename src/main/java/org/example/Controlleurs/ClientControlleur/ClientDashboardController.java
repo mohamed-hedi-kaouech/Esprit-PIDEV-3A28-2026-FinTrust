@@ -1,6 +1,5 @@
 package org.example.Controlleurs.ClientControlleur;
 
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
@@ -18,6 +17,7 @@ import org.example.Service.AnalyticsService.ClientGamificationSnapshot;
 import org.example.Service.AnalyticsService.GamificationService;
 import org.example.Service.NotificationService.NotificationService;
 import org.example.Service.QrService.ClientQrService;
+import org.example.Service.WalletService.WalletService;
 import org.example.Utils.SessionContext;
 
 import java.io.File;
@@ -38,7 +38,6 @@ public class ClientDashboardController {
     @FXML private Label rewardMedalLabel;
     @FXML private Label rewardBadgesLabel;
 
-    @FXML public Button AbonnementsButton;
     @FXML private Button walletButton;
     @FXML private Button profileButton;
     @FXML private Button loanButton;
@@ -50,6 +49,7 @@ public class ClientDashboardController {
     private final NotificationService notificationService = new NotificationService();
     private final ClientQrService clientQrService = new ClientQrService();
     private final GamificationService gamificationService = new GamificationService();
+    private final WalletService walletService = new WalletService();
 
     @FXML
     private void initialize() {
@@ -135,26 +135,96 @@ public class ClientDashboardController {
         navigateTo("/Client/ClientProfile.fxml", "Profil Client", "/Styles/StyleWallet.css");
     }
 
+    // ✅ MÉTHODE MODIFIÉE POUR REDIRIGER VERS LOGIN CLIENT
     @FXML
     private void goToWalletDashboard() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
-    }
-    @FXML
-    public void goToMarket() {
-        if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Product/Client/ClientMarketGUI.fxml", "Produit", "/Styles/StyleProduct.css");
+
+        User user = session.getCurrentUser();
+        if (user == null) {
+            showError("Erreur", "Utilisateur non connecté");
+            return;
+        }
+
+        try {
+            // Vérifier si l'utilisateur a déjà un wallet
+            boolean hasWallet = walletService.userHasWallet(user.getId());
+
+            if (hasWallet) {
+                // ✅ Rediriger vers la page de login client avec email pré-rempli
+                String fxmlPath = "/Wallet/client_login.fxml";
+                System.out.println("🔍 Chargement de: " + fxmlPath);
+
+                URL fxmlUrl = getClass().getResource(fxmlPath);
+                if (fxmlUrl == null) {
+                    System.err.println("❌ FXML non trouvé: " + fxmlPath);
+                    showError("Erreur", "FXML introuvable: " + fxmlPath);
+                    return;
+                }
+
+                FXMLLoader loader = new FXMLLoader(fxmlUrl);
+                Parent root = loader.load();
+
+                // ✅ Passer l'email au contrôleur de login
+                Object controller = loader.getController();
+                if (controller instanceof org.example.Controlleurs.WalletControlleur.ClientLoginController) {
+                    ((org.example.Controlleurs.WalletControlleur.ClientLoginController) controller)
+                            .setEmail(user.getEmail());
+                }
+
+                Scene scene = new Scene(root);
+                URL cssUrl = getClass().getResource("/Styles/StyleWallet.css");
+                if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+
+                Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+                stage.setTitle("Connexion à votre wallet");
+                stage.setScene(scene);
+                stage.show();
+
+            } else {
+                // Rediriger vers la création de wallet
+                String fxmlPath = "/Wallet/wallet.fxml";
+                URL fxmlUrl = getClass().getResource(fxmlPath);
+                if (fxmlUrl == null) {
+                    showError("Erreur", "FXML introuvable: " + fxmlPath);
+                    return;
+                }
+
+                FXMLLoader loader = new FXMLLoader(fxmlUrl);
+                Parent root = loader.load();
+
+                org.example.Controlleurs.WalletControlleur.WalletController controller =
+                        loader.getController();
+                controller.setCurrentUserId(user.getId());
+                controller.preRemplirCreation(
+                        user.getPrenom() + " " + user.getNom(),
+                        "TND",
+                        0.0
+                );
+
+                Scene scene = new Scene(root);
+                URL cssUrl = getClass().getResource("/Styles/StyleWallet.css");
+                if (cssUrl != null) scene.getStylesheets().add(cssUrl.toExternalForm());
+
+                Stage stage = (Stage) welcomeLabel.getScene().getWindow();
+                stage.setTitle("Création de votre wallet");
+                stage.setScene(scene);
+                stage.show();
+            }
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showError("Erreur", "Impossible d'ouvrir la page wallet: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showError("Erreur", "Erreur inattendue: " + e.getMessage());
+        }
     }
 
     @FXML
-    public void goToAbonnements() {
-        if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Product/Client/ClientListeProductGUI.fxml", "Abonnements", "/Styles/StyleProduct.css");
-    }
-    @FXML
     private void goToLoan() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Loan/LoanListUser.fxml", "Loans", "/Styles/StyleWallet.css");
+        navigateTo("/Loan/LoanList.fxml", "Loans", "/Styles/StyleWallet.css");
     }
 
     @FXML
@@ -281,7 +351,4 @@ public class ClientDashboardController {
         qrInfoLabel.setText(message == null ? "" : message);
         qrInfoLabel.setStyle(isError ? "-fx-text-fill: #b91c1c;" : "-fx-text-fill: #166534; -fx-font-weight: 600;");
     }
-
-
 }
-

@@ -29,33 +29,31 @@
     <center>
         <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
             <content>
-        <VBox spacing="12" style="-fx-padding: 24;" styleClass="bank-card chatbot-panel">
-            <VBox spacing="4" styleClass="assistant-chat-hero">
-                <Label text="FinTrust Assistant IA" styleClass="assistant-ai-title"/>
-                <Label text="Assistance intelligente pour votre compte, KYC, securite et services FinTrust."
-                       styleClass="assistant-ai-subtitle" wrapText="true"/>
-            </VBox>
-            <Label text="Comment voulez-vous vous aider ?" styleClass="chatbot-help-title"/>
+                <VBox spacing="12" style="-fx-padding: 24;" styleClass="bank-card chatbot-panel">
+                    <VBox spacing="4" styleClass="assistant-chat-hero">
+                        <Label text="FinTrust Assistant IA" styleClass="assistant-ai-title"/>
+                        <Label text="Assistance intelligente pour votre compte, KYC, securite et services FinTrust."
+                               styleClass="assistant-ai-subtitle" wrapText="true"/>
+                    </VBox>
+                    <Label text="Comment voulez-vous vous aider ?" styleClass="chatbot-help-title"/>
 
-            <HBox spacing="8" alignment="CENTER_LEFT">
-                <Button text="Reset mot de passe" onAction="#handleQuickReset" styleClass="chatbot-quick-btn"/>
-                <Button text="Changer email" onAction="#handleQuickEmail" styleClass="chatbot-quick-btn"/>
-                <Button text="Compte bloque" onAction="#handleQuickBlocked" styleClass="chatbot-quick-btn"/>
-            </HBox>
+                    <HBox spacing="8" alignment="CENTER_LEFT">
+                        <Button text="Reset mot de passe" onAction="#handleQuickReset" styleClass="chatbot-quick-btn"/>
+                        <Button text="Changer email" onAction="#handleQuickEmail" styleClass="chatbot-quick-btn"/>
+                        <Button text="Compte bloque" onAction="#handleQuickBlocked" styleClass="chatbot-quick-btn"/>
+                    </HBox>
 
-            <ListView fx:id="historyList" VBox.vgrow="ALWAYS" prefHeight="420" styleClass="chatbot-history"/>
+                    <ListView fx:id="historyList" VBox.vgrow="ALWAYS" prefHeight="420" styleClass="chatbot-history"/>
 
-            <HBox spacing="10">
-                <TextField fx:id="messageField" promptText="Ecrivez votre message..." HBox.hgrow="ALWAYS"/>
-                <Button text="Envoyer" onAction="#handleSend" styleClass="chatbot-send-btn"/>
-                <Button text="Pause et Jeux" onAction="#goToSmartBreakFromChatbot" styleClass="chatbot-pause-btn"/>
-            </HBox>
+                    <HBox spacing="10">
+                        <TextField fx:id="messageField" promptText="Ecrivez votre message..." HBox.hgrow="ALWAYS"/>
+                        <Button text="Envoyer" onAction="#handleSend" styleClass="chatbot-send-btn"/>
+                        <Button text="Pause et Jeux" onAction="#goToSmartBreakFromChatbot" styleClass="chatbot-pause-btn"/>
+                    </HBox>
 
-            <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
-        </VBox>
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+                </VBox>
             </content>
         </ScrollPane>
     </center>
 </BorderPane>
-
-

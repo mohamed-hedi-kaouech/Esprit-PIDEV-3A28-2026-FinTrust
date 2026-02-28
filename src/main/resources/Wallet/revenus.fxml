@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.RevenusController"
+            prefHeight="700" prefWidth="900"
+            style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);">
+
+    <top>
+        <VBox style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 0 0 20 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.2), 10, 0, 0, 4);">
+            <Label text="💰 Revenus FinTrust"
+                   style="-fx-font-size: 32px; -fx-font-weight: 800; -fx-text-fill: #2c3e50;"/>
+            <Label text="Analyse détaillée des frais bancaires perçus"
+                   style="-fx-font-size: 16px; -fx-text-fill: #7f8c8d;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox spacing="30" style="-fx-padding: 30;">
+
+                <!-- Carte Solde Total -->
+                <HBox spacing="20" alignment="CENTER">
+                    <VBox style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                        <Label text="SOLDE DU COMPTE FRAIS"
+                               style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d; -fx-font-weight: 600;"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label fx:id="lblSoldeCompte" text="0.00"
+                                   style="-fx-font-size: 48px; -fx-font-weight: 800; -fx-text-fill: #27ae60;"/>
+                            <Label text="TND"
+                                   style="-fx-font-size: 24px; -fx-text-fill: #7f8c8d; -fx-padding: 10 0 0 0;"/>
+                        </HBox>
+                        <Label fx:id="lblDateSolde" text="Dernière mise à jour"
+                               style="-fx-font-size: 12px; -fx-text-fill: #95a5a6;"/>
+                    </VBox>
+
+                    <VBox style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                        <Label text="TOTAL GÉNÉRÉ"
+                               style="-fx-font-size: 14px; -fx-text-fill: #7f8c8d; -fx-font-weight: 600;"/>
+                        <Label fx:id="lblTotalFrais" text="0.00 TND"
+                               style="-fx-font-size: 36px; -fx-font-weight: 800; -fx-text-fill: #8e44ad;"/>
+                        <Label fx:id="lblNbOperations" text="0 opérations"
+                               style="-fx-font-size: 14px; -fx-text-fill: #3498db;"/>
+                    </VBox>
+                </HBox>
+
+                <!-- Statistiques par type -->
+                <GridPane style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);"
+                          hgap="20" vgap="15">
+                    <columnConstraints>
+                        <ColumnConstraints percentWidth="33"/>
+                        <ColumnConstraints percentWidth="33"/>
+                        <ColumnConstraints percentWidth="34"/>
+                    </columnConstraints>
+
+                    <Label text="STATISTIQUES PAR TYPE"
+                           style="-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #2c3e50;"
+                           GridPane.rowIndex="0" GridPane.columnIndex="0" GridPane.columnSpan="3"/>
+
+                    <!-- Retraits -->
+                    <VBox style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;"
+                          GridPane.rowIndex="1" GridPane.columnIndex="0">
+                        <Label text="💳 Retraits"
+                               style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #2c3e50;"/>
+                        <Label fx:id="lblTotalRetraits" text="0.00 TND"
+                               style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #e74c3c;"/>
+                    </VBox>
+
+                    <!-- Transferts -->
+                    <VBox style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;"
+                          GridPane.rowIndex="1" GridPane.columnIndex="1">
+                        <Label text="↗️ Transferts"
+                               style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #2c3e50;"/>
+                        <Label fx:id="lblTotalTransferts" text="0.00 TND"
+                               style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #f39c12;"/>
+                    </VBox>
+
+                    <!-- Rejets -->
+                    <VBox style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;"
+                          GridPane.rowIndex="1" GridPane.columnIndex="2">
+                        <Label text="❌ Rejets"
+                               style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #2c3e50;"/>
+                        <Label fx:id="lblTotalRejets" text="0.00 TND"
+                               style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #c0392b;"/>
+                    </VBox>
+
+                    <!-- Agios -->
+                    <VBox style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;"
+                          GridPane.rowIndex="2" GridPane.columnIndex="0">
+                        <Label text="💰 Agios"
+                               style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #2c3e50;"/>
+                        <Label fx:id="lblTotalAgios" text="0.00 TND"
+                               style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #16a085;"/>
+                    </VBox>
+
+                    <!-- Autres -->
+                    <VBox style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;"
+                          GridPane.rowIndex="2" GridPane.columnIndex="1">
+                        <Label text="📦 Autres"
+                               style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #2c3e50;"/>
+                        <Label fx:id="lblTotalAutres" text="0.00 TND"
+                               style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #7f8c8d;"/>
+                    </VBox>
+
+                    <!-- Moyenne -->
+                    <VBox style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 15;"
+                          GridPane.rowIndex="2" GridPane.columnIndex="2">
+                        <Label text="📊 Moyenne/opération"
+                               style="-fx-font-size: 16px; -fx-font-weight: 600; -fx-text-fill: #2c3e50;"/>
+                        <Label fx:id="lblMoyenne" text="0.00 TND"
+                               style="-fx-font-size: 24px; -fx-font-weight: 700; -fx-text-fill: #3498db;"/>
+                    </VBox>
+                </GridPane>
+
+                <!-- Historique des transactions -->
+                <VBox style="-fx-background-color: white; -fx-padding: 25; -fx-background-radius: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 10, 0, 0, 4);">
+                    <Label text="📋 HISTORIQUE DES REVENUS"
+                           style="-fx-font-size: 18px; -fx-font-weight: 700; -fx-text-fill: #2c3e50; -fx-padding: 0 0 15 0;"/>
+
+                    <TableView fx:id="tableViewRevenus" prefHeight="250">
+                        <columns>
+                            <TableColumn fx:id="colDate" text="Date" prefWidth="150"/>
+                            <TableColumn fx:id="colDescription" text="Description" prefWidth="300"/>
+                            <TableColumn fx:id="colMontant" text="Montant" prefWidth="150"/>
+                        </columns>
+                    </TableView>
+                </VBox>
+
+                <!-- Bouton de fermeture -->
+                <HBox alignment="CENTER">
+                    <Button text="Fermer" onAction="#handleFermer"
+                            style="-fx-background-color: #95a5a6; -fx-text-fill: white; -fx-font-size: 14px; -fx-padding: 12 40; -fx-background-radius: 30; -fx-cursor: hand;"/>
+                </HBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>

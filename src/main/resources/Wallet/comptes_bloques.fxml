@@ -1,0 +1,52 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.ComptesBloquesController"
+            prefHeight="600" prefWidth="900"
+            style="-fx-background-color: #f4f7fc;">
+
+    <top>
+        <VBox style="-fx-background-color: white; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+            <Label text="🔒 Comptes bloqués"
+                   style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+            <Label text="Liste des wallets temporairement bloqués pour sécurité"
+                   style="-fx-font-size: 14px; -fx-text-fill: #6B7280;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <VBox spacing="20" style="-fx-padding: 20;">
+
+            <!-- Statistiques -->
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                    <Label text="Total bloqués" style="-fx-text-fill: #6B7280; -fx-font-size: 12px;"/>
+                    <Label fx:id="lblTotalBloques" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #c0392b;"/>
+                </VBox>
+
+                <VBox style="-fx-background-color: white; -fx-padding: 15; -fx-background-radius: 10; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);">
+                    <Label text="Débloqués aujourd'hui" style="-fx-text-fill: #6B7280; -fx-font-size: 12px;"/>
+                    <Label fx:id="lblDebloquesAujourdhui" text="0" style="-fx-font-size: 24px; -fx-font-weight: bold; -fx-text-fill: #27ae60;"/>
+                </VBox>
+            </HBox>
+
+            <!-- Tableau des comptes bloqués -->
+            <TableView fx:id="tableViewBloques" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID" prefWidth="50"/>
+                    <TableColumn fx:id="colNom" text="Propriétaire" prefWidth="150"/>
+                    <TableColumn fx:id="colTelephone" text="Téléphone" prefWidth="120"/>
+                    <TableColumn fx:id="colEmail" text="Email" prefWidth="180"/>
+                    <TableColumn fx:id="colDateBlocage" text="Date blocage" prefWidth="150"/>
+                    <TableColumn fx:id="colRaison" text="Raison" prefWidth="200"/>
+                    <TableColumn fx:id="colAction" text="Action" prefWidth="100"/>
+                </columns>
+            </TableView>
+        </VBox>
+    </center>
+</BorderPane>

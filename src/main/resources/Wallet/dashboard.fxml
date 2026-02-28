@@ -7,177 +7,169 @@
 
 <BorderPane stylesheets="@../Styles/StyleWallet.css" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.WalletControlleur.DashboardController">
 
-    <!-- Top: Menu Bar et Header -->
-    <top>
-        <VBox>
-            <MenuBar styleClass="menu-bar">
-                <menus>
-                    <Menu text="Fichier">
-                        <items>
-                            <MenuItem text="Rafraîchir" onAction="#handleRefresh" />
-                            <MenuItem text="Quitter" onAction="#handleQuitter" />
-                        </items>
-                    </Menu>
-                    <Menu text="Wallets">
-                        <items>
-                            <MenuItem text="Nouveau Wallet" onAction="#handleAddWallet" />
-                        </items>
-                    </Menu>
-                    <Menu text="Transactions">
-                        <items>
-                            <MenuItem text="Nouvelle Transaction" onAction="#handleNewTransaction" />
-                        </items>
-                    </Menu>
-                    <Menu text="Aide">
-                        <items>
-                            <MenuItem text="À propos" />
-                        </items>
-                    </Menu>
-                </menus>
-            </MenuBar>
+    <!-- Left: Sidebar avec bouton Nouveau Wallet -->
+    <left>
+        <VBox spacing="10" prefWidth="250"
+              style="-fx-background-color: linear-gradient(to bottom, #2f75d8, #4a9df7); -fx-padding: 22 16;">
+            <children>
+                <Label text="FinTrust Wallet" style="-fx-text-fill: #f5f7fb; -fx-font-size: 24px; -fx-font-weight: 800;"/>
+                <Label text="Gestion des comptes" style="-fx-text-fill: #e7f3ff; -fx-font-size: 13px;"/>
 
-            <!-- Header FinTrust -->
-            <HBox styleClass="header-panel" alignment="CENTER_LEFT">
-                <children>
-                    <HBox fx:id="logoContainer" styleClass="logo-container" />
-                    <Region HBox.hgrow="ALWAYS" />
+                <!-- ✅ BOUTON NOUVEAU WALLET DANS LA SIDEBAR -->
+                <Button text="➕ Nouveau Wallet" onAction="#handleAddWallet" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 12; -fx-cursor: hand; -fx-font-size: 14px;"/>
 
-                    <VBox alignment="CENTER_RIGHT" spacing="2">
-                        <Label fx:id="lblWelcome" text="Bonjour, Feryel" styleClass="welcome-label" />
-                        <Label fx:id="lblDate" styleClass="date-label" />
-                    </VBox>
-                </children>
-            </HBox>
+                <!-- Section GESTION -->
+                <Label text="GESTION" style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 8 0 0 0;"/>
+
+                <Button text="👥 Utilisateurs" onAction="#handleGestionUsers" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="📝 Publications" onAction="#handleGestionPublications" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="📦 Produits" onAction="#handleGestionProduits" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="💰 Budgets" onAction="#handleGestionBudgets" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="🏦 Prêts" onAction="#handleGestionLoans" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+
+                <!-- Section WALLETS -->
+                <Label text="WALLETS" style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 8 0 0 0;"/>
+
+                <Button text="📊 Risk Dashboard" onAction="#handleOpenRiskDashboard" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="📒 Chéquiers" onAction="#handleGestionCheques" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="💰 Revenus" onAction="#handleVoirRevenus" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+                <Button text="🔒 Comptes bloqués" onAction="#handleVoirComptesBloques" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <!-- Déconnexion -->
+                <Button text="Déconnexion" onAction="#handleLogout" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 12; -fx-cursor: hand;"/>
+            </children>
         </VBox>
+    </left>
+
+    <!-- Top: Header simplifié avec bordure -->
+    <top>
+        <HBox style="-fx-border-width: 0 0 1 0; -fx-border-color: #d0d7e5; -fx-padding: 12 25;" alignment="CENTER_LEFT" spacing="15">
+            <children>
+                <!-- Bouton FR/EN en rose pastel -->
+                <Button text="FR/EN" style="-fx-background-color: #ffb6c1; -fx-text-fill: #8b3f4c; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-family: 'System'; -fx-font-size: 13px;"/>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <!-- Boutons de navigation -->
+                <Button text="Accueil" onAction="#handleNavigation" style="-fx-background-color: transparent; -fx-text-fill: #1e3b5c; -fx-font-weight: 600; -fx-cursor: hand; -fx-font-family: 'System'; -fx-font-size: 14px;"/>
+                <Button text="Wallets" onAction="#handleOpenWallet" style="-fx-background-color: transparent; -fx-text-fill: #1e3b5c; -fx-font-weight: 600; -fx-cursor: hand; -fx-font-family: 'System'; -fx-font-size: 14px;"/>
+                <Button text="Transactions" onAction="#handleNewTransaction" style="-fx-background-color: transparent; -fx-text-fill: #1e3b5c; -fx-font-weight: 600; -fx-cursor: hand; -fx-font-family: 'System'; -fx-font-size: 14px;"/>
+                <Button text="Chéquiers" onAction="#handleGestionCheques" style="-fx-background-color: transparent; -fx-text-fill: #1e3b5c; -fx-font-weight: 600; -fx-cursor: hand; -fx-font-family: 'System'; -fx-font-size: 14px;"/>
+
+                <!-- Infos utilisateur -->
+                <Label fx:id="lblWelcome" text="Bonjour, Administrateur" style="-fx-text-fill: #1e3b5c; -fx-font-size: 14px; -fx-font-weight: 500; -fx-font-family: 'System';" />
+                <Label fx:id="lblDate" style="-fx-text-fill: #6f7e96; -fx-font-size: 13px; -fx-font-family: 'System';" />
+
+                <!-- Bouton déconnexion -->
+                <Button text="Déconnexion" onAction="#handleLogout"
+                        style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: 600; -fx-background-radius: 12; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-family: 'System'; -fx-font-size: 14px;"/>
+            </children>
+        </HBox>
     </top>
 
     <!-- Center: Main Content -->
     <center>
-        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
-            <HBox spacing="25" style="-fx-padding: 25 30;">
-                <!-- Sidebar FinTrust (plus claire) -->
-                <VBox styleClass="sidebar">
-                    <Label text="Assistant FinTrust" styleClass="sidebar-title" />
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" style="-fx-background-color: #f5f7fa;">
+            <content>
+                <VBox spacing="12" style="-fx-padding: 18 24;">
 
-                    <HBox styleClass="sidebar-item" style="-fx-background-color: #c2d6ff;">
-                        <Label text="🏠" styleClass="sidebar-item-icon" />
-                        <Label text="Accueil" styleClass="sidebar-text" style="-fx-font-weight: 600;" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="📱" styleClass="sidebar-item-icon" />
-                        <Label text="Accès Mobile" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="💳" styleClass="sidebar-item-icon" />
-                        <Label text="Produits" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="↗️" styleClass="sidebar-item-icon" />
-                        <Label text="Virements" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="📄" styleClass="sidebar-item-icon" />
-                        <Label text="Paiement factures" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="📱" styleClass="sidebar-item-icon" />
-                        <Label text="Recharges" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="💳" styleClass="sidebar-item-icon" />
-                        <Label text="Cartes" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="⚙️" styleClass="sidebar-item-icon" />
-                        <Label text="Opérations" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="📒" styleClass="sidebar-item-icon" />
-                        <Label text="Gestion chéquiers" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="📥" styleClass="sidebar-item-icon" />
-                        <Label text="Téléchargement" styleClass="sidebar-text" />
-                    </HBox>
-                    <HBox styleClass="sidebar-item">
-                        <Label text="📊" styleClass="sidebar-item-icon" />
-                        <Label text="Simulateurs" styleClass="sidebar-text" />
-                    </HBox>
+                    <!-- Hero card -->
+                    <VBox spacing="3" style="-fx-background-color: linear-gradient(to right, #2f75d8, #4a9df7); -fx-background-radius: 20; -fx-padding: 30;">
+                        <Label text="Wallet Management Dashboard" style="-fx-text-fill: white; -fx-font-size: 28px; -fx-font-weight: 800; -fx-font-family: 'System';"/>
+                        <Label text="Gestion des comptes, transactions et sécurité" style="-fx-text-fill: #e7f3ff; -fx-font-size: 14px; -fx-font-family: 'System';"/>
+                    </VBox>
 
-                    <Region VBox.vgrow="ALWAYS" />
-
-                    <Label text="11 résultats trouvés" style=" -fx-padding: 20 20 10 20; -fx-font-family: Inter; -fx-text-fill: #5f7d9c;" />
-                </VBox>
-
-                <!-- Main Content Area -->
-                <VBox HBox.hgrow="ALWAYS" spacing="20">
-                    <!-- Breadcrumb -->
-                    <HBox styleClass="breadcrumb">
-                        <Label text="Accueil" styleClass="breadcrumb-label" />
-                        <Label text="›" styleClass="breadcrumb-separator" />
-                        <Label text="Assistant FinTrust" styleClass="breadcrumb-current" />
-                    </HBox>
-
-                    <!-- Quick Stats Colorées -->
-                    <FlowPane styleClass="stats-grid" alignment="CENTER_LEFT">
-                        <!-- Solde Total -->
-                        <VBox styleClass="stat-card, stat-card-1">
-                            <Label text="Solde Total" styleClass="stat-label" />
-                            <HBox spacing="5" alignment="CENTER_LEFT">
-                                <Label fx:id="lblTotalBalance" text="1,217,599.00" styleClass="stat-value" />
-                                <Label text="TND" styleClass="stat-currency" />
-                            </HBox>
-                            <Label fx:id="lblMonthlyChange" text="+12.5%" styleClass="stat-trend, trend-positive" />
+                    <!-- Statistiques en 3 cartes -->
+                    <HBox spacing="10">
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
+                            <Label text="Solde Total" style="-fx-text-fill: #2f75d8; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                            <Label fx:id="lblTotalBalance" text="1,357,748.22" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a2d44; -fx-font-family: 'System';"/>
+                            <Label fx:id="lblMonthlyChange" text="+12.5%" style="-fx-text-fill: #4a9df7; -fx-font-size: 14px; -fx-font-family: 'System';"/>
                         </VBox>
-
-                        <!-- Wallets -->
-                        <VBox styleClass="stat-card, stat-card-2">
-                            <Label text="Wallets" styleClass="stat-label" />
-                            <Label fx:id="lblTotalWallets" text="9" styleClass="stat-value" />
-                            <Label text="Comptes actifs" styleClass="stat-label" />
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
+                            <Label text="Wallets" style="-fx-text-fill: #2e8b57; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                            <Label fx:id="lblTotalWallets" text="26" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a2d44; -fx-font-family: 'System';"/>
                         </VBox>
-
-                        <!-- Transactions -->
-                        <VBox styleClass="stat-card, stat-card-3">
-                            <Label text="Transactions" styleClass="stat-label" />
-                            <Label fx:id="lblTotalTransactions" text="24" styleClass="stat-value" />
-                            <Label text="Ce mois" styleClass="stat-label" />
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 16; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 5, 0, 0, 2);" HBox.hgrow="ALWAYS">
+                            <Label text="Transactions" style="-fx-text-fill: #ff8c00; -fx-font-size: 14px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                            <Label fx:id="lblTotalTransactions" text="102" style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1a2d44; -fx-font-family: 'System';"/>
                         </VBox>
-                    </FlowPane>
+                    </HBox>
+
+                    <!-- Section Croissance -->
+                    <VBox spacing="20" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+                        <Label text="📈 Croissance FinTrust" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System';"/>
+
+                        <BarChart fx:id="barChartInscriptions" prefHeight="250" style="-fx-background-color: white; -fx-background-radius: 16;">
+                            <xAxis>
+                                <CategoryAxis label="Années"/>
+                            </xAxis>
+                            <yAxis>
+                                <NumberAxis label="Nombre de comptes"/>
+                            </yAxis>
+                        </BarChart>
+
+                        <!-- Cartes par année -->
+                        <HBox spacing="15" alignment="CENTER">
+                            <VBox style="-fx-background-color: #e6f0ff; -fx-background-radius: 16; -fx-padding: 15; -fx-alignment: center;" HBox.hgrow="ALWAYS">
+                                <Label text="2024" style="-fx-text-fill: #2f75d8; -fx-font-size: 12px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                                <Label fx:id="lblComptes2024" text="2" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a2d44; -fx-font-family: 'System';"/>
+                            </VBox>
+                            <VBox style="-fx-background-color: #e6ffe6; -fx-background-radius: 16; -fx-padding: 15; -fx-alignment: center;" HBox.hgrow="ALWAYS">
+                                <Label text="2025" style="-fx-text-fill: #2e8b57; -fx-font-size: 12px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                                <Label fx:id="lblComptes2025" text="2" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a2d44; -fx-font-family: 'System';"/>
+                            </VBox>
+                            <VBox style="-fx-background-color: #fff2e6; -fx-background-radius: 16; -fx-padding: 15; -fx-alignment: center;" HBox.hgrow="ALWAYS">
+                                <Label text="2026" style="-fx-text-fill: #ff8c00; -fx-font-size: 12px; -fx-font-weight: 600; -fx-font-family: 'System';"/>
+                                <Label fx:id="lblComptes2026" text="22" style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #1a2d44; -fx-font-family: 'System';"/>
+                            </VBox>
+                        </HBox>
+
+                        <VBox spacing="10" style="-fx-background-color: #f8f9fa; -fx-padding: 20; -fx-background-radius: 12;">
+                            <Label text="Objectif annuel 2026" style="-fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System';"/>
+                            <ProgressBar fx:id="progressObjectif" prefWidth="400" progress="0.22"/>
+                            <Label fx:id="lblObjectif" text="22/100 comptes" style="-fx-text-fill: #6B7280; -fx-font-family: 'System';"/>
+                        </VBox>
+                    </VBox>
 
                     <!-- Mes Wallets -->
-                    <VBox>
-                        <HBox styleClass="section-header">
-                            <Label text="Mes Wallets" styleClass="section-title" />
-                            <Region HBox.hgrow="ALWAYS" />
-                            <Button text="+ Nouveau Wallet" onAction="#handleAddWallet" styleClass="button-primary" />
-                        </HBox>
-                        <Label text="Gérez et consultez tous vos comptes" styleClass="section-subtitle" />
-
-                        <!-- Grille des wallets -->
-                        <FlowPane fx:id="walletsContainer" styleClass="wallets-grid" />
+                    <VBox style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);">
+                        <Label text="Mes Wallets" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-padding: 0 0 15 0; -fx-font-family: 'System';"/>
+                        <FlowPane fx:id="walletsContainer" hgap="15" vgap="15" />
                     </VBox>
 
                     <!-- Transactions et Graphique -->
                     <HBox spacing="20">
-                        <VBox HBox.hgrow="ALWAYS" styleClass="transactions-panel">
-                            <Label text="Transactions Récentes" styleClass="chart-title" />
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);" HBox.hgrow="ALWAYS">
+                            <Label text="Transactions Récentes" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-padding: 0 0 15 0; -fx-font-family: 'System';"/>
                             <VBox fx:id="transactionsContainer" spacing="8" VBox.vgrow="ALWAYS" />
-                            <Button text="Voir toutes les transactions" styleClass="button-secondary" maxWidth="Infinity" />
                         </VBox>
-
-                        <VBox HBox.hgrow="ALWAYS" styleClass="chart-panel">
-                            <Label text="Répartition par Devise" styleClass="chart-title" />
-                            <PieChart fx:id="pieChartWallets" VBox.vgrow="ALWAYS" />
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 20; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);" prefWidth="300">
+                            <Label text="Répartition par Devise" style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-padding: 0 0 15 0; -fx-font-family: 'System';"/>
+                            <PieChart fx:id="pieChartWallets" VBox.vgrow="ALWAYS"
+                                      style="-fx-pie-color-1: #2f75d8; -fx-pie-color-2: #4a9df7; -fx-pie-color-3: #7bb0ff;"/>
                         </VBox>
                     </HBox>
 
                     <!-- Footer -->
                     <HBox alignment="CENTER_RIGHT">
-                        <Label fx:id="lblLastUpdate" text="Dernière mise à jour: 16/02/2026 15:30" styleClass="footer-label" />
+                        <Label fx:id="lblLastUpdate" text="Dernière mise à jour: 28/02/2026 15:30" style="-fx-text-fill: #8fa8c5; -fx-font-size: 12px; -fx-font-family: 'System';"/>
                     </HBox>
                 </VBox>
-            </HBox>
+            </content>
         </ScrollPane>
     </center>
 </BorderPane>

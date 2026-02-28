@@ -61,4 +61,49 @@ CREATE TABLE transaction (
     FOREIGN KEY (id_wallet) REFERENCES wallet(id_wallet)
         ON DELETE CASCADE
 );
-
+ALTER TABLE wallet
+MODIFY COLUMN devise ENUM('TND', 'USD', 'EUR') NOT NULL,
+MODIFY COLUMN statut ENUM('DRAFT', 'ACTIVE', 'SUSPENDED', 'CLOSED') NOT NULL;
+CREATE TABLE cheque (
+    id_cheque INT PRIMARY KEY AUTO_INCREMENT,
+    numero_cheque VARCHAR(20) NOT NULL,
+    montant DOUBLE NOT NULL,
+    date_emission DATETIME NOT NULL,
+    date_presentation DATETIME,
+    statut VARCHAR(20) NOT NULL, -- 'EMIS', 'RESERVE', 'PAYE', 'REJETE'
+    id_wallet INT NOT NULL,
+    beneficiaire VARCHAR(100),
+    motif_rejet VARCHAR(255),
+    FOREIGN KEY (id_wallet) REFERENCES wallet(id_wallet) ON DELETE CASCADE
+);
+ALTER TABLE wallet
+ADD COLUMN plafond_decouvert DOUBLE DEFAULT 0 AFTER solde;
+ALTER TABLE transaction
+ADD COLUMN description TEXT AFTER type;
+ALTER TABLE wallet
+ADD COLUMN tentatives_echouees INT DEFAULT 0,
+ADD COLUMN date_derniere_tentative DATETIME,
+ADD COLUMN est_bloque BOOLEAN DEFAULT FALSE;
+--CREATE TABLE IF NOT EXISTS `clients` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `nom` varchar(50) DEFAULT NULL,
+  `prenom` varchar(50) DEFAULT NULL,
+  `email` varchar(100) DEFAULT NULL,
+  `solde` decimal(15,2) DEFAULT NULL,
+  `nb_cheques_refuses` int DEFAULT '0',
+  `nb_jours_negatifs` int DEFAULT '0',
+  `retraits_eleves` int DEFAULT '0',
+  `date_inscription` date DEFAULT NULL,
+  `dernier_score` int DEFAULT NULL,
+  `niveau_risque` enum('FAIBLE','MOYEN','ELEVE') DEFAULT 'MOYEN',
+  `privilege` enum('STANDARD','PREMIUM','VIP') DEFAULT 'STANDARD',
+  PRIMARY KEY (`id`)
+)
+--CREATE TABLE IF NOT EXISTS `historique_scores` (
+    `id` int NOT NULL AUTO_INCREMENT,
+    `client_id` int DEFAULT NULL,
+    `score` int DEFAULT NULL,
+    `date_calcul` date DEFAULT NULL,
+    PRIMARY KEY (`id`),
+    KEY `client_id` (`client_id`)
+  )

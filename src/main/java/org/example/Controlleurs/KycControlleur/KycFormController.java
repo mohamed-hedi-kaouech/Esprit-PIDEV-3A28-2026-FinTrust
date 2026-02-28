@@ -206,75 +206,75 @@ public class KycFormController {
 
     @FXML
     private void submitKyc() {
-            if (submitInProgress) {
-                setInfo("Soumission deja en cours...", false);
-                return;
-            }
-            if (selectedFiles.isEmpty()) {
-                setInfo("Selectionnez des fichiers avant soumission.", true);
-                return;
-            }
-            if (currentStatus == KycStatus.APPROUVE) {
-                setInfo("KYC approuve: modification desactivee.", true);
-                return;
-            }
+        if (submitInProgress) {
+            setInfo("Soumission deja en cours...", false);
+            return;
+        }
+        if (selectedFiles.isEmpty()) {
+            setInfo("Selectionnez des fichiers avant soumission.", true);
+            return;
+        }
+        if (currentStatus == KycStatus.APPROUVE) {
+            setInfo("KYC approuve: modification desactivee.", true);
+            return;
+        }
 
-            String cin = cinField.getText() == null ? "" : cinField.getText().trim();
-            if (!cin.matches("\\d{8}")) {
-                setInfo("Le CIN doit contenir exactement 8 chiffres.", true);
-                return;
-            }
+        String cin = cinField.getText() == null ? "" : cinField.getText().trim();
+        if (!cin.matches("\\d{8}")) {
+            setInfo("Le CIN doit contenir exactement 8 chiffres.", true);
+            return;
+        }
 
-            String adresse = adresseField.getText();
-            LocalDate dateNaissance = dateNaissancePicker.getValue();
-            startSubmitProgress();
+        String adresse = adresseField.getText();
+        LocalDate dateNaissance = dateNaissancePicker.getValue();
+        startSubmitProgress();
 
-            Task<KycSubmitResult> submitTask = new Task<>() {
-                @Override
-                protected KycSubmitResult call() throws Exception {
-                    List<UploadDoc> docs = new ArrayList<>();
-                    for (File file : selectedFiles) {
-                        byte[] data = Files.readAllBytes(file.toPath());
-                        String mime = Files.probeContentType(file.toPath());
-                        docs.add(new UploadDoc(file.getName(), mime, file.length(), data));
-                    }
-                    return kycService.submitOrUpdateClientKyc(session.getCurrentUser(), cin, adresse, dateNaissance, docs);
+        Task<KycSubmitResult> submitTask = new Task<>() {
+            @Override
+            protected KycSubmitResult call() throws Exception {
+                List<UploadDoc> docs = new ArrayList<>();
+                for (File file : selectedFiles) {
+                    byte[] data = Files.readAllBytes(file.toPath());
+                    String mime = Files.probeContentType(file.toPath());
+                    docs.add(new UploadDoc(file.getName(), mime, file.length(), data));
                 }
-            };
+                return kycService.submitOrUpdateClientKyc(session.getCurrentUser(), cin, adresse, dateNaissance, docs);
+            }
+        };
 
-            submitTask.setOnSucceeded(evt -> {
-                KycSubmitResult result = submitTask.getValue();
-                if (result == null || !result.isSuccess()) {
-                    String msg = result == null ? "Soumission KYC echouee." : result.getMessage();
-                    finishSubmitProgress(false, msg);
-                    setInfo(msg, true);
-                } else {
-                    session.setCurrentKycStatus(KycStatus.EN_ATTENTE);
-                    session.setCurrentKycComment(null);
-                    selectedFiles.clear();
-                    loadState();
-                    loadExistingFiles();
-                    finishSubmitProgress(true, "Soumission terminee.");
-                    setInfo(result.getMessage(), false);
-                }
-                submitInProgress = false;
-                if (submitKycBtn != null) submitKycBtn.setDisable(false);
-            });
-
-            submitTask.setOnFailed(evt -> {
-                Throwable ex = submitTask.getException();
-                String msg = ex == null ? "Erreur soumission KYC." : ex.getMessage();
+        submitTask.setOnSucceeded(evt -> {
+            KycSubmitResult result = submitTask.getValue();
+            if (result == null || !result.isSuccess()) {
+                String msg = result == null ? "Soumission KYC echouee." : result.getMessage();
                 finishSubmitProgress(false, msg);
-                setInfo("Erreur soumission: " + msg, true);
-                submitInProgress = false;
-                if (submitKycBtn != null) submitKycBtn.setDisable(false);
-            });
+                setInfo(msg, true);
+            } else {
+                session.setCurrentKycStatus(KycStatus.EN_ATTENTE);
+                session.setCurrentKycComment(null);
+                selectedFiles.clear();
+                loadState();
+                loadExistingFiles();
+                finishSubmitProgress(true, "Soumission terminee.");
+                setInfo(result.getMessage(), false);
+            }
+            submitInProgress = false;
+            if (submitKycBtn != null) submitKycBtn.setDisable(false);
+        });
 
-            submitInProgress = true;
-            if (submitKycBtn != null) submitKycBtn.setDisable(true);
-            Thread t = new Thread(submitTask, "kyc-submit-thread");
-            t.setDaemon(true);
-            t.start();
+        submitTask.setOnFailed(evt -> {
+            Throwable ex = submitTask.getException();
+            String msg = ex == null ? "Erreur soumission KYC." : ex.getMessage();
+            finishSubmitProgress(false, msg);
+            setInfo("Erreur soumission: " + msg, true);
+            submitInProgress = false;
+            if (submitKycBtn != null) submitKycBtn.setDisable(false);
+        });
+
+        submitInProgress = true;
+        if (submitKycBtn != null) submitKycBtn.setDisable(true);
+        Thread t = new Thread(submitTask, "kyc-submit-thread");
+        t.setDaemon(true);
+        t.start();
     }
 
     @FXML
@@ -540,4 +540,3 @@ public class KycFormController {
         }
     }
 }
-

@@ -135,4 +135,3 @@ public class AdminTask {
         return dueDate != null && status != AdminTaskStatus.DONE && dueDate.isBefore(LocalDate.now());
     }
 }
-

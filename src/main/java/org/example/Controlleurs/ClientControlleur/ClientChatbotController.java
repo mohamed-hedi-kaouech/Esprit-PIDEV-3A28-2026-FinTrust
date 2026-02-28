@@ -144,4 +144,3 @@ public class ClientChatbotController {
         infoLabel.setStyle(isError ? "-fx-text-fill: #b91c1c;" : "-fx-text-fill: #166534;");
     }
 }
-
