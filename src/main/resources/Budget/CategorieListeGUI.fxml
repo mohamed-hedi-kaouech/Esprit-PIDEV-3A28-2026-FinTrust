@@ -8,7 +8,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieListeController"
              prefWidth="900" prefHeight="600"
-            stylesheets="/Styles/StyleBudget.css"
+            stylesheets="/Styles/StyleBudgetWhite.css"
             styleClass="main-container">
 
     <!-- TOP BAR -->
@@ -73,7 +73,14 @@
                     <Insets top="15" right="30" bottom="15" left="30"/>
                 </padding>
 
-                <Button text="➕ Ajouter Catégorie" onAction="#goToCreate" styleClass="btn-add">
+                <Button text="➕ Ajouter Catégorie" onAction="#goToCreate" styleClass="btn-add" style="-fx-font-size: 13px; -fx-padding: 10px 20px;">
+                    <font>
+                        <Font name="System Bold" size="13.0" />
+                    </font>
+                </Button>
+
+                <!-- Monthly PDF report button -->
+                <Button text="📄 Rapport mensuel" onAction="#sendMonthlyReport" styleClass="btn-report" style="-fx-font-size: 13px; -fx-padding: 10px 20px;">
                     <font>
                         <Font name="System Bold" size="13.0" />
                     </font>
@@ -83,13 +90,13 @@
 
                 <!-- Search Bar -->
                 <TextField fx:id="tfSearch" promptText="🔍 Rechercher une catégorie..."
-                           prefWidth="250.0" styleClass="search-field">
+                           prefWidth="280.0" styleClass="search-field" style="-fx-font-size: 13px;">
                     <font>
                         <Font size="13.0" />
                     </font>
                 </TextField>
 
-                <Button text="Réinitialiser" onAction="#resetSearch" styleClass="btn-reset">
+                <Button text="🔄 Réinitialiser" onAction="#resetSearch" styleClass="btn-reset" style="-fx-font-size: 12px; -fx-padding: 8px 15px;">
                     <font>
                         <Font size="12.0" />
                     </font>

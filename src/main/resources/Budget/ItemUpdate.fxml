@@ -7,7 +7,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.ItemUpdateController"
              prefWidth="900" prefHeight="600"
-            stylesheets="/Styles/StyleBudget.css"
+            stylesheets="/Styles/StyleBudgetWhite.css"
             styleClass="main-container">
 
     <!-- TOP BAR -->
@@ -84,9 +84,9 @@
 
                 <!-- Form Buttons -->
                 <HBox spacing="12" alignment="CENTER">
-                    <Button text="✅ Enregistrer" onAction="#enregistrer" styleClass="btn-save" prefWidth="160"/>
-                    <Button text="🔄 Réinitialiser" onAction="#reinitialiser" styleClass="btn-clear" prefWidth="140"/>
-                    <Button text="🗑️ Supprimer" onAction="#DeleteItem" styleClass="btn-danger" prefWidth="140"/>
+                    <Button text="✅ Enregistrer" onAction="#enregistrer" styleClass="btn-save" prefWidth="180" style="-fx-font-size: 13px;"/>
+                    <Button text="🔄 Réinitialiser" onAction="#reinitialiser" styleClass="btn-reset" prefWidth="160" style="-fx-font-size: 13px;"/>
+                    <Button text="🗑️ Supprimer" onAction="#DeleteItem" styleClass="btn-danger" prefWidth="160" style="-fx-font-size: 13px;"/>
                 </HBox>
 
                 <!-- Current Info Display -->

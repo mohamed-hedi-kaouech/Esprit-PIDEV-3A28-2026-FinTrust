@@ -8,7 +8,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieUpdateController"
             prefWidth="900" prefHeight="600"
-            stylesheets="/Styles/StyleBudget.css"
+            stylesheets="/Styles/StyleBudgetWhite.css"
             styleClass="main-container">
 
     <!-- TOP BAR -->
@@ -253,21 +253,21 @@
                     </padding>
 
                     <Button text="✅ Enregistrer" onAction="#updateCategorie"
-                            styleClass="btn-save" prefWidth="160">
+                            styleClass="btn-save" prefWidth="180" style="-fx-font-size: 13px;">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Button>
 
                     <Button text="🔄 Réinitialiser" onAction="#resetForm"
-                            styleClass="btn-clear" prefWidth="140">
+                            styleClass="btn-reset" prefWidth="160" style="-fx-font-size: 13px;">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Button>
 
                     <Button text="🗑️ Supprimer" onAction="#deleteCategorie"
-                            styleClass="btn-danger" prefWidth="140">
+                            styleClass="btn-danger" prefWidth="160" style="-fx-font-size: 13px;">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>

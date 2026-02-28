@@ -57,38 +57,36 @@ public class ItemListController implements Initializable {
         // Custom cell with update/delete actions
         itemListView.setCellFactory(lv -> new ListCell<Item>() {
             private final VBox container = new VBox(8);
-            private final HBox topRow = new HBox(10);
-            private final Label lblId = new Label();
+            private final HBox topRow = new HBox(20);
+            private final VBox itemSection = new VBox(4);
+            private final Label lblItemLabel = new Label("Item");
             private final Label lblLibelle = new Label();
-            private final Region spacer = new Region();
+            private final VBox montantSection = new VBox(4);
+            private final Label lblMontantLabel = new Label("Montant");
             private final Label lblMontant = new Label();
-            private final Label lblCategorie = new Label();
             private final HBox footer = new HBox(8);
             private final Button btnUpdate = new Button("✏️ Modifier");
             private final Button btnDelete = new Button("🗑️ Supprimer");
 
             {
-                // Top row: id badge, name, spacer, montant
-                lblId.getStyleClass().add("categorie-id");
+                // Item section with label and value
+                lblItemLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666; -fx-font-weight: bold;");
                 lblLibelle.getStyleClass().add("categorie-nom");
+                itemSection.getChildren().addAll(lblItemLabel, lblLibelle);
+
+                // Montant section with label and value
+                lblMontantLabel.setStyle("-fx-font-size: 11px; -fx-text-fill: #666666; -fx-font-weight: bold;");
                 lblMontant.getStyleClass().add("categorie-budget");
+                montantSection.getChildren().addAll(lblMontantLabel, lblMontant);
 
-                // Column sizing to align like a table
-                lblId.setMinWidth(60);
-                lblMontant.setMinWidth(120);
-                lblCategorie.setMinWidth(160);
-                HBox.setHgrow(lblLibelle, Priority.ALWAYS);
-
-                topRow.getChildren().addAll(lblId, lblLibelle, spacer, lblMontant);
-                HBox.setHgrow(spacer, Priority.ALWAYS);
-
-                // Middle row: category name
-                lblCategorie.getStyleClass().add("categorie-seuil");
+                // Top row: both sections displayed nicely
+                HBox.setHgrow(itemSection, Priority.ALWAYS);
+                topRow.getChildren().addAll(itemSection, montantSection);
 
                 // Footer: action buttons
                 footer.getChildren().addAll(new Region(), btnUpdate, btnDelete);
 
-                container.getChildren().addAll(topRow, lblCategorie, footer);
+                container.getChildren().addAll(topRow, footer);
 
                 // Card styling and sizing for full-width appearance
                 container.getStyleClass().add("categorie-card");
@@ -105,10 +103,8 @@ public class ItemListController implements Initializable {
                     setGraphic(null);
                     setText(null);
                 } else {
-                    lblId.setText("#" + item.getIdItem());
                     lblLibelle.setText(item.getLibelle());
                     lblMontant.setText(String.format("%.2f DT", item.getMontant()));
-                    lblCategorie.setText(item.getCategorie() != null ? "Catégorie: " + item.getCategorie().getNomCategorie() : "Catégorie: -" );
 
                     btnUpdate.setOnAction(e -> openUpdate(item));
                     // Make the whole card clickable like categorie list
@@ -301,9 +297,9 @@ public class ItemListController implements Initializable {
             stage.setScene(new Scene(root));
             stage.setTitle("Créer un nouvel Item");
             stage.show();
-        } catch (IOException e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            showErrorAlert("Erreur", "Impossible d'ouvrir le formulaire de création.");
+            showErrorAlert("Erreur", "Impossible d'ouvrir le formulaire de création.\n" + e.getMessage());
         }
     }
 

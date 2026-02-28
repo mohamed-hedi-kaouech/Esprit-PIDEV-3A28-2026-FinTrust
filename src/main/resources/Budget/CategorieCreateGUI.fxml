@@ -12,7 +12,7 @@
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieCreateController"
            prefWidth="900" prefHeight="600"
-            stylesheets="/Styles/StyleBudget.css"
+            stylesheets="/Styles/StyleBudgetWhite.css"
             styleClass="main-container">
     <!-- TOP BAR -->
     <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
@@ -183,14 +183,14 @@
                     </padding>
 
                     <Button fx:id="btnAjouter" text="💾 Enregistrer" onAction="#handleAjouter"
-                        styleClass="btn-save" prefWidth="180">
+                        styleClass="btn-save" prefWidth="200" style="-fx-font-size: 13px;">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
                     </Button>
 
                         <Button fx:id="btnAnnuler" text="🔄 Réinitialiser" onAction="#handleAnnuler"
-                            styleClass="btn-clear" prefWidth="150">
+                            styleClass="btn-reset" prefWidth="180" style="-fx-font-size: 13px;">
                         <font>
                             <Font name="System Bold" size="13.0" />
                         </font>
