@@ -1,4 +1,4 @@
-package org.example.Controlleurs.ProductControlleur;
+package org.example.Controlleurs.ProductControlleur.Admin;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -57,7 +57,7 @@ public class ListeProductControlleur implements Initializable {
 
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/CreateProductGUI.fxml")
+                    getClass().getResource("/Product/Admin/CreateProductGUI.fxml")
             );
 
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
@@ -73,7 +73,7 @@ public class ListeProductControlleur implements Initializable {
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/MenuGUI.fxml")
+                    getClass().getResource("/Product/MenuProductGUI.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
@@ -154,7 +154,7 @@ public class ListeProductControlleur implements Initializable {
     private void handleUpdate(Product product) {
         try {
             FXMLLoader loader = new FXMLLoader(
-                    getClass().getResource("/Product/ProductUpdateGUI.fxml")
+                    getClass().getResource("/Product/Admin/ProductUpdateGUI.fxml")
             );
             Parent root = loader.load();
 

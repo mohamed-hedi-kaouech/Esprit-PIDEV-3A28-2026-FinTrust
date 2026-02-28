@@ -137,4 +137,48 @@ public class LoanService implements InterfaceGlobal<Loan> {
         }
         return l;
     }
+
+    // FUNCTION AVANCE
+    public void makePayment(int loanId, double paymentAmount) {
+
+        Loan loan = ReadId(loanId);
+
+        if (loan == null)
+            throw new RuntimeException("Prêt introuvable.");
+
+        if (loan.getStatus() == LoanStatus.COMPLETED)
+            throw new RuntimeException("Prêt déjà clôturé.");
+
+        if (paymentAmount <= 0)
+            throw new RuntimeException("Montant invalide.");
+
+        double remaining = loan.getRemainingPrincipal();
+
+        if (paymentAmount > remaining)
+            throw new RuntimeException("Montant dépasse le capital restant.");
+
+        double newRemaining = remaining - paymentAmount;
+
+        String req =
+                "UPDATE loan SET remaining_principal=?, status=? WHERE loanId=?";
+
+        try {
+            PreparedStatement ps = cnx.prepareStatement(req);
+
+            ps.setDouble(1, newRemaining);
+
+            if (newRemaining == 0) {
+                ps.setString(2, LoanStatus.COMPLETED.name());
+            } else {
+                ps.setString(2, LoanStatus.ACTIVE.name());
+            }
+
+            ps.setInt(3, loanId);
+
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

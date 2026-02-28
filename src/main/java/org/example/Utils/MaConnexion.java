@@ -2,6 +2,10 @@ package org.example.Utils;
 
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.ClassProduct.Product;
+import org.example.Model.Wallet.Transaction;
+import org.example.Model.Wallet.Wallet;
+import org.example.Model.Loan.LoanClass.Loan;
+import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Kyc.Kyc;
 import org.example.Model.Kyc.KycFile;
 import org.example.Model.User.User;
@@ -61,11 +65,23 @@ public class MaConnexion {
                 //PRODUCT SUBSCRIPTION TABLE
                 st.executeUpdate(ProductSubscription.SQLTable());
 
-                //Wallet TABLE
-                st.executeUpdate(Wallet.SQLTable());
+                //Categorie TABLE
+                st.executeUpdate(Categorie.SQLTable());
 
                 //Transaction TABLE
                 st.executeUpdate(Transaction.SQLTable());
+
+                //Wallet TABLE
+                st.executeUpdate(Wallet.SQLTable());
+                //Transaction TABLE
+                st.executeUpdate(Transaction.SQLTable());
+
+                //Loan Table
+                st.executeUpdate(Loan.SQLTable());
+
+                //Repayment Table
+                st.executeUpdate(Repayment.SQLTable());
+
 
                 //Users table
                 st.executeUpdate(User.SQLTable());

@@ -43,6 +43,8 @@ public class Main {
         }
 
         System.out.println("Loan found: " + loan);
+        ProductSubscription PS = new ProductSubscription(1,9, SubscriptionType.ANNUAL);
+        ProductSubscriptionService sps = new ProductSubscriptionService();
 
         Repayment r1 = new Repayment(
                 loan.getLoanId(),
@@ -102,6 +104,7 @@ public class Main {
         }
 
          */
+        sps.Add(PS);
 
 
     }

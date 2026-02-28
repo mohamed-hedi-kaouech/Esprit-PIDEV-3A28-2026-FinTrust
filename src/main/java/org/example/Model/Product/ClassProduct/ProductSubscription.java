@@ -51,34 +51,14 @@ public class ProductSubscription {
 
         this.status = SubscriptionStatus.ACTIVE;
     }
-    public ProductSubscription(int subscriptionId,int client, int product, SubscriptionType type) {
+    public ProductSubscription(int subscriptionId,int client, int product, SubscriptionType type,LocalDateTime subscriptionDate,LocalDateTime expirationDate, SubscriptionStatus status) {
         this.subscriptionId = subscriptionId;
         this.client = client;
         this.product = product;
         this.type = type;
-        this.subscriptionDate = LocalDateTime.now();
-        switch (type) {
-            case MONTHLY:
-                this.expirationDate = subscriptionDate.plusMonths(1);
-                break;
-
-            case ANNUAL:
-                this.expirationDate = subscriptionDate.plusYears(1);
-                break;
-
-            case TRANSACTION:
-                this.expirationDate = subscriptionDate.plusDays(1);
-                break;
-
-            case ONE_TIME:
-                this.expirationDate = subscriptionDate;
-                break;
-
-            default:
-                throw new IllegalArgumentException("Unknown subscription type");
-        }
-
-        this.status = SubscriptionStatus.ACTIVE;
+        this.subscriptionDate = subscriptionDate;
+        this.expirationDate = expirationDate;
+        this.status = status;
     }
 
     // ===== Getters & Setters =====
@@ -155,6 +135,19 @@ public class ProductSubscription {
                 '}';
     }
 
+    public boolean isActive() {
+        return "ACTIVE".equals(status);
+    }
+    public boolean isExpired() {
+        return expirationDate.isBefore(LocalDate.now().atStartOfDay());
+    }
+    public long getDaysUntilExpiration() {
+        return java.time.temporal.ChronoUnit.DAYS.between(LocalDate.now(), expirationDate);
+    }
+    public boolean isExpiringSoon() {
+        long days = getDaysUntilExpiration();
+        return days >= 0 && days <= 30;
+    }
     public static String SQLTable() {
         return """
                 CREATE TABLE IF NOT EXISTS productsubscription (

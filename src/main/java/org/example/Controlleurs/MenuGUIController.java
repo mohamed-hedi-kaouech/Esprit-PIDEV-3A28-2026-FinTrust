@@ -1,12 +1,14 @@
 package org.example.Controlleurs;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
-import javafx.application.Platform;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
@@ -16,6 +18,7 @@ import org.example.Utils.AccessGuard;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MenuGUIController implements Initializable {
@@ -79,20 +82,32 @@ public class MenuGUIController implements Initializable {
         try {
             navigateToScene("/Product/ListeProductGUI.fxml", "Gestion des Produits", null);
         } catch (IOException e) {
-            showErrorAlert("Erreur de Navigation", "Impossible d'acceder au module Gestion Produits.\n" + e.getMessage());
+            showErrorAlert("Erreur de Navigation",
+                    "Impossible d'accéder au module Gestion Produits.\n" + e.getMessage());
         }
     }
 
     @FXML
     private void goToBudget() {
-        showInfoAlert("Information", "Module Budget non branche dans ce flux.");
+        try {
+            navigateToScene("/Budget/CategorieListeGUI.fxml", "Gestion des Budgets");
+        } catch (IOException e) {
+            showErrorAlert("Erreur de Navigation",
+                    "Impossible d'accéder au module Gestion Budgets.\n" + e.getMessage());
+        }
     }
 
+    /**
+     * Navigate to Loan Management
+     */
     @FXML
     private void goToLoan() {
-        showInfoAlert("Information", "Module Pret non branche dans ce flux.");
+
     }
 
+    /**
+     * Navigate to Wallet Management
+     */
     @FXML
     private void goToWallet() {
         if (!AccessGuard.canAccessFullModules()) {
@@ -102,7 +117,8 @@ public class MenuGUIController implements Initializable {
         try {
             navigateToScene("/Wallet/CreateWalletGUI.fxml", "Gestion des Wallets", "/Styles/StyleWallet.css");
         } catch (IOException e) {
-            showErrorAlert("Erreur de Navigation", "Impossible d'acceder au module Gestion Wallets.\n" + e.getMessage());
+            showErrorAlert("Erreur de Navigation",
+                    "Impossible d'accéder au module Gestion Wallets.\n" + e.getMessage());
         }
     }
 
