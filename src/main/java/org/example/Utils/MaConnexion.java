@@ -61,6 +61,9 @@ public class MaConnexion {
         try {
             cnx = DriverManager.getConnection(URL, USR, PWD);
             try (Statement st = cnx.createStatement()) {
+                //Users table
+                st.executeUpdate(User.SQLTable());
+                reconcileUsersTable();
 
                 //PRODUCT TABLE
                 st.executeUpdate(Product.SQLTable());
@@ -85,10 +88,6 @@ public class MaConnexion {
                 //Repayment Table
                 st.executeUpdate(Repayment.SQLTable());
 
-
-                //Users table
-                st.executeUpdate(User.SQLTable());
-                reconcileUsersTable();
 
                 //KYC tables
                 st.executeUpdate(Kyc.SQLTable());

@@ -22,7 +22,7 @@
             <Label text="Admin Dashboard"
                    styleClass="page-title"/>
             <Region HBox.hgrow="ALWAYS"/>
-            <Button text="Logout"
+            <Button text="back"
                     styleClass="btn-back"
                     onAction="#handleLogout"/>
         </HBox>

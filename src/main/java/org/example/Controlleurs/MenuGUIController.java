@@ -98,7 +98,8 @@ public class MenuGUIController implements Initializable {
                     "Impossible d'accéder au module Gestion Abonnements.\n" + e.getMessage());
         }
     }
-    public void goToDashboardProduit(MouseEvent mouseEvent) {
+    @FXML
+    public void goToDashboardProduit() {
         try {
             navigateToScene("/Product/Admin/AdminDashboardGUI.fxml", "Dashboard Analytique",null);
         } catch (IOException e) {
@@ -124,7 +125,7 @@ public class MenuGUIController implements Initializable {
     @FXML
     private void goToLoan() {
         try {
-            navigateToScene("/Loan/LoanList.fxml", "Gestion des Loans",null);
+            navigateToScene("/Loan/AdminDashboard.fxml", "Gestion des Loans",null);
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Loans.\n" + e.getMessage());

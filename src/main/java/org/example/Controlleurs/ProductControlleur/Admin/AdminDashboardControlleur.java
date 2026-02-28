@@ -469,7 +469,7 @@ public class AdminDashboardControlleur implements Initializable {
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/MenuProductGUI.fxml")
+                    getClass().getResource("/MenuGUI.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

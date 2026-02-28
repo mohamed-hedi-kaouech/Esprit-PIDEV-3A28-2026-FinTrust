@@ -136,7 +136,7 @@ public class userViewControll {
         try {
 
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/MenuGUI.fxml")
+                    getClass().getResource("/Client/ClientDashboard.fxml")
             );
 
             Stage stage = (Stage) loanTable.getScene().getWindow();

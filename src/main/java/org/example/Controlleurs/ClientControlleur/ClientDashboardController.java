@@ -152,7 +152,7 @@ public class ClientDashboardController {
     @FXML
     private void goToLoan() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Loan/LoanList.fxml", "Loans", "/Styles/StyleWallet.css");
+        navigateTo("/Loan/LoanListUser.fxml", "Loans", "/Styles/StyleWallet.css");
     }
 
     @FXML
