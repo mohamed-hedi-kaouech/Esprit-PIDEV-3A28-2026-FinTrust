@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.ClientControlleur.ClientProfileController">
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+            <children>
+                <Label text="Profil Client" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Retour Dashboard" onAction="#goToDashboard" styleClass="button-secondary"/>
+                <Button text="Deconnexion" onAction="#handleLogout" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
+                <VBox spacing="16" style="-fx-padding: 32;" styleClass="bank-card">
+                    <Label text="Vos informations" styleClass="section-title"/>
+                    <VBox spacing="8" styleClass="client-reward-panel">
+                        <HBox alignment="CENTER_LEFT" spacing="10">
+                            <Label text="Votre recompense actuelle" styleClass="client-reward-title"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                            <Label fx:id="rewardMedalLabel" text="Niveau Starter" styleClass="client-reward-medal"/>
+                        </HBox>
+                        <HBox spacing="14">
+                            <VBox styleClass="client-reward-chip">
+                                <Label text="Niveau" styleClass="client-reward-chip-title"/>
+                                <Label fx:id="rewardLevelLabel" text="STARTER" styleClass="client-reward-chip-value"/>
+                            </VBox>
+                            <VBox styleClass="client-reward-chip">
+                                <Label text="Points" styleClass="client-reward-chip-title"/>
+                                <Label fx:id="rewardPointsLabel" text="0 pts" styleClass="client-reward-chip-value"/>
+                            </VBox>
+                        </HBox>
+                    </VBox>
+                    <Label text="Nom" styleClass="form-label"/>
+                    <TextField fx:id="nomField" promptText="Nom"/>
+                    <Label text="Email" styleClass="form-label"/>
+                    <TextField fx:id="emailField" promptText="Email"/>
+                    <Label text="Telephone" styleClass="form-label"/>
+                    <TextField fx:id="numTelField" promptText="Telephone"/>
+                    <Label text="Date de naissance" styleClass="form-label"/>
+                    <DatePicker fx:id="dateNaissancePicker"/>
+                    <HBox spacing="18" alignment="CENTER">
+                        <Button text="Modifier" onAction="#handleEdit" styleClass="new-transaction-button"/>
+                        <Button text="Pause et Jeux" onAction="#goToSmartBreakFromProfile" styleClass="button-secondary"/>
+                    </HBox>
+                    <Label fx:id="infoLabel" style="-fx-font-size: 13px; -fx-padding: 8 0 0 0;"/>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

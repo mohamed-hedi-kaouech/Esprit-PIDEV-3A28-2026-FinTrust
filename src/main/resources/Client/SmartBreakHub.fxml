@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.ClientControlleur.SmartBreakHubController">
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+            <children>
+                <Label text="Pause Intelligente - Choix du jeu" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Retour" onAction="#handleBack" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
+                <VBox spacing="16" style="-fx-padding: 22;" styleClass="bank-card smartbreak-root">
+                    <VBox spacing="4" styleClass="smartbreak-hero">
+                        <Label fx:id="contextLabel" text="Contexte: PROFILE" styleClass="smartbreak-hero-title"/>
+                        <Label text="Le KYC continue en arriere-plan. Choisissez un mini-jeu pour patienter."
+                               styleClass="smartbreak-hero-subtitle"/>
+                    </VBox>
+
+                    <HBox spacing="16">
+                        <VBox spacing="10" styleClass="smartbreak-game-card" HBox.hgrow="ALWAYS">
+                            <Label text="Memory Sprint" styleClass="smartbreak-game-title"/>
+                            <Label text="Retournez les cartes, faites les paires et gagnez des points en 60 secondes."
+                                   wrapText="true" styleClass="smartbreak-game-desc"/>
+                            <Region VBox.vgrow="ALWAYS"/>
+                            <Button text="Jouer Memory" onAction="#handleOpenMemory" styleClass="button-primary"/>
+                        </VBox>
+
+                        <VBox spacing="10" styleClass="smartbreak-game-card smartbreak-game-card-dino" HBox.hgrow="ALWAYS">
+                            <Label text="Dino Run" styleClass="smartbreak-game-title"/>
+                            <Label text="Sautez au bon moment pour eviter les arbres. Collision = echec, puis rejouez."
+                                   wrapText="true" styleClass="smartbreak-game-desc"/>
+                            <Region VBox.vgrow="ALWAYS"/>
+                            <Button text="Jouer Dino Run" onAction="#handleOpenDino" styleClass="button-primary"/>
+                        </VBox>
+                    </HBox>
+
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+                </VBox>
+            </content>
+            <padding>
+                <Insets top="0.0"/>
+            </padding>
+        </ScrollPane>
+    </center>
+</BorderPane>

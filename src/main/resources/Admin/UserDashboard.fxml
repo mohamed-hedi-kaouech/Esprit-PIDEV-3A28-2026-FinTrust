@@ -1,0 +1,220 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.chart.PieChart?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            style="-fx-background-color: linear-gradient(to bottom right, #eef8ff, #e4f2ff);"
+            fx:controller="org.example.Controlleurs.AdminControlleur.AdminUserDashboardController">
+
+    <left>
+        <VBox spacing="10" prefWidth="260"
+              style="-fx-background-color: linear-gradient(to bottom, #2f75d8, #4a9df7); -fx-padding: 22 16;">
+            <children>
+                <Label text="FinTrust Admin"
+                       style="-fx-text-fill: #f5f7fb; -fx-font-size: 24px; -fx-font-weight: 800; -fx-padding: 0 0 8 4;"/>
+                <Label text="Gestion centrale"
+                       style="-fx-text-fill: #e7f3ff; -fx-font-size: 13px; -fx-padding: 0 0 10 4;"/>
+
+                <Button text="Dashboard Utilisateurs" onAction="#handleRefresh" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 11 14;"/>
+                <Button text="Analytics" onAction="#goToAnalyticsDashboard" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 11 14;"/>
+                <Button text="Mes taches" onAction="#goToAdminTasks" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 11 14;"/>
+                <Button text="Validation KYC" onAction="#goToKycValidation" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 11 14;"/>
+                <Button text="Creer utilisateur" onAction="#goToCreateUserForm" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 11 14;"/>
+
+                <Label text="Modules metier"
+                       style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 10 0 4 4;"/>
+                <Button text="Gestion Wallet" onAction="#goToWalletDashboard" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
+                <Button text="Publications" onAction="#goToPublications" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
+                <Button text="Budget" onAction="#goToBudget" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
+                <Button text="Products" onAction="#goToProducts" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
+                <Button text="Loans" onAction="#goToLoans" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
+
+                <Region VBox.vgrow="ALWAYS"/>
+
+                <Button text="Deconnexion" onAction="#handleLogout" maxWidth="1.7976931348623157E308"
+                        style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 11 14;"/>
+            </children>
+        </VBox>
+    </left>
+
+    <top>
+        <VBox style="-fx-padding: 12 16 4 16;">
+            <HBox alignment="CENTER_LEFT" spacing="12"
+                  style="-fx-background-color: linear-gradient(to right, #e8f5ff, #d6ecff); -fx-background-radius: 14; -fx-padding: 14 16; -fx-border-color: #b7daf8; -fx-border-radius: 14;">
+                <children>
+                    <Label fx:id="dashboardTitleLabel" text="Administration Utilisateurs"
+                           style="-fx-text-fill: #1d3553; -fx-font-size: 27px; -fx-font-weight: 800;"/>
+                    <Region HBox.hgrow="ALWAYS"/>
+                    <Button text="🌐 FR/EN" onAction="#handleToggleLanguage" style="-fx-background-color: #f3f7ff; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 16; -fx-padding: 8 14;"/>
+                    <Button text="☀" onAction="#handleThemeBoost" style="-fx-background-color: #fef3c7; -fx-text-fill: #8a5a00; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
+                    <Button text="★" onAction="#handleFavoriteAction" style="-fx-background-color: #efe7ff; -fx-text-fill: #5f3dc4; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
+                    <Button text="🔔" onAction="#handleAlertsAction" style="-fx-background-color: #ffe4e6; -fx-text-fill: #b42318; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
+                    <Button text="🧑" onAction="#handleProfileAction" style="-fx-background-color: #e2e8f0; -fx-text-fill: #1f2937; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
+                    <Button text="Analytics" onAction="#goToAnalyticsDashboard" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                    <Button text="Mes taches" onAction="#goToAdminTasks" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                    <Button text="Validation KYC" onAction="#goToKycValidation" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                    <Button text="Formulaire" onAction="#goToCreateUserForm" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                    <Button text="Deconnexion" onAction="#handleLogout" style="-fx-background-color: #2559a8; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                </children>
+            </HBox>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" fitToHeight="false" pannable="true"
+                    hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
+                <VBox spacing="14" fillWidth="true" style="-fx-padding: 22 26;" styleClass="bank-card">
+                    <HBox styleClass="section-header">
+                        <Label fx:id="usersSectionTitleLabel" text="Liste des utilisateurs" styleClass="section-title"/>
+                    </HBox>
+                    <Label fx:id="usersSectionSubtitleLabel" text="Validation et suivi des statuts" styleClass="section-subtitle"/>
+
+                    <HBox spacing="16" alignment="TOP_LEFT">
+                        <VBox spacing="12" HBox.hgrow="ALWAYS">
+                            <HBox spacing="12">
+                                <VBox styleClass="admin-stat-card admin-stat-card-1" HBox.hgrow="ALWAYS">
+                                    <Label text="Total utilisateurs" styleClass="admin-stat-title"/>
+                                    <Label fx:id="totalUsersLabel" text="0" styleClass="admin-stat-value"/>
+                                </VBox>
+                                <VBox styleClass="admin-stat-card admin-stat-card-2" HBox.hgrow="ALWAYS">
+                                    <Label text="Clients" styleClass="admin-stat-title"/>
+                                    <Label fx:id="totalClientsLabel" text="0" styleClass="admin-stat-value"/>
+                                </VBox>
+                                <VBox styleClass="admin-stat-card admin-stat-card-3" HBox.hgrow="ALWAYS">
+                                    <Label text="Admins" styleClass="admin-stat-title"/>
+                                    <Label fx:id="totalAdminsLabel" text="0" styleClass="admin-stat-value"/>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+
+                        <VBox spacing="10" styleClass="admin-pie-card" prefWidth="560">
+                            <Label fx:id="statusChartTitleLabel" text="Statut des comptes" styleClass="admin-pie-title"/>
+                            <HBox spacing="12" alignment="TOP_LEFT">
+                                <VBox spacing="8">
+                                    <PieChart fx:id="statusPieChart" prefWidth="260" prefHeight="210" legendVisible="true" labelsVisible="true" styleClass="admin-status-pie"/>
+                                    <Label fx:id="quickStatsLabel" text="Stats rapides" style="-fx-text-fill: #334155; -fx-font-weight: 700;"/>
+                                </VBox>
+                                <VBox spacing="8" style="-fx-background-color: #f8fbff; -fx-background-radius: 12; -fx-padding: 10; -fx-border-color: #dbe7f8; -fx-border-radius: 12;">
+                                    <Label fx:id="activityTitleLabel" text="Activite utilisateurs (10 jours)" style="-fx-font-weight: 700; -fx-text-fill: #1d3553;"/>
+                                    <BarChart fx:id="activityBarChart" prefWidth="270" prefHeight="190" legendVisible="true" animated="false">
+                                        <xAxis>
+                                            <CategoryAxis />
+                                        </xAxis>
+                                        <yAxis>
+                                            <NumberAxis />
+                                        </yAxis>
+                                    </BarChart>
+                                </VBox>
+                            </HBox>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                        <Label text="Recherche:" styleClass="form-label"/>
+                        <TextField fx:id="searchField" promptText="Nom, email, role, statut, id..." prefWidth="320"/>
+
+                        <Label text="Trier par:" styleClass="form-label"/>
+                        <ComboBox fx:id="sortByCombo" prefWidth="170"/>
+
+                        <Label text="Ordre:" styleClass="form-label"/>
+                        <ComboBox fx:id="sortOrderCombo" prefWidth="120"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Button text="Reset filtre" onAction="#handleResetFilter" styleClass="button-secondary"/>
+                    </HBox>
+
+                    <VBox VBox.vgrow="ALWAYS" styleClass="admin-users-table-wrap">
+                        <TableView fx:id="usersTable" styleClass="admin-users-table"
+                                   minHeight="260.0" prefHeight="360.0" maxHeight="1.7976931348623157E308"
+                                   VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="idColumn" text="ID" prefWidth="80"/>
+                                <TableColumn fx:id="nomColumn" text="Nom" prefWidth="180"/>
+                                <TableColumn fx:id="emailColumn" text="Email" prefWidth="280"/>
+                                <TableColumn fx:id="roleColumn" text="Role" prefWidth="120"/>
+                                <TableColumn fx:id="statusColumn" text="Statut" prefWidth="140"/>
+                                <TableColumn fx:id="createdAtColumn" text="Cree le" prefWidth="180"/>
+                            </columns>
+                        </TableView>
+                    </VBox>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT" styleClass="status-banner">
+                        <Label text="Nouveau statut:" styleClass="form-label"/>
+                        <ComboBox fx:id="statusComboBox" prefWidth="180"/>
+                        <Button text="Appliquer" onAction="#handleApplyStatus" styleClass="button-primary"/>
+                        <Button text="Rafraichir" onAction="#handleRefresh" styleClass="button-secondary"/>
+
+                        <Region HBox.hgrow="ALWAYS"/>
+
+                        <Button text="Modifier" onAction="#handleEditUser" styleClass="button-secondary"/>
+                        <Button text="Supprimer" onAction="#handleDeleteUser" styleClass="button-danger"/>
+                    </HBox>
+
+                    <VBox spacing="8" styleClass="export-block">
+                        <Label text="Exports admin (Excel/PDF)" styleClass="export-title"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Utilisateurs" styleClass="export-label"/>
+                            <Button text="Excel" onAction="#handleExportUsersExcel" styleClass="button-secondary export-btn"/>
+                            <Button text="PDF" onAction="#handleExportUsersPdf" styleClass="button-secondary export-btn"/>
+
+                            <Label text="Statistiques" styleClass="export-label"/>
+                            <Button text="Excel" onAction="#handleExportAnalyticsExcel" styleClass="button-secondary export-btn"/>
+                            <Button text="PDF" onAction="#handleExportAnalyticsPdf" styleClass="button-secondary export-btn"/>
+
+                            <Label text="Audit logs" styleClass="export-label"/>
+                            <Button text="Excel" onAction="#handleExportAuditExcel" styleClass="button-secondary export-btn"/>
+                            <Button text="PDF" onAction="#handleExportAuditPdf" styleClass="button-secondary export-btn"/>
+                        </HBox>
+                    </VBox>
+
+                    <VBox fx:id="notificationBar" spacing="8" visible="false" managed="false"
+                          style="-fx-background-color: #eef7ff; -fx-border-color: #cbe4ff; -fx-border-radius: 12; -fx-background-radius: 12; -fx-padding: 12;">
+                        <Label text="Centre de notifications clients" style="-fx-font-weight: 800; -fx-text-fill: #1f4778;"/>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Destinataire:" styleClass="form-label"/>
+                            <ComboBox fx:id="notificationTargetCombo" prefWidth="240"/>
+                            <Region HBox.hgrow="ALWAYS"/>
+                        </HBox>
+                        <HBox spacing="10" alignment="CENTER_LEFT">
+                            <Label text="Message:" styleClass="form-label"/>
+                            <TextField fx:id="notificationMessageField" promptText="Votre compte a ete mis a jour..." HBox.hgrow="ALWAYS"/>
+                            <Button text="Envoyer notification" onAction="#handleSendPanelNotification" styleClass="button-primary"/>
+                        </HBox>
+                    </VBox>
+
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <Button text="Retour" onAction="#handleBack" styleClass="button-secondary"/>
+                    </HBox>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

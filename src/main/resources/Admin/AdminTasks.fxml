@@ -1,0 +1,153 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            stylesheets="@../Styles/StyleWallet.css"
+            fx:controller="org.example.Controlleurs.AdminControlleur.AdminTasksController">
+
+    <left>
+        <VBox spacing="10" prefWidth="250"
+              style="-fx-background-color: linear-gradient(to bottom, #2f75d8, #4a9df7); -fx-padding: 22 16;">
+            <children>
+                <Label text="FinTrust Admin" style="-fx-text-fill: #f5f7fb; -fx-font-size: 24px; -fx-font-weight: 800;"/>
+                <Label text="Gestion centrale" style="-fx-text-fill: #e7f3ff; -fx-font-size: 13px;"/>
+                <Button text="Dashboard Utilisateurs" onAction="#goToDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Analytics" onAction="#goToAnalyticsDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Mes taches" onAction="#goToAdminTasks" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Validation KYC" onAction="#goToKycValidation" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Creer utilisateur" onAction="#goToCreateUserForm" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+
+                <Label text="Modules metier" style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 8 0 0 0;"/>
+                <Button text="Gestion Wallet" onAction="#goToWalletDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Publications" onAction="#goToPublications" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Budget" onAction="#goToBudget" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Products" onAction="#goToProducts" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Loans" onAction="#goToLoans" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Region VBox.vgrow="ALWAYS"/>
+                <Button text="Deconnexion" onAction="#handleLogout" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+            </children>
+        </VBox>
+    </left>
+
+    <top>
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
+            <children>
+                <Label text="Admin Productivity / Ops" styleClass="logo-text"/>
+                <Region HBox.hgrow="ALWAYS"/>
+                <Button text="Rafraichir" onAction="#handleRefresh" styleClass="button-secondary"/>
+                <Button text="Retour Admin" onAction="#handleBack" styleClass="button-secondary"/>
+            </children>
+        </HBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
+            <content>
+                <VBox spacing="12" style="-fx-padding: 18 24;" styleClass="bank-card admin-ops-root">
+                    <VBox spacing="4" styleClass="admin-ops-hero">
+                        <Label text="Mes taches operationnelles" styleClass="admin-ops-hero-title"/>
+                        <Label text="Kanban intelligent: To do / Doing / Done + etoiles + SLA + audit" styleClass="admin-ops-hero-subtitle"/>
+                    </VBox>
+
+                    <HBox spacing="10">
+                        <VBox styleClass="game-stat-card game-stat-card-main" HBox.hgrow="ALWAYS">
+                            <Label text="Urgentes" styleClass="game-stat-title"/>
+                            <Label fx:id="urgentCountLabel" text="0" styleClass="game-stat-value"/>
+                        </VBox>
+                        <VBox styleClass="game-stat-card game-level-gold" HBox.hgrow="ALWAYS">
+                            <Label text="En retard" styleClass="game-stat-title"/>
+                            <Label fx:id="overdueCountLabel" text="0" styleClass="game-stat-value"/>
+                        </VBox>
+                        <VBox styleClass="game-stat-card game-level-silver" HBox.hgrow="ALWAYS">
+                            <Label text="Creees aujourd'hui" styleClass="game-stat-title"/>
+                            <Label fx:id="todayCountLabel" text="0" styleClass="game-stat-value"/>
+                        </VBox>
+                        <VBox styleClass="game-stat-card game-level-platinum" HBox.hgrow="ALWAYS">
+                            <Label text="Taux avant deadline" styleClass="game-stat-title"/>
+                            <Label fx:id="slaRateLabel" text="0%" styleClass="game-stat-value"/>
+                        </VBox>
+                    </HBox>
+
+                    <HBox spacing="10" styleClass="client-reward-panel">
+                        <VBox styleClass="client-reward-chip">
+                            <Label text="Etoiles total" styleClass="client-reward-chip-title"/>
+                            <Label fx:id="starsLabel" text="0" styleClass="client-reward-chip-value"/>
+                        </VBox>
+                        <VBox styleClass="client-reward-chip">
+                            <Label text="Points admin" styleClass="client-reward-chip-title"/>
+                            <Label fx:id="pointsLabel" text="0" styleClass="client-reward-chip-value"/>
+                        </VBox>
+                        <VBox styleClass="client-reward-chip">
+                            <Label text="Streak" styleClass="client-reward-chip-title"/>
+                            <Label fx:id="streakLabel" text="0 jours" styleClass="client-reward-chip-value"/>
+                        </VBox>
+                        <VBox styleClass="client-reward-chip">
+                            <Label text="Badge" styleClass="client-reward-chip-title"/>
+                            <Label fx:id="badgeLabel" text="Aucun badge" styleClass="client-reward-chip-value"/>
+                        </VBox>
+                        <Region HBox.hgrow="ALWAYS"/>
+                        <Label fx:id="starToastLabel" text="" styleClass="client-reward-medal"/>
+                    </HBox>
+
+                    <HBox spacing="10" styleClass="status-banner">
+                        <Label text="Filtre" styleClass="form-label"/>
+                        <ComboBox fx:id="filterCombo" onAction="#handleFilterChanged" prefWidth="150"/>
+                    </HBox>
+
+                    <VBox spacing="8" styleClass="admin-pie-card">
+                        <Label text="Nouvelle tache" styleClass="admin-pie-title"/>
+                        <TextField fx:id="titleField" promptText="Titre de la tache"/>
+                        <TextArea fx:id="descriptionArea" promptText="Description (optionnel)" prefRowCount="2"/>
+                        <HBox spacing="8">
+                            <ComboBox fx:id="priorityCombo" prefWidth="150"/>
+                            <DatePicker fx:id="dueDatePicker" prefWidth="160"/>
+                            <TextField fx:id="tagsField" promptText="Tags (KYC,SECURITY,SUPPORT)" HBox.hgrow="ALWAYS"/>
+                            <Button text="Ajouter" onAction="#handleCreateTask" styleClass="button-primary"/>
+                        </HBox>
+                    </VBox>
+
+                    <HBox spacing="10" styleClass="status-banner">
+                        <Button text="To do" onAction="#handleMoveToTodo" styleClass="button-secondary"/>
+                        <Button text="Doing" onAction="#handleMoveToDoing" styleClass="button-secondary"/>
+                        <Button text="Done" onAction="#handleMoveToDone" styleClass="button-secondary"/>
+                        <Button text="Completer + etoiles" onAction="#handleComplete" styleClass="button-primary"/>
+                    </HBox>
+
+                    <HBox spacing="12" VBox.vgrow="ALWAYS">
+                        <VBox styleClass="admin-pie-card admin-ops-column" HBox.hgrow="ALWAYS">
+                            <Label text="To do" styleClass="admin-pie-title"/>
+                            <ListView fx:id="todoList" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                        <VBox styleClass="admin-pie-card admin-ops-column" HBox.hgrow="ALWAYS">
+                            <Label text="Doing" styleClass="admin-pie-title"/>
+                            <ListView fx:id="doingList" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                        <VBox styleClass="admin-pie-card admin-ops-column" HBox.hgrow="ALWAYS">
+                            <Label text="Done" styleClass="admin-pie-title"/>
+                            <ListView fx:id="doneList" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                    </HBox>
+
+                    <VBox styleClass="admin-pie-card">
+                        <Label text="Audit trail" styleClass="admin-pie-title"/>
+                        <ListView fx:id="auditList" prefHeight="160"/>
+                    </VBox>
+
+                    <Label fx:id="infoLabel" text="" styleClass="section-subtitle"/>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>
