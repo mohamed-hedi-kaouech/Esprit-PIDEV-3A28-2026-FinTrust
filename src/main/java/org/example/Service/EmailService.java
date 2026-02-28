@@ -3,7 +3,7 @@ package org.example.Service;
 import java.nio.charset.StandardCharsets;
 import java.util.Properties;
 import java.util.Random;
-
+import org.apache.commons.lang3.StringUtils;
 import javax.mail.Authenticator;
 import javax.mail.AuthenticationFailedException;
 import javax.mail.Message;
@@ -50,7 +50,7 @@ public class EmailService {
 
     public void sendWelcomeEmail(String to, String nom) {
         String safeNom = (nom == null || nom.isBlank()) ? "client" : nom.trim();
-        String loginUrl = firstNonBlank(
+        String loginUrl = StringUtils.firstNonBlank(
                 getCfg("FINTRUST_LOGIN_URL"),
                 getCfg("FINTRUST_WEB_LOGIN_URL"),
                 "http://localhost:8080/login"

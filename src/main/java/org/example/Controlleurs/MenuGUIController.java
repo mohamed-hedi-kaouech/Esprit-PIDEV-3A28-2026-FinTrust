@@ -1,5 +1,6 @@
 package org.example.Controlleurs;
 
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +11,7 @@ import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.Label;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import org.example.Model.User.User;
@@ -80,7 +82,7 @@ public class MenuGUIController implements Initializable {
     @FXML
     private void goToProduct() {
         try {
-            navigateToScene("/Product/ListeProductGUI.fxml", "Gestion des Produits", null);
+            navigateToScene("/Product/Admin/ListeProductGUI.fxml", "Gestion des Produits", null);
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Produits.\n" + e.getMessage());
@@ -88,9 +90,28 @@ public class MenuGUIController implements Initializable {
     }
 
     @FXML
+    private void goToSubProduct() {
+        try {
+            navigateToScene("/Product/Admin/ListeSubProductGUI.fxml", "Gestion des Abonnements", null);
+        } catch (IOException e) {
+            showErrorAlert("Erreur de Navigation",
+                    "Impossible d'accéder au module Gestion Abonnements.\n" + e.getMessage());
+        }
+    }
+    public void goToDashboardProduit(MouseEvent mouseEvent) {
+        try {
+            navigateToScene("/Product/Admin/AdminDashboardGUI.fxml", "Dashboard Analytique",null);
+        } catch (IOException e) {
+            showErrorAlert("Erreur de Navigation",
+                    "Impossible d'accéder au dashboard produit & Abonnements.\n" + e.getMessage());
+        }
+
+    }
+
+    @FXML
     private void goToBudget() {
         try {
-            navigateToScene("/Budget/CategorieListeGUI.fxml", "Gestion des Budgets");
+            navigateToScene("/Budget/CategorieListeGUI.fxml", "Gestion des Budgets",null);
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Budgets.\n" + e.getMessage());
@@ -103,7 +124,7 @@ public class MenuGUIController implements Initializable {
     @FXML
     private void goToLoan() {
         try {
-            navigateToScene("/Loan/LoanList.fxml", "Gestion des Loans");
+            navigateToScene("/Loan/LoanList.fxml", "Gestion des Loans",null);
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Loans.\n" + e.getMessage());
@@ -213,4 +234,6 @@ public class MenuGUIController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
+
 }

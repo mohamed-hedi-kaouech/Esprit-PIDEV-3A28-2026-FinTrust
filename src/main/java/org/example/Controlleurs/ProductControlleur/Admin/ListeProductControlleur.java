@@ -20,7 +20,11 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.Model.Product.ClassProduct.Product;
+import org.example.Model.User.User;
+import org.example.Model.User.UserRole;
 import org.example.Service.ProductService.ProductService;
+import org.example.Utils.SessionContext;
+
 import java.io.IOException;
 import java.net.URL;
 import java.time.format.DateTimeFormatter;
@@ -41,10 +45,29 @@ public class ListeProductControlleur implements Initializable {
     private ObservableList<Product> productList = FXCollections.observableArrayList();
     private ObservableList<Product> filteredList = FXCollections.observableArrayList();
     private ProductService PS;
-
+    private final SessionContext session = SessionContext.getInstance();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        User user = session.getCurrentUser();
+        if (user == null || user.getRole() != UserRole.CLIENT) {
+            try {
+                Parent root = FXMLLoader.load(
+                        getClass().getResource("/Auth/Login.fxml")
+                );
+
+                Stage stage = (Stage) Stage.getWindows()
+                        .filtered(window -> window.isShowing())
+                        .get(0);
+
+                stage.setScene(new Scene(root));
+                stage.setTitle("Connexion");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         PS = new ProductService();
 
         setupListView();
@@ -73,7 +96,7 @@ public class ListeProductControlleur implements Initializable {
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/MenuProductGUI.fxml")
+                    getClass().getResource("/MenuGUI.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

@@ -1,4 +1,4 @@
-﻿package org.example.Controlleurs.KycControlleur;
+package org.example.Controlleurs.KycControlleur;
 
 import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;

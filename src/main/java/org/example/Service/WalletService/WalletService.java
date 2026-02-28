@@ -109,6 +109,19 @@ public class WalletService {
         return false;
     }
 
+    // Update
+    public boolean modifiersolde(int id, double solde) {
+        String query = "UPDATE wallet SET  solde = ? WHERE id_wallet = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setDouble(1, solde);
+            pstmt.setInt(2, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
     // Delete
     public boolean supprimerWallet(int id) {
         String query = "DELETE FROM wallet WHERE id_wallet = ?";
@@ -134,6 +147,27 @@ public class WalletService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    // Vérifier si un wallet existe
+    public Wallet getWalletByMail(String mail) {
+        String query = "SELECT * FROM wallet WHERE email = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setString(1, mail);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Wallet(
+                        rs.getInt("id_wallet"),
+                        rs.getString("nom_proprietaire"),
+                        rs.getDouble("solde"),
+                        WalletDevise.valueOf(rs.getString("devise")));
+
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
     }
 
     // Mettre à jour le solde

@@ -1,5 +1,6 @@
-﻿package org.example.Controlleurs.ClientControlleur;
+package org.example.Controlleurs.ClientControlleur;
 
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.image.Image;
@@ -37,6 +38,7 @@ public class ClientDashboardController {
     @FXML private Label rewardMedalLabel;
     @FXML private Label rewardBadgesLabel;
 
+    @FXML public Button AbonnementsButton;
     @FXML private Button walletButton;
     @FXML private Button profileButton;
     @FXML private Button loanButton;
@@ -136,7 +138,17 @@ public class ClientDashboardController {
         if (!ensureKycApprovedOrShow()) return;
         navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
     }
+    @FXML
+    public void goToMarket() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Product/Client/ClientMarketGUI.fxml", "Produit", "/Styles/StyleProduct.css");
+    }
 
+    @FXML
+    public void goToAbonnements() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Product/Client/ClientListeProductGUI.fxml", "Abonnements", "/Styles/StyleProduct.css");
+    }
     @FXML
     private void goToLoan() {
         if (!ensureKycApprovedOrShow()) return;
@@ -256,5 +268,7 @@ public class ClientDashboardController {
         qrInfoLabel.setText(message == null ? "" : message);
         qrInfoLabel.setStyle(isError ? "-fx-text-fill: #b91c1c;" : "-fx-text-fill: #166534; -fx-font-weight: 600;");
     }
+
+
 }
 

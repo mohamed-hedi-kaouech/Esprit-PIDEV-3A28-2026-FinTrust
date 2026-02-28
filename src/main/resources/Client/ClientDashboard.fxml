@@ -73,6 +73,8 @@
 
             <HBox spacing="12" fillHeight="true">
                 <Button fx:id="profileButton" text="Profil" onAction="#goToProfile" styleClass="button-primary"/>
+                <Button fx:id="MarketButton" text="Market" onAction="#goToMarket" styleClass="button-secondary"/>
+                <Button fx:id="AbonnementsButton" text="Abonnements" onAction="#goToAbonnements" styleClass="button-secondary"/>
                 <Button fx:id="walletButton" text="Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
                 <Button text="KYC" onAction="#goToKycForm" styleClass="button-secondary"/>
                 <Button text="Pause et Jeux" onAction="#goToSmartBreakFromProfile" styleClass="button-secondary"/>

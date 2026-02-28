@@ -1,5 +1,7 @@
 package org.example.Model.Budget;
 
+import java.util.List;
+
 public class Categorie {
 
     // Attributs

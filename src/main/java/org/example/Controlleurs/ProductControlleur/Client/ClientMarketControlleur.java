@@ -23,8 +23,13 @@ import okhttp3.OkHttpClient;
 import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.EnumProduct.SubscriptionType;
+import org.example.Model.User.User;
+import org.example.Model.User.UserRole;
+import org.example.Model.Wallet.ClassWallet.Wallet;
 import org.example.Service.ProductService.ProductService;
 import org.example.Service.ProductService.ProductSubscriptionService;
+import org.example.Service.WalletService.WalletService;
+import org.example.Utils.SessionContext;
 
 import java.io.IOException;
 import java.net.URI;
@@ -51,12 +56,34 @@ public class ClientMarketControlleur implements Initializable {
     private ObservableList<Product> productList = FXCollections.observableArrayList();
     private ObservableList<Product> filteredList = FXCollections.observableArrayList();
     private ProductService PS;
+    private WalletService WS;
+    private final SessionContext session = SessionContext.getInstance();
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        User user = session.getCurrentUser();
+        if (user == null || user.getRole() != UserRole.CLIENT) {
+            try {
+                Parent root = FXMLLoader.load(
+                        getClass().getResource("/Auth/Login.fxml")
+                );
+
+                Stage stage = (Stage) Stage.getWindows()
+                        .filtered(window -> window.isShowing())
+                        .get(0);
+
+                stage.setScene(new Scene(root));
+                stage.setTitle("Connexion");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         PS = new ProductService();
         PSS = new ProductSubscriptionService();
+        WS = new WalletService();
         setupListView();
         loadProductData();
         setupSearchListener();
@@ -189,64 +216,66 @@ public class ClientMarketControlleur implements Initializable {
         result.ifPresent(subscriptionType -> {
             try {
                 PSS = new ProductSubscriptionService();
-                ProductSubscription productSubscription = new ProductSubscription(1, product.getProductId(), subscriptionType);
-                boolean success = PSS.add(productSubscription);
+                Wallet w = WS.getWalletByMail(SessionContext.getInstance().getCurrentUser().getEmail());
+                if(w.getSolde()> product.getPrice()){
+                    ProductSubscription productSubscription = new ProductSubscription(SessionContext.getInstance().getCurrentUser().getId(), product.getProductId(), subscriptionType);
+                    WS.modifiersolde(w.getId_wallet(), w.getSolde()-product.getPrice());
+                    boolean success = PSS.add(productSubscription);
+                    if (success) {
+                        showAlert(Alert.AlertType.INFORMATION, "Succès",
+                                "Abonnement " + subscriptionType.name() + " ajouté avec succès !");
 
-                if (success) {
-                    showAlert(Alert.AlertType.INFORMATION, "Succès",
-                            "Abonnement " + subscriptionType.name() + " ajouté avec succès !");
+                        // Fire webhook asynchronously — never block the FX thread
+                        String productCategorie = product.getCategory().name();
+                        String productType      = subscriptionType.name();
+                        String price            = product.getPrice().toString();
 
-                    // Fire webhook asynchronously — never block the FX thread
-                    String productCategorie = product.getCategory().name();
-                    String productType      = subscriptionType.name();
-                    String price            = product.getPrice().toString();
-
-                    String jsonBody = String.format("""
+                        String jsonBody = String.format("""
                         {
                             "ProductCategorie": "%s",
                             "ProductType": "%s",
                             "Price": "%s"
                         }
                         """, productCategorie, productType, price);
-                    CompletableFuture.runAsync(() -> {
-                        String webhookUrl = "http://localhost:5680/webhook/775c96dd-935c-455d-a9d4-5cb84ff1ea8a";
-                        // Step 1: Test basic connectivity first
-                        try {
-                            java.net.Socket socket = new java.net.Socket();
-                            socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
-                            socket.close();
-                            OkHttpClient client = new OkHttpClient.Builder()
-                                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                                    .build();
+                        CompletableFuture.runAsync(() -> {
+                            String webhookUrl = "http://localhost:5680/webhook/775c96dd-935c-455d-a9d4-5cb84ff1ea8a";
+                            // Step 1: Test basic connectivity first
+                            try {
+                                java.net.Socket socket = new java.net.Socket();
+                                socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
+                                socket.close();
+                                OkHttpClient client = new OkHttpClient.Builder()
+                                        .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                        .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                        .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                        .build();
 
-                            okhttp3.RequestBody body = okhttp3.RequestBody.create(
-                                    jsonBody,
-                                    okhttp3.MediaType.parse("application/json")
-                            );
+                                okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                                        jsonBody,
+                                        okhttp3.MediaType.parse("application/json")
+                                );
 
-                            okhttp3.Request request = new okhttp3.Request.Builder()
-                                    .url(webhookUrl)
-                                    .post(body)
-                                    .build();
+                                okhttp3.Request request = new okhttp3.Request.Builder()
+                                        .url(webhookUrl)
+                                        .post(body)
+                                        .build();
 
-                            try (okhttp3.Response response = client.newCall(request).execute()) {
-                                System.out.println("✅ Status: " + response.code());
-                                System.out.println("✅ Body: " + response.body().string());
+                                try (okhttp3.Response response = client.newCall(request).execute()) {
+                                    System.out.println("✅ Status: " + response.code());
+                                    System.out.println("✅ Body: " + response.body().string());
+                                }
+
+
+                            } catch (Exception e) {
+                                System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                                e.printStackTrace();
                             }
-
-
-                        } catch (Exception e) {
-                            System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    });
-                    String invoiceNumber = "INV-" +
-                            java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
-                            + "-" +
-                            System.currentTimeMillis() % 1000;
-                    String jsonBody1 = String.format("""
+                        });
+                        String invoiceNumber = "INV-" +
+                                java.time.LocalDate.now().format(java.time.format.DateTimeFormatter.BASIC_ISO_DATE)
+                                + "-" +
+                                System.currentTimeMillis() % 1000;
+                        String jsonBody1 = String.format("""
                             {
                                 "invoiceNumber": "%s",
                                 "subscriptionId": "%s",
@@ -257,47 +286,50 @@ public class ClientMarketControlleur implements Initializable {
                                 "price": %s,
                                 "TVA": %s
                             }
-                            """, invoiceNumber, productSubscription.getSubscriptionId(), "customerName", "mohamedhedi322@gmail.com", product.getDescription(), productCategorie, price, 19);
-                    CompletableFuture.runAsync(() -> {
-                        String webhookUrl = "http://localhost:5680/webhook/generate-bankfintrust-invoice";
-                        // Step 1: Test basic connectivity first
-                        try {
-                            java.net.Socket socket = new java.net.Socket();
-                            socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
-                            socket.close();
-                            OkHttpClient client = new OkHttpClient.Builder()
-                                    .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                                    .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                                    .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
-                                    .build();
+                            """, invoiceNumber, productSubscription.getSubscriptionId(), SessionContext.getInstance().getCurrentUser().getNom(),
+                                SessionContext.getInstance().getCurrentUser().getEmail(), product.getDescription(), productCategorie, price, 19);
+                        CompletableFuture.runAsync(() -> {
+                            String webhookUrl = "http://localhost:5680/webhook/generate-bankfintrust-invoice";
+                            // Step 1: Test basic connectivity first
+                            try {
+                                java.net.Socket socket = new java.net.Socket();
+                                socket.connect(new java.net.InetSocketAddress("localhost", 5680), 2000);
+                                socket.close();
+                                OkHttpClient client = new OkHttpClient.Builder()
+                                        .connectTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                        .readTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                        .writeTimeout(30, java.util.concurrent.TimeUnit.SECONDS)
+                                        .build();
 
-                            okhttp3.RequestBody body = okhttp3.RequestBody.create(
-                                    jsonBody1,
-                                    okhttp3.MediaType.parse("application/json")
-                            );
+                                okhttp3.RequestBody body = okhttp3.RequestBody.create(
+                                        jsonBody1,
+                                        okhttp3.MediaType.parse("application/json")
+                                );
 
-                            okhttp3.Request request = new okhttp3.Request.Builder()
-                                    .url(webhookUrl)
-                                    .post(body)
-                                    .build();
+                                okhttp3.Request request = new okhttp3.Request.Builder()
+                                        .url(webhookUrl)
+                                        .post(body)
+                                        .build();
 
-                            try (okhttp3.Response response = client.newCall(request).execute()) {
-                                System.out.println("✅ Status: " + response.code());
-                                System.out.println("✅ Body: " + response.body().string());
+                                try (okhttp3.Response response = client.newCall(request).execute()) {
+                                    System.out.println("✅ Status: " + response.code());
+                                    System.out.println("✅ Body: " + response.body().string());
+                                }
+
+
+                            } catch (Exception e) {
+                                System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
+                                e.printStackTrace();
                             }
-
-
-                        } catch (Exception e) {
-                            System.out.println("❌ Error: " + e.getClass().getSimpleName() + ": " + e.getMessage());
-                            e.printStackTrace();
-                        }
-                    });
-
-                } else {
+                        });
+                    } else {
+                        showAlert(Alert.AlertType.ERROR, "Erreur",
+                                "Échec de l'abonnement. Veuillez réessayer.");
+                    }
+                }else {
                     showAlert(Alert.AlertType.ERROR, "Erreur",
-                            "Échec de l'abonnement. Veuillez réessayer.");
+                            "Montant insuffisant.");
                 }
-
             } catch (Exception e) {
                 showAlert(Alert.AlertType.ERROR, "Erreur", "Une erreur est survenue : " + e.getMessage());
             }
@@ -349,7 +381,7 @@ public class ClientMarketControlleur implements Initializable {
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Product/MenuProductGUI.fxml")
+                    getClass().getResource("/Client/ClientDashboard.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

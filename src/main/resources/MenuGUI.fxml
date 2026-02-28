@@ -32,6 +32,19 @@
                 <Button text="Acceder" onAction="#goToProduct" styleClass="card-button"/>
             </VBox>
 
+            <VBox styleClass="menu-card" spacing="8" onMouseClicked="#goToSubProduct">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="Abonnements" styleClass="card-title"/>
+                <Label text="Gestion des Abonnements" styleClass="card-description"/>
+                <Button text="Acceder" onAction="#goToSubProduct" styleClass="card-button"/>
+            </VBox>
+            <VBox styleClass="menu-card" spacing="8" onMouseClicked="#goToDashboardProduit">
+                <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
+                <Label text="DashboardProduit" styleClass="card-title"/>
+                <Label text="Gestion des Abonnements" styleClass="card-description"/>
+                <Button text="Acceder" onAction="#goToDashboardProduit" styleClass="card-button"/>
+            </VBox>
+
             <VBox styleClass="menu-card" spacing="8" onMouseClicked="#goToBudget">
                 <padding><Insets top="18" right="18" bottom="18" left="18"/></padding>
                 <Label text="Budget" styleClass="card-title"/>

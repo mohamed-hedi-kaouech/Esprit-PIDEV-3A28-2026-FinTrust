@@ -26,6 +26,14 @@ public class Wallet {
         this.statut = WalletStatut.DRAFT;
         this.date_creation = LocalDateTime.now();
     }
+    public Wallet(int id_wallet, String nom_proprietaire, double solde, WalletDevise devise) {
+        this.id_wallet = id_wallet;
+        this.nom_proprietaire = nom_proprietaire;
+        this.solde = solde;
+        this.devise = devise;
+        this.statut = WalletStatut.DRAFT;
+        this.date_creation = LocalDateTime.now();
+    }
 
     // Getters et Setters
     public int getId_wallet() { return id_wallet; }
