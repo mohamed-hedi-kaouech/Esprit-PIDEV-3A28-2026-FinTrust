@@ -7,23 +7,29 @@ import java.util.Objects;
 
 public class Wallet {
     private int idWallet;
+    private int idUser;  // ✅ NOUVEAU : ID de l'utilisateur propriétaire
     private String nomProprietaire;
     private String telephone;
     private String email;
     private String codeAcces;
     private boolean estActif;
     private double solde;
-    private double plafondDecouvert;  // ← NOUVEAU
+    private double plafondDecouvert;
     private WalletDevise devise;
     private WalletStatut statut;
     private LocalDateTime dateCreation;
+
+    // Autres attributs existants
+    private int tentativesEchouees;
+    private LocalDateTime dateDerniereTentative;
+    private boolean estBloque;
 
     // Constructeurs
     public Wallet() {
         this.dateCreation = LocalDateTime.now();
         this.statut = WalletStatut.DRAFT;
         this.estActif = false;
-        this.plafondDecouvert = 0;  // Par défaut, pas de découvert
+        this.plafondDecouvert = 0;
     }
 
     public Wallet(String nomProprietaire, double solde, WalletDevise devise) {
@@ -36,12 +42,20 @@ public class Wallet {
         this.dateCreation = LocalDateTime.now();
     }
 
-    // Nouveau constructeur avec téléphone et email
     public Wallet(String nomProprietaire, String telephone, String email,
                   double solde, WalletDevise devise) {
         this(nomProprietaire, solde, devise);
         this.telephone = telephone;
         this.email = email;
+    }
+
+    // ✅ GETTERS/SETTERS POUR idUser
+    public int getIdUser() {
+        return idUser;
+    }
+
+    public void setIdUser(int idUser) {
+        this.idUser = idUser;
     }
 
     // ✅ Getters/Setters pour plafondDecouvert
@@ -193,7 +207,6 @@ public class Wallet {
         return solde;
     }
 
-    // ✅ MODIFIÉ : Vérifie le plafond de découvert
     public void setSolde(double solde) {
         if (solde < -plafondDecouvert) {
             throw new IllegalArgumentException(
@@ -240,10 +253,52 @@ public class Wallet {
         this.dateCreation = date_creation;
     }
 
+    public int getTentativesEchouees() { return tentativesEchouees; }
+    public void setTentativesEchouees(int tentativesEchouees) { this.tentativesEchouees = tentativesEchouees; }
+
+    public LocalDateTime getDateDerniereTentative() { return dateDerniereTentative; }
+    public void setDateDerniereTentative(LocalDateTime dateDerniereTentative) { this.dateDerniereTentative = dateDerniereTentative; }
+
+    public boolean isEstBloque() { return estBloque; }
+    public void setEstBloque(boolean estBloque) { this.estBloque = estBloque; }
+
+    // Méthodes pour les compteurs
+    public int getNbChequesRefuses() {
+        return 0;
+    }
+
+    public void setNbChequesRefuses(int nbChequesRefuses) {
+        // À implémenter
+    }
+
+    public int getNbRetraitsEleves() {
+        return 0;
+    }
+
+    public void setNbRetraitsEleves(int nbRetraitsEleves) {
+        // À implémenter
+    }
+
+    public int getNbJoursNegatifs() {
+        return isEnDecouvert() ? 1 : 0;
+    }
+
+    public void setNbJoursNegatifs(int nbJoursNegatifs) {
+        // À implémenter
+    }
+
+    public String getPrivilege() {
+        return "STANDARD";
+    }
+
+    public void setPrivilege(String privilege) {
+        // À implémenter
+    }
+
     @Override
     public String toString() {
-        return String.format("Wallet{id=%d, propriétaire='%s', solde=%.2f, plafond=%.2f, découvert=%b}",
-                idWallet, nomProprietaire, solde, plafondDecouvert, isEnDecouvert());
+        return String.format("Wallet{id=%d, userId=%d, propriétaire='%s', solde=%.2f, plafond=%.2f, découvert=%b}",
+                idWallet, idUser, nomProprietaire, solde, plafondDecouvert, isEnDecouvert());
     }
 
     @Override
@@ -263,6 +318,7 @@ public class Wallet {
         return """
         CREATE TABLE IF NOT EXISTS wallet (
             id_wallet INT PRIMARY KEY AUTO_INCREMENT,
+            id_user INT,
             nom_proprietaire VARCHAR(100) NOT NULL,
             telephone VARCHAR(20),
             email VARCHAR(100),
@@ -272,59 +328,9 @@ public class Wallet {
             plafond_decouvert DOUBLE DEFAULT 0,
             devise VARCHAR(10) NOT NULL,
             statut VARCHAR(20) NOT NULL,
-            date_creation DATETIME NOT NULL
+            date_creation DATETIME NOT NULL,
+            FOREIGN KEY (id_user) REFERENCES users(id)
         )
         """;
     }
-    private int tentativesEchouees;
-    private LocalDateTime dateDerniereTentative;
-    private boolean estBloque;
-
-    // Getters et Setters
-    public int getTentativesEchouees() { return tentativesEchouees; }
-    public void setTentativesEchouees(int tentativesEchouees) { this.tentativesEchouees = tentativesEchouees; }
-
-    public LocalDateTime getDateDerniereTentative() { return dateDerniereTentative; }
-    public void setDateDerniereTentative(LocalDateTime dateDerniereTentative) { this.dateDerniereTentative = dateDerniereTentative; }
-
-    public boolean isEstBloque() { return estBloque; }
-    public void setEstBloque(boolean estBloque) { this.estBloque = estBloque; }
-// Ajoutez ces méthodes à la fin de votre classe Wallet
-
-    // Pour nbChequesRefuses
-    public int getNbChequesRefuses() {
-        return 0; // Valeur par défaut, à remplacer par votre logique
-    }
-
-    public void setNbChequesRefuses(int nbChequesRefuses) {
-        // À implémenter si vous avez ce champ
-    }
-
-    // Pour nbRetraitsEleves
-    public int getNbRetraitsEleves() {
-        return 0; // Valeur par défaut
-    }
-
-    public void setNbRetraitsEleves(int nbRetraitsEleves) {
-        // À implémenter si vous avez ce champ
-    }
-
-    // Pour nbJoursNegatifs
-    public int getNbJoursNegatifs() {
-        return isEnDecouvert() ? 1 : 0; // Simple calcul
-    }
-
-    public void setNbJoursNegatifs(int nbJoursNegatifs) {
-        // À implémenter si vous avez ce champ
-    }
-
-    // Pour privilege
-    public String getPrivilege() {
-        return "STANDARD"; // Valeur par défaut
-    }
-
-    public void setPrivilege(String privilege) {
-        // À implémenter si vous avez ce champ
-    }
 }
-

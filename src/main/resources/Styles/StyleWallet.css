@@ -1,4 +1,5 @@
 /* StyleWallet.css - Design FinTrust avec rectanges colorés */
+/* Fusion avec le style Admin de la gestion User */
 
 /* Import de polices Google Fonts */
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
@@ -83,83 +84,141 @@
     -fx-padding: 8 25;
 }
 
-/* ===== SIDEBAR ===== */
-.sidebar {
-    -fx-background-color: #f0f5fe;
-    -fx-background-radius: 20;
-    -fx-effect: dropshadow(gaussian, rgba(10,37,64,0.05), 10, 0, 0, 2);
-    -fx-padding: 25 0;
-    -fx-min-width: 280;
-    -fx-spacing: 5;
-    -fx-border-color: #e0e9f5;
-    -fx-border-width: 1;
-    -fx-border-radius: 20;
-}
-
-.sidebar-title {
-    -fx-font-family: 'Plus Jakarta Sans';
-    -fx-font-size: 18px;
-    -fx-font-weight: 700;
-    -fx-text-fill: #0a2540;
-    -fx-padding: 0 20 20 20;
-}
-
-.sidebar-item {
-    -fx-padding: 12 20;
-    -fx-cursor: hand;
+/* ===== STYLES ADMIN (de ta collègue) ===== */
+.admin-dashboard-scroll {
     -fx-background-color: transparent;
+}
+
+.admin-dashboard-scroll > .viewport {
+    -fx-background-color: transparent;
+}
+
+.admin-stat-card {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
+}
+
+.admin-stat-card-1 {
+    -fx-background-color: linear-gradient(to right, #667eea, #764ba2);
+}
+
+.admin-stat-card-2 {
+    -fx-background-color: linear-gradient(to right, #f093fb, #f5576c);
+}
+
+.admin-stat-card-3 {
+    -fx-background-color: linear-gradient(to right, #4facfe, #00f2fe);
+}
+
+.admin-stat-title {
+    -fx-text-fill: white;
     -fx-font-family: 'Inter';
     -fx-font-size: 14px;
-    -fx-text-fill: #1e3a5f;
+    -fx-opacity: 0.9;
 }
 
-.sidebar-item:hover {
-    -fx-background-color: #d9e6ff;
-    -fx-text-fill: #0a2540;
+.admin-stat-value {
+    -fx-text-fill: white;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 28px;
+    -fx-font-weight: bold;
 }
 
-.sidebar-item:selected {
-    -fx-background-color: #c2d6ff;
-    -fx-border-left-width: 4;
-    -fx-border-left-color: #0a2540;
+.analytics-hero-card {
+    -fx-background-color: linear-gradient(to right, #003366, #1e3b5c);
+    -fx-background-radius: 20;
+    -fx-padding: 30;
+}
+
+.analytics-hero-title {
+    -fx-text-fill: white;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 28px;
+    -fx-font-weight: 800;
+}
+
+.analytics-hero-subtitle {
+    -fx-text-fill: #b0c4de;
+    -fx-font-family: 'Inter';
+    -fx-font-size: 14px;
+}
+
+.analytics-chart {
+    -fx-background-color: white;
+    -fx-background-radius: 16;
+    -fx-padding: 10;
+}
+
+.admin-pie-card {
+    -fx-background-color: white;
+    -fx-background-radius: 20;
+    -fx-padding: 20;
+    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 10, 0, 0, 4);
+}
+
+.admin-pie-title {
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #003366;
+    -fx-padding: 0 0 15 0;
+}
+
+.analytics-table {
+    -fx-background-color: transparent;
+}
+
+.analytics-table .column-header {
+    -fx-background-color: #f0f7ff;
+    -fx-padding: 10;
+}
+
+.analytics-table .column-header .label {
+    -fx-font-family: 'Inter';
+    -fx-font-size: 13px;
     -fx-font-weight: 600;
-    -fx-text-fill: #0a2540;
+    -fx-text-fill: #003366;
 }
 
-.sidebar-item-icon {
+.game-stat-card {
+    -fx-background-radius: 16;
+    -fx-padding: 15;
+}
+
+.game-stat-card-main {
+    -fx-background-color: linear-gradient(to right, #2c3e50, #3498db);
+}
+
+.game-level-bronze {
+    -fx-background-color: #cd7f32;
+}
+
+.game-level-silver {
+    -fx-background-color: #c0c0c0;
+}
+
+.game-level-gold {
+    -fx-background-color: #ffd700;
+}
+
+.game-level-platinum {
+    -fx-background-color: #e5e4e2;
+}
+
+.game-stat-title {
+    -fx-text-fill: white;
     -fx-font-family: 'Inter';
-    -fx-font-size: 18px;
-    -fx-text-fill: #1e3a5f;
-    -fx-min-width: 30;
+    -fx-font-size: 12px;
+    -fx-opacity: 0.9;
 }
 
-.sidebar-item:selected .sidebar-item-icon {
-    -fx-text-fill: #0a2540;
-}
-
-/* ===== BREADCRUMB ===== */
-.breadcrumb {
-    -fx-alignment: center-left;
-    -fx-spacing: 5;
-    -fx-padding: 10 0 15 0;
-}
-
-.breadcrumb-label {
-    -fx-font-family: 'Inter';
-    -fx-font-size: 14px;
-    -fx-text-fill: #5f7d9c;
-}
-
-.breadcrumb-separator {
-    -fx-text-fill: #a0b8d0;
-    -fx-font-size: 14px;
-}
-
-.breadcrumb-current {
-    -fx-font-family: 'Inter';
-    -fx-font-size: 14px;
-    -fx-font-weight: 600;
-    -fx-text-fill: #0a2540;
+.game-stat-value {
+    -fx-text-fill: white;
+    -fx-font-family: 'Plus Jakarta Sans';
+    -fx-font-size: 20px;
+    -fx-font-weight: bold;
 }
 
 /* ===== STATISTIQUES AVEC RECTANGLES COLORÉS ===== */
@@ -175,7 +234,8 @@
     -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
     -fx-border-width: 2;
     -fx-border-radius: 16;
-    -fx-min-width: 200;
+    -fx-min-width: 250;
+    -fx-min-height: 120;
     -fx-alignment: center-left;
 }
 
@@ -415,6 +475,42 @@
     -fx-border-width: 1 0 0 0;
 }
 
+/* Status badge pour compte bloqué */
+.status-badge-blocked {
+    -fx-background-color: #c0392b;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-padding: 4 12;
+    -fx-background-radius: 20;
+}
+
+.status-badge {
+    -fx-padding: 4 12;
+    -fx-background-radius: 20;
+    -fx-font-size: 12px;
+    -fx-font-weight: bold;
+}
+
+.status-badge-active {
+    -fx-background-color: #d1fae5;
+    -fx-text-fill: #065f46;
+}
+
+.status-badge-draft {
+    -fx-background-color: #fef3c7;
+    -fx-text-fill: #92400e;
+}
+
+.status-badge-suspended {
+    -fx-background-color: #fee2e2;
+    -fx-text-fill: #b91c1c;
+}
+
+.status-badge-closed {
+    -fx-background-color: #e5e7eb;
+    -fx-text-fill: #4b5563;
+}
+
 /* ===== TRANSACTIONS ===== */
 .transactions-panel {
     -fx-background-color: white;
@@ -565,66 +661,4 @@
 
 .scroll-pane > .viewport {
     -fx-background-color: transparent;
-}
-/* Status badges colorés */
-.status-badge {
-    -fx-padding: 4 12;
-    -fx-background-radius: 20;
-    -fx-font-size: 12px;
-    -fx-font-weight: bold;
-}
-
-.status-badge-active {
-    -fx-background-color: #d1fae5;
-    -fx-text-fill: #065f46;
-}
-
-.status-badge-draft {
-    -fx-background-color: #fef3c7;
-    -fx-text-fill: #92400e;
-}
-
-.status-badge-suspended {
-    -fx-background-color: #fee2e2;
-    -fx-text-fill: #b91c1c;
-}
-
-.status-badge-closed {
-    -fx-background-color: #e5e7eb;
-    -fx-text-fill: #4b5563;
-}
-
-/* Agrandissement des cartes de stats */
-.stat-card {
-    -fx-background-radius: 16;
-    -fx-padding: 20;
-    -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.05), 8, 0, 0, 2);
-    -fx-border-width: 2;
-    -fx-border-radius: 16;
-    -fx-min-width: 250;
-    -fx-min-height: 120;
-    -fx-alignment: center-left;
-}
-
-.stat-card-1 {
-    -fx-background-color: #e6f0ff;
-    -fx-border-color: #3b82f6;
-}
-
-.stat-card-2 {
-    -fx-background-color: #e6f7e6;
-    -fx-border-color: #10b981;
-}
-
-.stat-card-3 {
-    -fx-background-color: #fff2e6;
-    -fx-border-color: #f97316;
-}
-/* Status badge pour compte bloqué */
-.status-badge-blocked {
-    -fx-background-color: #c0392b;
-    -fx-text-fill: white;
-    -fx-font-weight: bold;
-    -fx-padding: 4 12;
-    -fx-background-radius: 20;
 }

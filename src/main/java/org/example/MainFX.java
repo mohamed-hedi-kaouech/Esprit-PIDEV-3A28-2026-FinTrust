@@ -5,30 +5,33 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
-import org.example.Controlleurs.WalletControlleur.ChoiceController;
-import java.util.Objects;
 
 public class MainFX extends Application {
 
     @Override
     public void start(Stage primaryStage) {
         try {
-            FXMLLoader loader = new FXMLLoader(Objects.requireNonNull(
-                    getClass().getResource("/Wallet/Choice/ChoiceView.fxml")));
-
+            FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("/Auth/Login.fxml"));
             Parent root = loader.load();
 
-            // ✅ Récupérer le contrôleur et lui passer la fenêtre
-            ChoiceController controller = loader.getController();
-            controller.setChoiceStage(primaryStage);
-
             Scene scene = new Scene(root);
-            primaryStage.setTitle("FinTrust - Connexion");
+
+            var cssUrl = MainFX.class.getResource("/Styles/StyleWallet.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            } else {
+                System.err.println("CSS introuvable: /Styles/StyleWallet.css");
+            }
+
+            primaryStage.setTitle("FinTrust - Authentification");
+            primaryStage.setMinWidth(900);
+            primaryStage.setMinHeight(640);
             primaryStage.setScene(scene);
             primaryStage.show();
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
+            System.err.println("Erreur chargement app: " + e.getMessage());
         }
     }
 

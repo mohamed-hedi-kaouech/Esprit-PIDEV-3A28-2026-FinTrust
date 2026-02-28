@@ -1,11 +1,17 @@
 package org.example.Controlleurs.WalletControlleur;
 
+import org.example.Model.User.User;
 import org.example.Model.Wallet.ClassWallet.Wallet;
 import org.example.Model.Wallet.ClassWallet.Transaction;
 import org.example.Model.Wallet.ClassWallet.ScoreConfiance;
 import org.example.Service.WalletService.WalletService;
 import org.example.Service.WalletService.TransactionService;
 import org.example.Service.WalletService.ScoreConfianceService;
+import java.io.IOException;
+import org.example.Controlleurs.WalletControlleur.ConversionController;
+import org.example.Controlleurs.WalletControlleur.ChequierClientController;
+import org.example.Controlleurs.WalletControlleur.TransactionController;
+
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -59,6 +65,7 @@ public class ClientDashboardController implements Initializable {
     private Wallet clientWallet;
     private ObservableList<Transaction> transactionList;
     private DateTimeFormatter dateFormatter = DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+    private User currentUser;
 
     @Override
     public void initialize(URL url, ResourceBundle rb) {
@@ -69,15 +76,36 @@ public class ClientDashboardController implements Initializable {
 
         setupTableColumns();
 
-        int clientWalletId = 1;
-        clientWallet = walletService.getWalletById(clientWalletId);
+        // Récupérer le wallet de l'utilisateur connecté
+        if (currentUser != null) {
+            chargerWalletUtilisateur();
+        } else {
+            lblWelcome.setText("Bienvenue dans votre espace client");
+        }
+    }
+
+    private void chargerWalletUtilisateur() {
+        List<Wallet> wallets = walletService.getAllWallets();
+        clientWallet = wallets.stream()
+                .filter(w -> w.getIdUser() == currentUser.getId())
+                .findFirst()
+                .orElse(null);
 
         if (clientWallet != null) {
             afficherInfosClient();
             chargerTransactions();
             afficherScoreConfiance();
+            lblWelcome.setText("Bonjour " + clientWallet.getNom_proprietaire());
         } else {
-            lblWelcome.setText("Aucun wallet trouvé pour l'ID " + clientWalletId);
+            lblWelcome.setText("Aucun wallet trouvé");
+        }
+    }
+
+    // ✅ Méthode appelée depuis l'extérieur pour passer l'utilisateur
+    public void setCurrentUser(User user) {
+        this.currentUser = user;
+        if (lblWelcome != null) {
+            chargerWalletUtilisateur();
         }
     }
 
@@ -109,14 +137,14 @@ public class ClientDashboardController implements Initializable {
         });
 
         colDevise.setCellValueFactory(cellData ->
-                new SimpleStringProperty(clientWallet.getDevise().toString()));
+                new SimpleStringProperty(clientWallet != null ? clientWallet.getDevise().toString() : "TND"));
 
         colBeneficiaire.setCellValueFactory(cellData -> {
             Transaction t = cellData.getValue();
             String info = "-";
 
             if (t.getType().equals("TRANSFERT")) {
-                if (t.getId_wallet() == clientWallet.getId_wallet()) {
+                if (clientWallet != null && t.getId_wallet() == clientWallet.getId_wallet()) {
                     info = "Vers: " + trouverDestinataire(t);
                 } else {
                     info = "De: " + trouverExpediteur(t);
@@ -172,6 +200,7 @@ public class ClientDashboardController implements Initializable {
     }
 
     private void chargerTransactions() {
+        if (clientWallet == null) return;
         transactionList.clear();
         List<Transaction> transactions = transactionService
                 .getTransactionsByWallet(clientWallet.getId_wallet());
@@ -179,7 +208,8 @@ public class ClientDashboardController implements Initializable {
     }
 
     private void afficherInfosClient() {
-        lblWelcome.setText("Bonjour " + clientWallet.getNom_proprietaire());
+        if (clientWallet == null) return;
+
         lblWalletName.setText(clientWallet.getNom_proprietaire());
         lblSolde.setText(String.format("%.2f", clientWallet.getSolde()));
         lblDevise.setText(clientWallet.getDevise().toString());
@@ -207,30 +237,23 @@ public class ClientDashboardController implements Initializable {
     }
 
     private void afficherScoreConfiance() {
+        if (clientWallet == null) return;
+
         List<Transaction> transactions = transactionService
                 .getTransactionsByWallet(clientWallet.getId_wallet());
 
         ScoreConfiance score = scoreService.calculerScore(clientWallet, transactions);
 
-        // ✅ CORRIGÉ : Utiliser getScoreGlobal() au lieu de getScoreTotal()
         double progression = score.getScoreGlobal() / 100.0;
         progressScore.setProgress(progression);
 
         lblScore.setText(score.getScoreGlobal() + "/100");
         lblNiveau.setText(score.getNiveau());
-
-        // ✅ CORRIGÉ : Utiliser getAnciennete() au lieu de getAnciennetePoints()
         lblAnciennete.setText(score.getAnciennete() + "/15");
-
-        // ✅ CORRIGÉ : Utiliser getTransactions() au lieu de getTransactionsPoints()
         lblTransactionsScore.setText(score.getTransactions() + "/20");
-
-        // ✅ CORRIGÉ : Utiliser getStabilite() au lieu de getStabilitePoints()
         lblStabilite.setText(score.getStabilite() + "/25");
-
         lblRecommandation.setText("💡 " + score.getRecommandation());
 
-        // ✅ CORRIGÉ : Utiliser getScoreGlobal() au lieu de getScoreTotal()
         String couleur = determinerCouleurScore(score.getScoreGlobal());
         lblScore.setStyle("-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: " + couleur + ";");
     }
@@ -245,6 +268,7 @@ public class ClientDashboardController implements Initializable {
 
     @FXML
     private void handleNewTransaction() {
+        if (clientWallet == null) return;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/transaction.fxml"));
             Parent root = loader.load();
@@ -257,6 +281,7 @@ public class ClientDashboardController implements Initializable {
             stage.setScene(new Scene(root));
             stage.showAndWait();
 
+            // Recharger les données
             clientWallet = walletService.getWalletById(clientWallet.getId_wallet());
             afficherInfosClient();
             chargerTransactions();
@@ -270,6 +295,7 @@ public class ClientDashboardController implements Initializable {
 
     @FXML
     private void handleOuvrirConvertisseur() {
+        if (clientWallet == null) return;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/conversion.fxml"));
             Parent root = loader.load();
@@ -290,6 +316,7 @@ public class ClientDashboardController implements Initializable {
 
     @FXML
     private void handleOuvrirChequier() {
+        if (clientWallet == null) return;
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/chequier_client.fxml"));
             Parent root = loader.load();
@@ -321,5 +348,22 @@ public class ClientDashboardController implements Initializable {
         afficherInfosClient();
         chargerTransactions();
         afficherScoreConfiance();
+    }
+    @FXML
+    private void handleLogout() {
+        try {
+            // Retourner à la page de login client
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/client_login.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = (Stage) lblWelcome.getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Connexion Wallet Client");
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert("Erreur", "Impossible de se déconnecter: " + e.getMessage());
+        }
     }
 }

@@ -34,11 +34,18 @@
             <version>21.0.2</version>
         </dependency>
 
-        <!-- JUnit pour les tests -->
+        <!-- Tests -->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
             <version>5.10.1</version>
+            <scope>test</scope>
+        </dependency>
+        <!-- ✅ NOUVEAU : Mockito pour les tests -->
+        <dependency>
+            <groupId>org.mockito</groupId>
+            <artifactId>mockito-core</artifactId>
+            <version>5.14.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -56,6 +63,13 @@
             <version>1.6.2</version>
         </dependency>
 
+        <!-- ✅ NOUVEAU : jBCrypt pour le hashage des mots de passe -->
+        <dependency>
+            <groupId>org.mindrot</groupId>
+            <artifactId>jbcrypt</artifactId>
+            <version>0.4</version>
+        </dependency>
+
         <!-- SLF4J pour les logs -->
         <dependency>
             <groupId>org.slf4j</groupId>
@@ -70,7 +84,7 @@
             <version>4.12.0</version>
         </dependency>
 
-        <!-- ✅ JACKSON - TOUTES LES MÊMES VERSIONS (2.15.2) -->
+        <!-- JACKSON pour le JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-core</artifactId>
@@ -86,17 +100,32 @@
             <artifactId>jackson-annotations</artifactId>
             <version>2.15.2</version>
         </dependency>
+
+        <!-- OpenAI -->
         <dependency>
             <groupId>com.theokanning.openai-gpt3-java</groupId>
             <artifactId>service</artifactId>
             <version>0.18.2</version>
         </dependency>
+
         <!-- iText 7 pour génération PDF -->
         <dependency>
             <groupId>com.itextpdf</groupId>
             <artifactId>itext7-core</artifactId>
             <version>7.2.5</version>
             <type>pom</type>
+        </dependency>
+
+        <!-- ✅ NOUVEAU : ZXing pour les QR codes -->
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>core</artifactId>
+            <version>3.5.3</version>
+        </dependency>
+        <dependency>
+            <groupId>com.google.zxing</groupId>
+            <artifactId>javase</artifactId>
+            <version>3.5.3</version>
         </dependency>
 
     </dependencies>

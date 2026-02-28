@@ -34,6 +34,9 @@ public class WalletController implements Initializable {
     @FXML private HBox codeInfoBox;
     @FXML private Label lblCodeInfo;
 
+    // ✅ NOUVEAU : Champ caché pour stocker l'ID utilisateur
+    private int currentUserId;
+
     @FXML private TableView<Wallet> tableViewWallet;
     @FXML private TableColumn<Wallet, Integer> colId;
     @FXML private TableColumn<Wallet, String> colNom;
@@ -63,6 +66,11 @@ public class WalletController implements Initializable {
         if (codeInfoBox != null) {
             codeInfoBox.setVisible(false);
         }
+    }
+
+    // ✅ NOUVELLE MÉTHODE : Pour définir l'utilisateur courant
+    public void setCurrentUserId(int userId) {
+        this.currentUserId = userId;
     }
 
     private void setupComboBoxes() {
@@ -103,7 +111,6 @@ public class WalletController implements Initializable {
     }
 
     private void setupTooltips() {
-        // ✅ Tooltip pour expliquer le plafond de découvert
         Tooltip plafondTooltip = new Tooltip(
                 "Le plafond de découvert est le montant maximum autorisé en négatif.\n" +
                         "Exemple : Si le solde est de 1000 TND et le plafond de 500 TND,\n" +
@@ -111,12 +118,6 @@ public class WalletController implements Initializable {
                         "Au-delà, les transactions seront bloquées."
         );
         txtPlafondDecouvert.setTooltip(plafondTooltip);
-
-        // ✅ Label d'information visible
-        Label infoLabel = new Label("ⓘ");
-        infoLabel.setTooltip(plafondTooltip);
-        infoLabel.setStyle("-fx-text-fill: #003366; -fx-font-size: 16px; -fx-cursor: hand;");
-        // Tu peux ajouter ce label dans le GridPane à côté du champ plafond
     }
 
     private void afficherWallet(Wallet wallet) {
@@ -127,6 +128,7 @@ public class WalletController implements Initializable {
         txtPlafondDecouvert.setText(String.valueOf(wallet.getPlafondDecouvert()));
         comboDevise.setValue(wallet.getDevise());
         comboStatut.setValue(wallet.getStatut());
+        currentUserId = wallet.getIdUser(); // ✅ Stocker l'ID utilisateur
         if (codeInfoBox != null) {
             codeInfoBox.setVisible(false);
         }
@@ -149,6 +151,7 @@ public class WalletController implements Initializable {
             );
             wallet.setStatut(comboStatut.getValue());
             wallet.setPlafondDecouvert(plafond);
+            wallet.setIdUser(currentUserId); // ✅ Associer l'utilisateur
 
             if (walletService.ajouterWallet(wallet)) {
                 showSuccess("Wallet ajouté avec succès !");
@@ -190,6 +193,7 @@ public class WalletController implements Initializable {
             selected.setPlafondDecouvert(Double.parseDouble(txtPlafondDecouvert.getText().trim().replace(",", ".")));
             selected.setDevise(comboDevise.getValue());
             selected.setStatut(comboStatut.getValue());
+            selected.setIdUser(currentUserId); // ✅ Mettre à jour l'ID utilisateur
 
             if (walletService.modifierWallet(selected)) {
                 showSuccess("Wallet modifié");
@@ -305,6 +309,7 @@ public class WalletController implements Initializable {
         lblErrorSolde.setText("");
         lblErrorPlafond.setText("");
         tableViewWallet.getSelectionModel().clearSelection();
+        currentUserId = 0; // ✅ Réinitialiser l'ID utilisateur
     }
 
     private void showSuccess(String message) {

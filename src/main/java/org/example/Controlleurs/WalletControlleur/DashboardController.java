@@ -64,7 +64,8 @@ public class DashboardController implements Initializable {
         walletService = new WalletService();
         transactionService = new TransactionService();
 
-        addLogo();
+        // addLogo(); // ← COMMENTÉ
+
         lblDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy")));
         lblWelcome.setText("Bonjour, Administrateur");
 
@@ -262,13 +263,11 @@ public class DashboardController implements Initializable {
 
         card.getChildren().addAll(header, titleLabel, balanceBox, footer);
 
-        // ✅ CORRIGÉ : Ouvre le détail du wallet, pas la transaction
         card.setOnMouseClicked(event -> openWalletDetails(wallet));
 
         return card;
     }
 
-    // ✅ NOUVELLE MÉTHODE CORRIGÉE
     private void openWalletDetails(Wallet wallet) {
         try {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/wallet_detail.fxml"));
@@ -373,13 +372,54 @@ public class DashboardController implements Initializable {
         });
     }
 
-    // ✅ Méthodes pour la sidebar
-    @FXML private void handleGestionClients() { ouvrirModule("Gestion des clients", "/Wallet/gestion_clients.fxml"); }
-    @FXML private void handleGestionPublications() { ouvrirModule("Gestion des publications", "/Wallet/publications.fxml"); }
-    @FXML private void handleGestionProduits() { ouvrirModule("Gestion des produits", "/Wallet/produits.fxml"); }
-    @FXML private void handleGestionBudgets() { ouvrirModule("Gestion des budgets", "/Wallet/budgets.fxml"); }
-    @FXML private void handleGestionLoans() { ouvrirModule("Gestion des prêts", "/Wallet/loans.fxml"); }
-    @FXML private void handleGestionUsers() { ouvrirModule("Gestion des utilisateurs", "/Wallet/users.fxml"); }
+    // ✅ MÉTHODE CORRIGÉE POUR LA GESTION DES UTILISATEURS
+    @FXML
+    private void handleGestionUsers() {
+        try {
+            // Charger le dashboard user de ta collègue
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/UserDashboard.fxml"));
+            Parent root = loader.load();
+
+            Stage stage = new Stage();
+            stage.setTitle("Dashboard Utilisateurs");
+            stage.setScene(new Scene(root));
+            stage.show();
+
+        } catch (IOException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Impossible d'ouvrir le dashboard utilisateur: " + e.getMessage());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    "Erreur inattendue: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleGestionClients() {
+        ouvrirModule("Gestion des clients", "/Wallet/gestion_clients.fxml");
+    }
+
+    @FXML
+    private void handleGestionPublications() {
+        ouvrirModule("Gestion des publications", "/Wallet/publications.fxml");
+    }
+
+    @FXML
+    private void handleGestionProduits() {
+        ouvrirModule("Gestion des produits", "/Wallet/produits.fxml");
+    }
+
+    @FXML
+    private void handleGestionBudgets() {
+        ouvrirModule("Gestion des budgets", "/Wallet/budgets.fxml");
+    }
+
+    @FXML
+    private void handleGestionLoans() {
+        ouvrirModule("Gestion des prêts", "/Wallet/loans.fxml");
+    }
 
     private void ouvrirModule(String titre, String fxmlPath) {
         try {
@@ -636,10 +676,10 @@ public class DashboardController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de calculer les statistiques");
         }
     }
+
     @FXML
     private void handleStats() {
         try {
-            // Ouvrir les statistiques générales
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/statistiques.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
@@ -655,6 +695,7 @@ public class DashboardController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir les statistiques");
         }
     }
+
     @FXML
     private void handleVoirComptesBloques() {
         try {
