@@ -44,6 +44,7 @@ public class Main {
 
         System.out.println("Loan found: " + loan);
         ProductSubscription PS = new ProductSubscription(1,9, SubscriptionType.ANNUAL);
+        ProductSubscription PS = new ProductSubscription(1,29, SubscriptionType.MONTHLY);
         ProductSubscriptionService sps = new ProductSubscriptionService();
 
         Repayment r1 = new Repayment(

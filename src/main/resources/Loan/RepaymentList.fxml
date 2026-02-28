@@ -1,17 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
 <?import javafx.geometry.Insets?>
-<?import javafx.scene.text.Font?>
 
-<AnchorPane prefWidth="1000" prefHeight="600"
+<AnchorPane prefHeight="600.0" prefWidth="1000.0"
             stylesheets="@/Styles/LoanStyle.css"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.LoanControlleur.RepaymentListController">
 
-    <!-- MAIN CONTAINER -->
     <VBox spacing="20"
           AnchorPane.topAnchor="0"
           AnchorPane.leftAnchor="0"
@@ -26,72 +24,39 @@
         <HBox alignment="CENTER_LEFT" spacing="20" styleClass="header-container">
 
             <Button text="⬅ Retour"
-                    styleClass="btn-back"
+                    styleClass="btn-secondary"
                     onAction="#handleBack"/>
 
             <Label text="Liste des Remboursements"
-                   styleClass="page-title">
-                <font>
-                    <Font size="22"/>
-                </font>
-            </Label>
+                   styleClass="page-title"/>
 
             <Region HBox.hgrow="ALWAYS"/>
 
             <Button text="➕ Ajouter"
                     styleClass="btn-primary"
                     onAction="#goToAddRepayment"/>
-
         </HBox>
 
-        <!-- TABLE CONTAINER -->
-        <VBox spacing="15" styleClass="table-container" VBox.vgrow="ALWAYS">
+        <!-- TABLE -->
+        <TableView fx:id="repaymentTable"
+                   VBox.vgrow="ALWAYS"
+                   styleClass="table-view">
 
-            <TableView fx:id="repaymentTable"
-                       styleClass="product-table"
-                       VBox.vgrow="ALWAYS">
+            <columns>
+                <TableColumn fx:id="colNumber" text="N°" prefWidth="80"/>
+                <TableColumn fx:id="colAmount" text="Montant" prefWidth="150"/>
+                <TableColumn fx:id="colCapital" text="Capital" prefWidth="150"/>
+                <TableColumn fx:id="colInterest" text="Intérêt" prefWidth="150"/>
+                <TableColumn fx:id="colStatus" text="Statut" prefWidth="130"/>
+                <TableColumn fx:id="colPay" text="Paiement" prefWidth="120"/>
+                <TableColumn fx:id="colDelete" text="Supprimer" prefWidth="120"/>
+            </columns>
 
-                <columns>
+            <columnResizePolicy>
+                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
+            </columnResizePolicy>
 
-                    <TableColumn fx:id="colNumber"
-                                 text="N°"
-                                 prefWidth="70"/>
-
-                    <TableColumn fx:id="colAmount"
-                                 text="Montant"
-                                 prefWidth="150"/>
-
-                    <TableColumn fx:id="colCapital"
-                                 text="Capital"
-                                 prefWidth="150"/>
-
-                    <TableColumn fx:id="colInterest"
-                                 text="Intérêt"
-                                 prefWidth="150"/>
-
-                    <TableColumn fx:id="colStatus"
-                                 text="Statut"
-                                 prefWidth="150"/>
-
-                    <TableColumn fx:id="colPay"
-                                 text="Paiement"
-                                 prefWidth="130"
-                                 sortable="false"/>
-
-                    <TableColumn fx:id="colDelete"
-                                 text="Supprimer"
-                                 prefWidth="130"
-                                 sortable="false"/>
-
-                </columns>
-
-                <columnResizePolicy>
-                    <TableView fx:constant="CONSTRAINED_RESIZE_POLICY"/>
-                </columnResizePolicy>
-
-            </TableView>
-
-        </VBox>
+        </TableView>
 
     </VBox>
 

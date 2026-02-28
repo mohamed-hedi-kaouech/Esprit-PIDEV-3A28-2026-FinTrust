@@ -1,0 +1,205 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+
+<?import javafx.scene.text.Font?>
+<?import javafx.geometry.Insets?>
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieCreateController"
+           prefWidth="900" prefHeight="600"
+            stylesheets="/Styles/StyleBudget.css"
+            styleClass="main-container">
+    <!-- TOP BAR -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <padding>
+            <Insets top="20" right="30" bottom="20" left="30"/>
+        </padding>
+
+        <Button text="⬅ Retour" onAction="#goBackToListe" styleClass="btn-back">
+            <font>
+                <Font name="System Bold" size="13.0" />
+            </font>
+        </Button>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label text="➕ Créer une Nouvelle Catégorie" styleClass="page-title">
+            <font>
+                <Font name="System Bold" size="24.0" />
+            </font>
+        </Label>
+
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- SCROLLPANE CONTENT -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                style="-fx-background-color: transparent; -fx-background: transparent;">
+        <VBox alignment="CENTER">
+            <padding>
+                <Insets top="40" right="40" bottom="40" left="40"/>
+            </padding>
+
+            <!-- Form Card -->
+            <VBox spacing="25" styleClass="form-card" maxWidth="500">
+                <padding>
+                    <Insets top="35" right="35" bottom="35" left="35"/>
+                </padding>
+
+                <!-- Form Title -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="📝" style="-fx-font-size:32px;"/>
+                    <VBox>
+                        <Label text="Nouvelle Catégorie" styleClass="form-title">
+                            <font>
+                                <Font name="System Bold" size="20.0" />
+                            </font>
+                        </Label>
+                        <Label text="Remplissez les informations ci-dessous" styleClass="form-subtitle">
+                            <font>
+                                <Font size="12.0" />
+                            </font>
+                        </Label>
+                    </VBox>
+                </HBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Nom Catégorie -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Nom de la Catégorie *" styleClass="input-label">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <TextField fx:id="tfNomCategorie" promptText="Ex: Alimentation, Transport, Loisirs..."
+                               styleClass="input-field">
+                        <font>
+                            <Font size="14.0" />
+                        </font>
+                    </TextField>
+                    <Label text="Donnez un nom descriptif et unique" styleClass="input-help">
+                        <font>
+                            <Font size="11.0" />
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Budget Prévu -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Budget Prévu (DT) *" styleClass="input-label">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfBudgetPrevu" promptText="0.00"
+                                   styleClass="input-field" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+                        <Label text="DT" styleClass="currency-label">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                    <Label text="Montant total alloué pour cette catégorie" styleClass="input-help">
+                        <font>
+                            <Font size="11.0" />
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Seuil d'Alerte -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Seuil d'Alerte (DT) *" styleClass="input-label">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Label>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfSeuilAlerte" promptText="0.00"
+                                   styleClass="input-field" HBox.hgrow="ALWAYS">
+                            <font>
+                                <Font size="14.0" />
+                            </font>
+                        </TextField>
+                        <Label text="DT" styleClass="currency-label-warning">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                    <Label text="Vous serez alerté quand le budget restant atteint ce montant" styleClass="input-help">
+                        <font>
+                            <Font size="11.0" />
+                        </font>
+                    </Label>
+                </VBox>
+
+                <!-- Preview Section -->
+                <VBox spacing="10" styleClass="preview-box">
+                    <padding>
+                        <Insets top="15" right="15" bottom="15" left="15"/>
+                    </padding>
+                    <Label text="📊 Aperçu du Statut" styleClass="preview-title">
+                        <font>
+                            <Font name="System Bold" size="12.0" />
+                        </font>
+                    </Label>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Pourcentage du seuil:" styleClass="preview-label"/>
+                        <Label fx:id="lblPreviewPercentage" text="0%" styleClass="preview-value">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                    <HBox spacing="15" alignment="CENTER_LEFT">
+                        <Label text="Statut prévu:" styleClass="preview-label"/>
+                        <Label fx:id="lblPreviewStatut" text="-" styleClass="preview-statut">
+                            <font>
+                                <Font name="System Bold" size="14.0" />
+                            </font>
+                        </Label>
+                    </HBox>
+                </VBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Form Buttons -->
+                <HBox spacing="15" alignment="CENTER">
+                    <padding>
+                        <Insets top="10"/>
+                    </padding>
+
+                    <Button fx:id="btnAjouter" text="💾 Enregistrer" onAction="#handleAjouter"
+                        styleClass="btn-save" prefWidth="180">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+
+                        <Button fx:id="btnAnnuler" text="🔄 Réinitialiser" onAction="#handleAnnuler"
+                            styleClass="btn-clear" prefWidth="150">
+                        <font>
+                            <Font name="System Bold" size="13.0" />
+                        </font>
+                    </Button>
+                </HBox>
+
+            </VBox>
+
+        </VBox>
+    </ScrollPane>
+
+</AnchorPane>

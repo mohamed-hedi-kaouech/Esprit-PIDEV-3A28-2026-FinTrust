@@ -2,10 +2,12 @@ package org.example.Controlleurs.LoanControlleur;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
 import javafx.geometry.Pos;
+import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -16,6 +18,7 @@ import org.example.Model.Loan.LoanClass.Loan;
 import org.example.Model.Loan.LoanEnum.LoanStatus;
 import org.example.Service.LoanService.LoanService;
 
+import java.io.IOException;
 import java.net.URL;
 import java.util.Optional;
 import java.util.ResourceBundle;
@@ -98,11 +101,25 @@ public class LoanManagerGUI implements Initializable {
         });
     }
 
+    @FXML
+    private void goBackToMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/MenuGUI.fxml")
+            );
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Manager");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
 
     private void setupButtons() {
 
-        colUpdate.setCellFactory(getButtonCell("Modifier", "btn-update", true));
-        colDelete.setCellFactory(getButtonCell("Supprimer", "btn-delete", false));
+        colUpdate.setCellFactory(getButtonCell("⚙", "btn-update", true));
+        colDelete.setCellFactory(getButtonCell("❌", "btn-delete", false));
 
         colRepayments.setCellFactory(param -> new TableCell<>() {
 

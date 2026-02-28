@@ -1,5 +1,8 @@
 package org.example.Utils;
 
+import org.example.Model.Budget.Categorie;
+import org.example.Model.Budget.Item;
+import org.example.Model.Budget.Alerte;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Wallet.Transaction;
@@ -12,6 +15,7 @@ import org.example.Model.User.User;
 import org.example.Model.Wallet.ClassWallet.Transaction;
 import org.example.Model.Wallet.ClassWallet.Wallet;
 import org.mindrot.jbcrypt.BCrypt;
+
 
 
 import java.sql.Connection;
@@ -67,6 +71,9 @@ public class MaConnexion {
 
                 //Categorie TABLE
                 st.executeUpdate(Categorie.SQLTable());
+                st.executeUpdate(Item.SQLTable());
+                st.executeUpdate(Alerte.SQLTable());
+
 
                 //Transaction TABLE
                 st.executeUpdate(Transaction.SQLTable());
@@ -83,124 +90,11 @@ public class MaConnexion {
                 st.executeUpdate(Repayment.SQLTable());
 
 
-                //Users table
-                st.executeUpdate(User.SQLTable());
-                reconcileUsersTable();
-
-                //KYC tables
-                st.executeUpdate(Kyc.SQLTable());
-                reconcileKycTable();
-                st.executeUpdate(KycFile.SQLTable());
-
-                seedDefaultAdmin();
-
                 System.out.println("Tables checked/created successfully.");
 
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-    }
-
-    private void seedDefaultAdmin() throws SQLException {
-        String countSql = "SELECT COUNT(*) FROM users WHERE role = 'ADMIN'";
-        try (PreparedStatement countPs = cnx.prepareStatement(countSql);
-             ResultSet rs = countPs.executeQuery()) {
-            if (rs.next() && rs.getLong(1) > 0) {
-                return;
-            }
-        }
-
-        String tempPassword = "Admin1234";
-        String hash = BCrypt.hashpw(tempPassword, BCrypt.gensalt(12));
-        String insertSql = "INSERT INTO users (nom, prenom, email, password, role, status, createdAt, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
-        try (PreparedStatement insertPs = cnx.prepareStatement(insertSql)) {
-            insertPs.setString(1, "Administrateur");
-            insertPs.setString(2, "");
-            insertPs.setString(3, "admin@pidev.local");
-            insertPs.setString(4, hash);
-            insertPs.setString(5, "ADMIN");
-            insertPs.setString(6, "ACCEPTE");
-            insertPs.executeUpdate();
-        }
-
-        System.out.println("Admin seed created: admin@pidev.local / Admin1234 (changez ce mot de passe).");
-    }
-
-    private void reconcileUsersTable() throws SQLException {
-        try (Statement st = cnx.createStatement()) {
-            if (!hasColumn("users", "status")) {
-                st.executeUpdate("ALTER TABLE users ADD COLUMN status ENUM('EN_ATTENTE','ACCEPTE','REFUSE') NOT NULL DEFAULT 'EN_ATTENTE'");
-            }
-            if (!hasColumn("users", "created_at")) {
-                st.executeUpdate("ALTER TABLE users ADD COLUMN created_at DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
-            }
-            if (!hasColumn("users", "prenom")) {
-                st.executeUpdate("ALTER TABLE users ADD COLUMN prenom VARCHAR(120) NOT NULL DEFAULT ''");
-            }
-            if (!hasColumn("users", "numTel")) {
-                st.executeUpdate("ALTER TABLE users ADD COLUMN numTel VARCHAR(20) DEFAULT NULL");
-            }
-            if (!hasColumn("users", "createdAt")) {
-                st.executeUpdate("ALTER TABLE users ADD COLUMN createdAt DATETIME NOT NULL DEFAULT CURRENT_TIMESTAMP");
-            }
-            st.executeUpdate("UPDATE users SET role='CLIENT' WHERE UPPER(role) NOT IN ('ADMIN','CLIENT')");
-        }
-    }
-
-    private void reconcileKycTable() throws SQLException {
-        try (Statement st = cnx.createStatement()) {
-            if (!hasColumn("kyc", "cin")) {
-                st.executeUpdate("ALTER TABLE kyc ADD COLUMN cin VARCHAR(20) NULL");
-            }
-            if (!hasColumn("kyc", "adresse")) {
-                st.executeUpdate("ALTER TABLE kyc ADD COLUMN adresse VARCHAR(255) NULL");
-            }
-            if (!hasColumn("kyc", "date_naissance")) {
-                st.executeUpdate("ALTER TABLE kyc ADD COLUMN date_naissance DATE NULL");
-            }
-
-            st.executeUpdate("UPDATE kyc SET cin = CONCAT('TMP-KYC-', user_id) WHERE cin IS NULL OR TRIM(cin) = ''");
-            st.executeUpdate("UPDATE kyc SET adresse = 'Adresse non renseignee' WHERE adresse IS NULL OR TRIM(adresse) = ''");
-            st.executeUpdate("UPDATE kyc SET date_naissance = '1970-01-01' WHERE date_naissance IS NULL");
-
-            st.executeUpdate("ALTER TABLE kyc MODIFY COLUMN cin VARCHAR(20) NOT NULL");
-            st.executeUpdate("ALTER TABLE kyc MODIFY COLUMN adresse VARCHAR(255) NOT NULL");
-            st.executeUpdate("ALTER TABLE kyc MODIFY COLUMN date_naissance DATE NOT NULL");
-
-            if (!hasIndex("kyc", "ux_kyc_cin")) {
-                st.executeUpdate("ALTER TABLE kyc ADD UNIQUE KEY ux_kyc_cin (cin)");
-            }
-        }
-    }
-
-    private boolean hasColumn(String tableName, String columnName) throws SQLException {
-        String sql = """
-                SELECT COUNT(*) FROM information_schema.COLUMNS
-                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND COLUMN_NAME = ?
-                """;
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setString(1, tableName);
-            ps.setString(2, columnName);
-            try (ResultSet rs = ps.executeQuery()) {
-                rs.next();
-                return rs.getInt(1) > 0;
-            }
-        }
-    }
-
-    private boolean hasIndex(String tableName, String indexName) throws SQLException {
-        String sql = """
-                SELECT COUNT(*) FROM information_schema.STATISTICS
-                WHERE TABLE_SCHEMA = DATABASE() AND TABLE_NAME = ? AND INDEX_NAME = ?
-                """;
-        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
-            ps.setString(1, tableName);
-            ps.setString(2, indexName);
-            try (ResultSet rs = ps.executeQuery()) {
-                rs.next();
-                return rs.getInt(1) > 0;
-            }
         }
     }
 }

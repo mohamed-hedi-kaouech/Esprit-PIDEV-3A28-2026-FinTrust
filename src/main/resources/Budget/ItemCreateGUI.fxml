@@ -1,0 +1,84 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.*?>
+
+<AnchorPane xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.BudgetControlleur.ItemCreateController"
+            prefWidth="900" prefHeight="600"
+            stylesheets="/Styles/StyleBudget.css"
+            styleClass="main-container">
+
+    <!-- TOP BAR -->
+    <HBox alignment="CENTER_LEFT" spacing="15" styleClass="header-bar" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0">
+        <padding><Insets top="20" right="30" bottom="20" left="30"/></padding>
+
+        <Button text="⬅ Retour" onAction="#goBackToListe" styleClass="btn-back">
+            <font><Font name="System Bold" size="13.0"/></font>
+        </Button>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
+        <Label text="➕ Créer un Nouvel Item" styleClass="page-title">
+            <font><Font name="System Bold" size="24.0"/></font>
+        </Label>
+
+        <Region HBox.hgrow="ALWAYS"/>
+    </HBox>
+
+    <!-- SCROLLPANE CONTENT -->
+    <ScrollPane fitToWidth="true" fitToHeight="true"
+                AnchorPane.topAnchor="80.0" AnchorPane.leftAnchor="0.0"
+                AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0"
+                style="-fx-background-color: transparent;">
+        <VBox alignment="CENTER">
+            <padding><Insets top="40" right="40" bottom="40" left="40"/></padding>
+
+            <VBox spacing="25" styleClass="form-card" maxWidth="500">
+                <padding><Insets top="35" right="35" bottom="35" left="35"/></padding>
+
+                <!-- Form Title -->
+                <HBox alignment="CENTER_LEFT" spacing="12">
+                    <Label text="📝" style="-fx-font-size:32px;"/>
+                    <VBox>
+                        <Label text="Nouvel Item" styleClass="form-title"/>
+                        <Label text="Remplissez les informations ci-dessous" styleClass="form-subtitle"/>
+                    </VBox>
+                </HBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Nom Item -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Nom de l'Item *" styleClass="input-label"/>
+                    <TextField fx:id="tfLibelle" promptText="Ex: Pain, Eau, Essence..." styleClass="input-field"/>
+                </VBox>
+
+                <!-- Catégorie -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Catégorie *" styleClass="input-label"/>
+                    <ComboBox fx:id="cbCategorie" promptText="Sélectionnez la catégorie" styleClass="input-field"/>
+                </VBox>
+
+                <!-- Prix -->
+                <VBox spacing="8" styleClass="input-group">
+                    <Label text="Prix  (DT) *" styleClass="input-label"/>
+                    <HBox spacing="10" alignment="CENTER_LEFT">
+                        <TextField fx:id="tfMontant" promptText="0.00" styleClass="input-field"/>
+                        <Label text="DT" styleClass="currency-label"/>
+                    </HBox>
+                </VBox>
+
+                <Separator styleClass="form-separator"/>
+
+                <!-- Form Buttons -->
+                <HBox spacing="15" alignment="CENTER">
+                    <Button text="💾 Enregistrer" onAction="#enregistrer" styleClass="btn-save" prefWidth="180"/>
+                    <Button text="🔄 Réinitialiser" onAction="#reinitialiser" styleClass="btn-clear" prefWidth="150"/>
+                </HBox>
+
+            </VBox>
+        </VBox>
+    </ScrollPane>
+</AnchorPane>

@@ -35,13 +35,11 @@ public class SimulatorControlleur {
             double amount = Double.parseDouble(amountField.getText());
             int duration = Integer.parseInt(durationField.getText());
 
-            // ===== BASIC VALIDATION =====
             if (age <= 0 || income <= 0 || amount <= 0 || duration <= 0) {
                 showError("Valeurs invalides.");
                 return;
             }
 
-            // ===== AGE CHECK =====
             if (age < 18) {
                 showError("Âge minimum requis : 18 ans.");
                 return;
@@ -52,7 +50,7 @@ public class SimulatorControlleur {
                 return;
             }
 
-            // ===== CALCULATION =====
+            // ===== CALCUL =====
             double total = amount + (amount * interestRate / 100);
             double monthly = total / duration;
 
