@@ -10,6 +10,8 @@ import org.example.Repository.UserRepository;
 import org.example.Service.NotificationService.NotificationService;
 import org.example.Service.WalletService.WalletService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -164,6 +166,29 @@ public class KycService {
 
         kycRepository.saveOrUpdateKyc(actor.getId(), cin, adresse, dateNaissance, KycStatus.EN_ATTENTE, null, LocalDateTime.now());
         return KycSubmitResult.success("KYC soumis avec succes. En attente de validation admin.");
+    }
+
+    public String saveClientSignature(User actor, byte[] pngData) {
+        ensureClient(actor);
+        if (pngData == null || pngData.length == 0) {
+            throw new IllegalArgumentException("Signature vide.");
+        }
+        if (pngData.length > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException("Signature trop volumineuse.");
+        }
+
+        try {
+            Path dir = Path.of("storage", "kyc", "signatures");
+            Files.createDirectories(dir);
+            String fileName = "signature_user_" + actor.getId() + "_" + System.currentTimeMillis() + ".png";
+            Path path = dir.resolve(fileName);
+            Files.write(path, pngData);
+            String normalizedPath = path.toString().replace('\\', '/');
+            kycRepository.updateSignaturePathByUserId(actor.getId(), normalizedPath);
+            return normalizedPath;
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur sauvegarde signature KYC", e);
+        }
     }
 
     public List<KycAdminRow> listKycForAdmin(User actor) {

@@ -8,5 +8,5 @@ public interface InterfaceGlobal<T> {
     void Update(T t);
     List<T> ReadAll();
     T ReadId(Integer id);
-
+   
 }

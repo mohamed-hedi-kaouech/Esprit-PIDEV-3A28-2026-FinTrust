@@ -23,7 +23,7 @@ public class KycRepository {
     }
 
     public Optional<Kyc> findByUserId(int userId) {
-        String sql = "SELECT id, user_id, cin, adresse, date_naissance, statut, commentaire_admin, date_submission FROM kyc WHERE user_id = ?";
+        String sql = "SELECT id, user_id, cin, adresse, date_naissance, signature_path, signature_uploaded_at, statut, commentaire_admin, date_submission FROM kyc WHERE user_id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -109,7 +109,7 @@ public class KycRepository {
     }
 
     public List<Kyc> findAllWithUser() {
-        String sql = "SELECT id, user_id, cin, adresse, date_naissance, statut, commentaire_admin, date_submission FROM kyc ORDER BY date_submission DESC";
+        String sql = "SELECT id, user_id, cin, adresse, date_naissance, signature_path, signature_uploaded_at, statut, commentaire_admin, date_submission FROM kyc ORDER BY date_submission DESC";
         List<Kyc> list = new ArrayList<>();
         try (PreparedStatement ps = cnx.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
@@ -234,7 +234,7 @@ public class KycRepository {
     }
 
     public Optional<Kyc> findById(int kycId) {
-        String sql = "SELECT id, user_id, cin, adresse, date_naissance, statut, commentaire_admin, date_submission FROM kyc WHERE id = ?";
+        String sql = "SELECT id, user_id, cin, adresse, date_naissance, signature_path, signature_uploaded_at, statut, commentaire_admin, date_submission FROM kyc WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, kycId);
             try (ResultSet rs = ps.executeQuery()) {
@@ -252,6 +252,18 @@ public class KycRepository {
         return cin != null && cin.startsWith(TEMP_CIN_PREFIX);
     }
 
+    public void updateSignaturePathByUserId(int userId, String signaturePath) {
+        createIfMissing(userId);
+        String sql = "UPDATE kyc SET signature_path = ?, signature_uploaded_at = NOW() WHERE user_id = ?";
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            ps.setString(1, signaturePath);
+            ps.setInt(2, userId);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur update signature KYC", e);
+        }
+    }
+
     private static String buildTempCin(int userId) {
         return TEMP_CIN_PREFIX + userId;
     }
@@ -264,6 +276,9 @@ public class KycRepository {
         k.setAdresse(rs.getString("adresse"));
         Date dob = rs.getDate("date_naissance");
         k.setDateNaissance(dob == null ? null : dob.toLocalDate());
+        k.setSignaturePath(rs.getString("signature_path"));
+        Timestamp signatureTs = rs.getTimestamp("signature_uploaded_at");
+        k.setSignatureUploadedAt(signatureTs == null ? null : signatureTs.toLocalDateTime());
         k.setStatut(KycStatus.valueOf(rs.getString("statut")));
         k.setCommentaireAdmin(rs.getString("commentaire_admin"));
         Timestamp ts = rs.getTimestamp("date_submission");

@@ -1,77 +1,67 @@
 package org.example.Utils;
 
-import org.example.Model.Product.ClassProduct.ProductSubscription;
-import org.example.Model.Product.ClassProduct.Product;
 import org.example.Model.Kyc.Kyc;
 import org.example.Model.Kyc.KycFile;
 import org.example.Model.User.User;
-import org.example.Model.Wallet.ClassWallet.Transaction;
+
+// ✅ IMPORTS MANQUANTS (corrige ton erreur)
+import org.example.Model.Product.ClassProduct.Product;
+import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Wallet.ClassWallet.Wallet;
+import org.example.Model.Wallet.ClassWallet.Transaction;
+
 import org.mindrot.jbcrypt.BCrypt;
 
-
-import java.sql.Connection;
-import java.sql.DriverManager;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 
 public class MaConnexion {
-    //DB
-    final String URL = "jdbc:mysql://localhost:3306/PIDEV";
-    final String USR = "root";
-    final String PWD = "";
 
-    //var
-    Connection cnx;
-    static MaConnexion instance;
+    // DB
+    private static final String URL = "jdbc:mysql://localhost:3306/PIDEV";
+    private static final String USR = "root";
+    private static final String PWD = "";
 
-    //Constructeur
-    private MaConnexion(){
+    private Connection cnx;
+    private static MaConnexion instance;
+
+    private MaConnexion() {
         try {
             cnx = DriverManager.getConnection(URL, USR, PWD);
             System.out.println("Connexion Etablie avec succes!");
             loadDatabase();
         } catch (SQLException e) {
-            throw new RuntimeException(e);
+            throw new RuntimeException("Erreur connexion DB: " + e.getMessage(), e);
         }
+    }
+
+    public static MaConnexion getInstance() {
+        if (instance == null) instance = new MaConnexion();
+        return instance;
     }
 
     public Connection getCnx() {
         return cnx;
     }
 
-    public static MaConnexion getInstance() {
-        if(instance == null)
-            instance = new MaConnexion();
-        return instance;
+    // ✅ pour ton UserRepository.updateProfile() qui appelle getConnection()
+    public Connection getConnection() {
+        return cnx;
     }
 
-
     public void loadDatabase() {
-
         try {
-            cnx = DriverManager.getConnection(URL, USR, PWD);
+            // On réutilise cnx (pas besoin de refaire DriverManager)
             try (Statement st = cnx.createStatement()) {
 
-                //PRODUCT TABLE
+                // TABLES
                 st.executeUpdate(Product.SQLTable());
-
-                //PRODUCT SUBSCRIPTION TABLE
                 st.executeUpdate(ProductSubscription.SQLTable());
-
-                //Wallet TABLE
                 st.executeUpdate(Wallet.SQLTable());
-
-                //Transaction TABLE
                 st.executeUpdate(Transaction.SQLTable());
 
-                //Users table
                 st.executeUpdate(User.SQLTable());
                 reconcileUsersTable();
 
-                //KYC tables
                 st.executeUpdate(Kyc.SQLTable());
                 reconcileKycTable();
                 st.executeUpdate(KycFile.SQLTable());
@@ -79,10 +69,10 @@ public class MaConnexion {
                 seedDefaultAdmin();
 
                 System.out.println("Tables checked/created successfully.");
-
             }
+
         } catch (SQLException e) {
-            e.printStackTrace();
+            throw new RuntimeException("Erreur loadDatabase: " + e.getMessage(), e);
         }
     }
 
@@ -90,14 +80,15 @@ public class MaConnexion {
         String countSql = "SELECT COUNT(*) FROM users WHERE role = 'ADMIN'";
         try (PreparedStatement countPs = cnx.prepareStatement(countSql);
              ResultSet rs = countPs.executeQuery()) {
-            if (rs.next() && rs.getLong(1) > 0) {
-                return;
-            }
+            if (rs.next() && rs.getLong(1) > 0) return;
         }
 
         String tempPassword = "Admin1234";
         String hash = BCrypt.hashpw(tempPassword, BCrypt.gensalt(12));
-        String insertSql = "INSERT INTO users (nom, prenom, email, password, role, status, createdAt, created_at) VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
+
+        String insertSql = "INSERT INTO users (nom, prenom, email, password, role, status, createdAt, created_at) " +
+                "VALUES (?, ?, ?, ?, ?, ?, NOW(), NOW())";
+
         try (PreparedStatement insertPs = cnx.prepareStatement(insertSql)) {
             insertPs.setString(1, "Administrateur");
             insertPs.setString(2, "");
@@ -108,7 +99,7 @@ public class MaConnexion {
             insertPs.executeUpdate();
         }
 
-        System.out.println("Admin seed created: admin@pidev.local / Admin1234 (changez ce mot de passe).");
+        System.out.println("Admin seed created: admin@pidev.local / Admin1234");
     }
 
     private void reconcileUsersTable() throws SQLException {
@@ -142,6 +133,12 @@ public class MaConnexion {
             }
             if (!hasColumn("kyc", "date_naissance")) {
                 st.executeUpdate("ALTER TABLE kyc ADD COLUMN date_naissance DATE NULL");
+            }
+            if (!hasColumn("kyc", "signature_path")) {
+                st.executeUpdate("ALTER TABLE kyc ADD COLUMN signature_path VARCHAR(255) NULL");
+            }
+            if (!hasColumn("kyc", "signature_uploaded_at")) {
+                st.executeUpdate("ALTER TABLE kyc ADD COLUMN signature_uploaded_at DATETIME NULL");
             }
 
             st.executeUpdate("UPDATE kyc SET cin = CONCAT('TMP-KYC-', user_id) WHERE cin IS NULL OR TRIM(cin) = ''");

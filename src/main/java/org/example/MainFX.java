@@ -11,12 +11,17 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/Auth/Login.fxml"));
+            FXMLLoader loader = new FXMLLoader(MainFX.class.getResource("/Auth/Login.fxml"));
+            Parent root = loader.load();
 
             Scene scene = new Scene(root);
 
-            String css = getClass().getResource("/Styles/StyleWallet.css").toExternalForm();
-            scene.getStylesheets().add(css);
+            var cssUrl = MainFX.class.getResource("/Styles/StyleWallet.css");
+            if (cssUrl != null) {
+                scene.getStylesheets().add(cssUrl.toExternalForm());
+            } else {
+                System.err.println("CSS introuvable: /Styles/StyleWallet.css");
+            }
 
             primaryStage.setTitle("FinTrust - Authentification");
             primaryStage.setMinWidth(900);
@@ -24,9 +29,9 @@ public class MainFX extends Application {
             primaryStage.setScene(scene);
             primaryStage.show();
 
-        } catch(Exception e) {
+        } catch (Exception e) {
             e.printStackTrace();
-            System.err.println("Erreur lors du chargement de l'application : " + e.getMessage());
+            System.err.println("Erreur chargement app: " + e.getMessage());
         }
     }
 

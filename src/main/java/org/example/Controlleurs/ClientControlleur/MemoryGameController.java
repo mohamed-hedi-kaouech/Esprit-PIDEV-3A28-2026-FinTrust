@@ -1,4 +1,4 @@
-﻿package org.example.Controlleurs.ClientControlleur;
+package org.example.Controlleurs.ClientControlleur;
 
 import javafx.animation.KeyFrame;
 import javafx.animation.PauseTransition;

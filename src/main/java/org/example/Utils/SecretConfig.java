@@ -65,11 +65,21 @@ public final class SecretConfig {
         if (Files.isRegularFile(projectLocal)) {
             loadFile(projectLocal);
         }
+        // 3.b) legacy project local file: ./fintrustlocal.properties
+        Path projectLocalLegacy = Paths.get("fintrustlocal.properties").toAbsolutePath();
+        if (Files.isRegularFile(projectLocalLegacy)) {
+            loadFile(projectLocalLegacy);
+        }
 
-        // 3.b) fallback dev local file: ./PIDEV/fintrust.local.properties
+        // 4) fallback dev local file: ./PIDEV/fintrust.local.properties
         Path nestedProjectLocal = Paths.get("PIDEV", "fintrust.local.properties").toAbsolutePath();
         if (Files.isRegularFile(nestedProjectLocal)) {
             loadFile(nestedProjectLocal);
+        }
+        // 4.b) fallback dev legacy local file: ./PIDEV/fintrustlocal.properties
+        Path nestedProjectLocalLegacy = Paths.get("PIDEV", "fintrustlocal.properties").toAbsolutePath();
+        if (Files.isRegularFile(nestedProjectLocalLegacy)) {
+            loadFile(nestedProjectLocalLegacy);
         }
     }
 
@@ -88,10 +98,22 @@ public final class SecretConfig {
             String key = String.valueOf(keys.nextElement());
             String value = source.getProperty(key);
             if (value == null) continue;
-            String trimmed = value.trim();
+            String trimmed = sanitize(value);
             if (!trimmed.isEmpty()) {
                 FILE_PROPS.setProperty(key, trimmed);
             }
         }
+    }
+
+    private static String sanitize(String value) {
+        String trimmed = value.trim();
+        if (trimmed.length() >= 2) {
+            boolean quoted = (trimmed.startsWith("\"") && trimmed.endsWith("\""))
+                    || (trimmed.startsWith("'") && trimmed.endsWith("'"));
+            if (quoted) {
+                trimmed = trimmed.substring(1, trimmed.length() - 1).trim();
+            }
+        }
+        return trimmed;
     }
 }

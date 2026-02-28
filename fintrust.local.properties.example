@@ -1,0 +1,11 @@
+## Local secrets for FinTrust mail (do not commit real values)
+## Copy to: fintrust.local.properties and fill values.
+
+FINTRUST_SMTP_HOST=smtp.gmail.com
+FINTRUST_SMTP_PORT=587
+FINTRUST_SMTP_STARTTLS=true
+FINTRUST_SMTP_FROM=fintrustsolutions977@gmail.com
+FINTRUST_SMTP_DEBUG=true
+
+FINTRUST_SMTP_USERNAME=fintrustsolutions977@gmail.com
+FINTRUST_SMTP_APP_PASSWORD=XXXX XXXX XXXX XXXX
