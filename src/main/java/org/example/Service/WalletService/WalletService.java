@@ -182,4 +182,38 @@ public class WalletService {
         }
         return false;
     }
+
+    public boolean walletExistePourProprietaire(String nomProprietaire) {
+        if (nomProprietaire == null || nomProprietaire.trim().isEmpty()) {
+            return false;
+        }
+        String query = "SELECT 1 FROM wallet WHERE nom_proprietaire = ? LIMIT 1";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setString(1, nomProprietaire.trim());
+            try (ResultSet rs = pstmt.executeQuery()) {
+                return rs.next();
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
+
+    public boolean creerWalletParDefautSiAbsent(String nomProprietaire) {
+        String owner = nomProprietaire == null ? "" : nomProprietaire.trim();
+        if (owner.isEmpty()) {
+            return false;
+        }
+        if (walletExistePourProprietaire(owner)) {
+            return true;
+        }
+
+        Wallet wallet = new Wallet();
+        wallet.setNom_proprietaire(owner);
+        wallet.setSolde(0.0);
+        wallet.setDevise(WalletDevise.TND);
+        wallet.setStatut(WalletStatut.ACTIVE);
+        wallet.setDate_creation(LocalDateTime.now());
+        return ajouterWallet(wallet);
+    }
 }

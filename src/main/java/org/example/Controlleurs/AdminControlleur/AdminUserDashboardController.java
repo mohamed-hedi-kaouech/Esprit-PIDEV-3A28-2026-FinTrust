@@ -9,28 +9,39 @@ import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.scene.chart.BarChart;
 import javafx.scene.chart.PieChart;
+import javafx.scene.chart.XYChart;
 import javafx.scene.control.*;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.layout.GridPane;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
 import org.example.Model.User.UserStatus;
 import org.example.Service.ExportService.AdminExportService;
+import org.example.Service.WeatherService;
 import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
 import java.io.File;
 import java.net.URL;
 import java.nio.file.Path;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Locale;
 import java.util.Map;
+import java.util.TreeMap;
+import java.util.concurrent.CompletableFuture;
 
 public class AdminUserDashboardController {
 
@@ -48,9 +59,19 @@ public class AdminUserDashboardController {
     @FXML private Label totalClientsLabel;
     @FXML private Label totalAdminsLabel;
     @FXML private PieChart statusPieChart;
+    @FXML private BarChart<String, Number> activityBarChart;
     @FXML private TextField searchField;
     @FXML private ComboBox<String> sortByCombo;
     @FXML private ComboBox<String> sortOrderCombo;
+    @FXML private Label dashboardTitleLabel;
+    @FXML private Label usersSectionTitleLabel;
+    @FXML private Label usersSectionSubtitleLabel;
+    @FXML private Label statusChartTitleLabel;
+    @FXML private Label activityTitleLabel;
+    @FXML private Label quickStatsLabel;
+    @FXML private VBox notificationBar;
+    @FXML private ComboBox<String> notificationTargetCombo;
+    @FXML private TextField notificationMessageField;
 
     private final UserService userService = new UserService();
     private final AdminExportService exportService = new AdminExportService();
@@ -58,6 +79,8 @@ public class AdminUserDashboardController {
     private final ObservableList<User> masterUsers = FXCollections.observableArrayList();
     private FilteredList<User> filteredUsers;
     private SortedList<User> sortedUsers;
+    private boolean english = false;
+    private final WeatherService weatherService = new WeatherService();
 
     @FXML
     private void initialize() {
@@ -92,6 +115,21 @@ public class AdminUserDashboardController {
         if (sortOrderCombo != null) {
             sortOrderCombo.getItems().setAll("DESC", "ASC");
             sortOrderCombo.setValue("DESC");
+        }
+        if (notificationTargetCombo != null) {
+            notificationTargetCombo.getItems().setAll(
+                    "Client selectionne",
+                    "Tous les clients acceptes",
+                    "Tous les clients"
+            );
+            notificationTargetCombo.setValue("Client selectionne");
+        }
+        if (notificationMessageField != null && notificationMessageField.getText().isBlank()) {
+            notificationMessageField.setText("Votre compte a ete mis a jour par l'administration.");
+        }
+        if (notificationBar != null) {
+            notificationBar.setVisible(false);
+            notificationBar.setManaged(false);
         }
 
         filteredUsers = new FilteredList<>(masterUsers, u -> true);
@@ -168,7 +206,97 @@ public class AdminUserDashboardController {
 
     @FXML
     private void goToKycValidation() {
-        openInNewWindow("/Admin/KycValidation.fxml", "Validation KYC", "/Styles/StyleWallet.css");
+        navigateTo("/Admin/KycValidation.fxml", "Validation KYC", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToWalletDashboard() {
+        navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToProducts() {
+        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToPublications() {
+        setInfo("Module Publications: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void goToBudget() {
+        setInfo("Module Budget: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void goToLoans() {
+        setInfo("Module Loans: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void handleToggleLanguage() {
+        english = !english;
+        if (dashboardTitleLabel != null) dashboardTitleLabel.setText(english ? "User Administration" : "Administration Utilisateurs");
+        if (usersSectionTitleLabel != null) usersSectionTitleLabel.setText(english ? "Users List" : "Liste des utilisateurs");
+        if (usersSectionSubtitleLabel != null) usersSectionSubtitleLabel.setText(english ? "Status monitoring and validation" : "Validation et suivi des statuts");
+        if (statusChartTitleLabel != null) statusChartTitleLabel.setText(english ? "Account Status" : "Statut des comptes");
+        if (activityTitleLabel != null) activityTitleLabel.setText(english ? "User Activity (10 days)" : "Activite utilisateurs (10 jours)");
+        if (quickStatsLabel != null) quickStatsLabel.setText(english ? "Quick stats updated" : "Stats rapides mises a jour");
+        setInfo(english ? "Language switched to English." : "Langue basculee en Francais.", false);
+    }
+
+    @FXML
+    private void handleThemeBoost() {
+        setInfo("Chargement meteo du jour...", false);
+        CompletableFuture
+                .supplyAsync(weatherService::getTodayWeatherSummary)
+                .thenAccept(msg -> Platform.runLater(() -> {
+                    setInfo(msg, false);
+                    showWeatherCardDialog(msg);
+                }))
+                .exceptionally(ex -> {
+                    Platform.runLater(() -> {
+                        String err = "Meteo indisponible: " + safe(ex.getMessage());
+                        setInfo(err, true);
+                        showWeatherCardDialog("Meteo indisponible pour le moment. " + err);
+                    });
+                    return null;
+                });
+    }
+
+    @FXML
+    private void handleFavoriteAction() {
+        User best = masterUsers.stream()
+                .filter(u -> u.getRole() == UserRole.CLIENT)
+                .filter(u -> u.getStatus() == UserStatus.ACCEPTE)
+                .max(Comparator.comparing(User::getCreatedAt, Comparator.nullsLast(Comparator.naturalOrder())))
+                .orElse(null);
+
+        if (best == null) {
+            setInfo("Aucun client accepte pour le meilleur utilisateur.", true);
+            showAlert(Alert.AlertType.WARNING, "Meilleur utilisateur", "Aucun client accepte disponible.");
+            return;
+        }
+
+        String msg = "Meilleur utilisateur: " + safe(best.getNom()) + " (" + safe(best.getEmail()) + ")";
+        setInfo(msg, false);
+        showBestUserCardDialog(best);
+    }
+
+    @FXML
+    private void handleAlertsAction() {
+        openNotificationDialog();
+    }
+
+    @FXML
+    private void handleProfileAction() {
+        User current = SessionContext.getInstance().getCurrentUser();
+        String name = current == null ? "Admin" : safe(current.getNom());
+        setInfo((english ? "Connected admin: " : "Admin connecte: ") + name, false);
     }
 
     @FXML
@@ -268,6 +396,40 @@ public class AdminUserDashboardController {
     @FXML
     private void handleBack() {
         navigateTo("/MenuGUI.fxml", "Menu Principal", "/Styles/MenuStyle.css");
+    }
+
+    @FXML
+    private void handleSendPanelNotification() {
+        String target = notificationTargetCombo == null ? null : notificationTargetCombo.getValue();
+        String msg = notificationMessageField == null ? "" : notificationMessageField.getText().trim();
+
+        if (msg.isBlank()) {
+            setInfo("Saisissez un message de notification.", true);
+            return;
+        }
+
+        try {
+            int sent = 0;
+            if ("Client selectionne".equals(target)) {
+                User selected = usersTable.getSelectionModel().getSelectedItem();
+                if (selected == null || selected.getRole() != UserRole.CLIENT) {
+                    setInfo("Selectionnez un client dans la liste.", true);
+                    return;
+                }
+                userService.sendNotificationToUser(SessionContext.getInstance().getCurrentUser(), selected.getId(), msg);
+                sent = 1;
+            } else {
+                for (User user : masterUsers) {
+                    if (user.getRole() != UserRole.CLIENT) continue;
+                    if ("Tous les clients acceptes".equals(target) && user.getStatus() != UserStatus.ACCEPTE) continue;
+                    userService.sendNotificationToUser(SessionContext.getInstance().getCurrentUser(), user.getId(), msg);
+                    sent++;
+                }
+            }
+            setInfo("Notification envoyee a " + sent + " client(s).", false);
+        } catch (Exception e) {
+            setInfo("Erreur notification: " + e.getMessage(), true);
+        }
     }
 
     @FXML
@@ -382,12 +544,55 @@ public class AdminUserDashboardController {
             stylePieSlice(approuve, "#3b82f6");
             stylePieSlice(refuse, "#93c5fd");
         });
+        updateActivityChart(users);
+        if (quickStatsLabel != null) {
+            quickStatsLabel.setText("Accepte: " + statusCounts.get(UserStatus.ACCEPTE)
+                    + " | En attente: " + statusCounts.get(UserStatus.EN_ATTENTE)
+                    + " | Refuse: " + statusCounts.get(UserStatus.REFUSE));
+        }
     }
 
     private void stylePieSlice(PieChart.Data data, String color) {
         if (data.getNode() != null) {
             data.getNode().setStyle("-fx-pie-color: " + color + ";");
         }
+    }
+
+    private void updateActivityChart(List<User> users) {
+        if (activityBarChart == null) return;
+
+        LocalDate today = LocalDate.now();
+        Map<LocalDate, Integer> created = new TreeMap<>();
+        Map<LocalDate, Integer> accepted = new TreeMap<>();
+        for (int i = 9; i >= 0; i--) {
+            LocalDate d = today.minusDays(i);
+            created.put(d, 0);
+            accepted.put(d, 0);
+        }
+
+        for (User user : users) {
+            if (user.getCreatedAt() == null) continue;
+            LocalDate d = user.getCreatedAt().toLocalDate();
+            if (!created.containsKey(d)) continue;
+            created.put(d, created.get(d) + 1);
+            if (user.getStatus() == UserStatus.ACCEPTE) {
+                accepted.put(d, accepted.get(d) + 1);
+            }
+        }
+
+        XYChart.Series<String, Number> sCreated = new XYChart.Series<>();
+        sCreated.setName(english ? "Registrations" : "Inscriptions");
+        XYChart.Series<String, Number> sAccepted = new XYChart.Series<>();
+        sAccepted.setName(english ? "Approved" : "Valides");
+
+        DateTimeFormatter fmt = DateTimeFormatter.ofPattern("dd/MM");
+        for (LocalDate d : created.keySet()) {
+            String key = d.format(fmt);
+            sCreated.getData().add(new XYChart.Data<>(key, created.get(d)));
+            sAccepted.getData().add(new XYChart.Data<>(key, accepted.get(d)));
+        }
+
+        activityBarChart.getData().setAll(sCreated, sAccepted);
     }
 
     private void exportUsersTo(String extension) {
@@ -546,4 +751,194 @@ public class AdminUserDashboardController {
     private String safe(String s) {
         return s == null ? "" : s;
     }
+
+    private void openNotificationDialog() {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle("Notifier un client");
+        dialog.setHeaderText(null);
+
+        ComboBox<User> targetCombo = new ComboBox<>();
+        targetCombo.getItems().setAll(masterUsers.filtered(u -> u.getRole() == UserRole.CLIENT));
+        targetCombo.setPrefWidth(420);
+        targetCombo.setCellFactory(lv -> new ListCell<>() {
+            @Override protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getId() + " - " + safe(item.getNom()) + " (" + safe(item.getEmail()) + ")");
+            }
+        });
+        targetCombo.setButtonCell(new ListCell<>() {
+            @Override protected void updateItem(User item, boolean empty) {
+                super.updateItem(item, empty);
+                setText(empty || item == null ? "" : item.getId() + " - " + safe(item.getNom()));
+            }
+        });
+
+        TextField messageField = new TextField("Votre compte a ete mis a jour par l'administration.");
+        messageField.setPrefWidth(420);
+        messageField.setStyle("-fx-background-radius: 10; -fx-border-radius: 10; -fx-border-color: #bfdbfe; -fx-padding: 10;");
+
+        Label title = new Label("Envoyer une notification ciblee");
+        title.setStyle("-fx-font-size: 18px; -fx-font-weight: 800; -fx-text-fill: #1d4f91;");
+
+        Label clientLabel = new Label("Client");
+        clientLabel.setStyle("-fx-font-weight: 700; -fx-text-fill: #1e3a5f;");
+        Label messageLabel = new Label("Message");
+        messageLabel.setStyle("-fx-font-weight: 700; -fx-text-fill: #1e3a5f;");
+
+        VBox content = new VBox(10, title, clientLabel, targetCombo, messageLabel, messageField);
+        content.setPadding(new Insets(14));
+        content.setStyle("-fx-background-color: linear-gradient(to bottom right, #f5fbff, #e9f2ff); -fx-background-radius: 14; -fx-border-color: #c8dcf7; -fx-border-radius: 14;");
+        dialog.getDialogPane().setContent(content);
+        dialog.getDialogPane().setStyle("-fx-background-color: #eef6ff;");
+
+        ButtonType sendType = new ButtonType("Envoyer", ButtonBar.ButtonData.OK_DONE);
+        dialog.getDialogPane().getButtonTypes().setAll(sendType, ButtonType.CANCEL);
+        Button sendButton = (Button) dialog.getDialogPane().lookupButton(sendType);
+        Button cancelButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL);
+        if (sendButton != null) {
+            sendButton.setStyle("-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6); -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 9 18;");
+        }
+        if (cancelButton != null) {
+            cancelButton.setStyle("-fx-background-color: white; -fx-text-fill: #1e3a5f; -fx-font-weight: 700; -fx-border-color: #9fbce4; -fx-border-radius: 10; -fx-background-radius: 10; -fx-padding: 9 18;");
+        }
+
+        dialog.showAndWait().ifPresent(type -> {
+            if (type != sendType) return;
+            User target = targetCombo.getValue();
+            String msg = messageField.getText() == null ? "" : messageField.getText().trim();
+            if (target == null) {
+                setInfo("Selectionnez un client.", true);
+                return;
+            }
+            if (msg.isBlank()) {
+                setInfo("Message vide.", true);
+                return;
+            }
+            try {
+                userService.sendNotificationToUser(SessionContext.getInstance().getCurrentUser(), target.getId(), msg);
+                setInfo("Notification envoyee a " + safe(target.getNom()) + ".", false);
+            } catch (Exception e) {
+                setInfo("Erreur notification: " + e.getMessage(), true);
+            }
+        });
+    }
+
+    private void showInfoCardDialog(String title, String message, String iconGlyph, String iconBg, String iconColor) {
+        Dialog<ButtonType> dialog = new Dialog<>();
+        dialog.setTitle(title);
+        dialog.setHeaderText(null);
+
+        Label icon = new Label(iconGlyph);
+        icon.setStyle("-fx-font-size: 22px; -fx-font-weight: 800; -fx-text-fill: " + iconColor + "; -fx-background-color: " + iconBg + "; -fx-background-radius: 999; -fx-padding: 12 14;");
+
+        Label text = new Label(message);
+        text.setWrapText(true);
+        text.setStyle("-fx-text-fill: #13345c; -fx-font-size: 18px; -fx-font-weight: 700;");
+
+        HBox row = new HBox(12, icon, text);
+        row.setAlignment(Pos.CENTER_LEFT);
+
+        VBox card = new VBox(row);
+        card.setPadding(new Insets(16));
+        card.setStyle("-fx-background-color: linear-gradient(to bottom right, #f5fbff, #e7f2ff); -fx-background-radius: 14; -fx-border-color: #bfd8f7; -fx-border-radius: 14;");
+
+        dialog.getDialogPane().setContent(card);
+        dialog.getDialogPane().setStyle("-fx-background-color: #eef6ff;");
+        dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+        Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+        if (okButton != null) {
+            okButton.setStyle("-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6); -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 9 24;");
+        }
+        dialog.showAndWait();
+    }
+
+    private void showWeatherCardDialog(String message) {
+        try {
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Meteo du jour");
+            dialog.setHeaderText(null);
+
+            Label title = new Label("Etat meteo actuel");
+            title.setStyle("-fx-text-fill: #1b4a7a; -fx-font-size: 18px; -fx-font-weight: 800;");
+
+            Label icon = new Label("\u2600");
+            icon.setStyle("-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #9a6700; -fx-background-color: #fde68a; -fx-background-radius: 999; -fx-padding: 10 14;");
+
+            Label text = new Label(message == null ? "Meteo indisponible." : message);
+            text.setWrapText(true);
+            text.setStyle("-fx-text-fill: #163d67; -fx-font-size: 15px; -fx-font-weight: 700;");
+
+            HBox row = new HBox();
+            row.setSpacing(12);
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.getChildren().addAll(icon, text);
+
+            VBox card = new VBox();
+            card.setSpacing(12);
+            card.getChildren().addAll(title, row);
+            card.setPadding(new Insets(16));
+            card.setStyle("-fx-background-color: linear-gradient(to bottom right, #fff9e8, #edf6ff); -fx-background-radius: 14; -fx-border-color: #f1d38a; -fx-border-radius: 14;");
+
+            dialog.getDialogPane().setContent(card);
+            dialog.getDialogPane().setStyle("-fx-background-color: #eef6ff;");
+            dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            if (okButton != null) {
+                okButton.setStyle("-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6); -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 9 24;");
+            }
+            dialog.showAndWait();
+        } catch (Exception e) {
+            showAlert(Alert.AlertType.INFORMATION, "Meteo du jour", message == null ? "Meteo indisponible." : message);
+        }
+    }
+
+    private void showBestUserCardDialog(User best) {
+        try {
+            Dialog<ButtonType> dialog = new Dialog<>();
+            dialog.setTitle("Meilleur utilisateur");
+            dialog.setHeaderText(null);
+
+            Label icon = new Label("\u2605");
+            icon.setStyle("-fx-font-size: 24px; -fx-font-weight: 900; -fx-text-fill: #6d28d9; -fx-background-color: #ede9fe; -fx-background-radius: 999; -fx-padding: 10 14;");
+
+            Label title = new Label("Top utilisateur du moment");
+            title.setStyle("-fx-text-fill: #4c1d95; -fx-font-size: 18px; -fx-font-weight: 800;");
+
+            Label name = new Label("Nom: " + safe(best == null ? "" : best.getNom()));
+            Label email = new Label("Email: " + safe(best == null ? "" : best.getEmail()));
+            Label status = new Label("Statut: " + (best == null || best.getStatus() == null ? "-" : best.getStatus().name()));
+            name.setStyle("-fx-text-fill: #1f2a44; -fx-font-size: 14px; -fx-font-weight: 700;");
+            email.setStyle("-fx-text-fill: #1f2a44; -fx-font-size: 14px; -fx-font-weight: 700;");
+            status.setStyle("-fx-text-fill: #1f2a44; -fx-font-size: 14px; -fx-font-weight: 700;");
+
+            VBox details = new VBox();
+            details.setSpacing(8);
+            details.getChildren().addAll(title, name, email, status);
+
+            HBox row = new HBox();
+            row.setSpacing(12);
+            row.setAlignment(Pos.CENTER_LEFT);
+            row.getChildren().addAll(icon, details);
+
+            VBox card = new VBox();
+            card.getChildren().add(row);
+            card.setPadding(new Insets(16));
+            card.setStyle("-fx-background-color: linear-gradient(to bottom right, #f7f1ff, #eaf2ff); -fx-background-radius: 14; -fx-border-color: #d8c8fb; -fx-border-radius: 14;");
+
+            dialog.getDialogPane().setContent(card);
+            dialog.getDialogPane().setStyle("-fx-background-color: #eef6ff;");
+            dialog.getDialogPane().getButtonTypes().setAll(ButtonType.OK);
+            Button okButton = (Button) dialog.getDialogPane().lookupButton(ButtonType.OK);
+            if (okButton != null) {
+                okButton.setStyle("-fx-background-color: linear-gradient(to right, #6d28d9, #8b5cf6); -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 10; -fx-padding: 9 24;");
+            }
+            dialog.showAndWait();
+        } catch (Exception e) {
+            String msg = best == null
+                    ? "Aucun utilisateur disponible."
+                    : "Meilleur utilisateur: " + safe(best.getNom()) + " (" + safe(best.getEmail()) + ")";
+            showAlert(Alert.AlertType.INFORMATION, "Meilleur utilisateur", msg);
+        }
+    }
+
 }

@@ -24,6 +24,7 @@ import org.example.Service.AnalyticsService.HeatmapPoint;
 import org.example.Service.AnalyticsService.OtpAnalyticsSnapshot;
 import org.example.Service.AnalyticsService.UserScoreService;
 import org.example.Service.AnalyticsService.UserSegmentType;
+import org.example.Utils.SessionContext;
 
 import java.net.URL;
 import java.util.HashMap;
@@ -101,7 +102,74 @@ public class AdminAnalyticsDashboardController {
 
     @FXML
     private void handleBack() {
+        goToDashboard();
+    }
+
+    @FXML
+    private void goToDashboard() {
         navigateTo("/Admin/UserDashboard.fxml", "Dashboard Admin", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToAnalyticsDashboard() {
+        handleRefresh();
+    }
+
+    @FXML
+    private void goToAdminTasks() {
+        navigateTo("/Admin/AdminTasks.fxml", "Admin Productivity / Ops", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToKycValidation() {
+        navigateTo("/Admin/KycValidation.fxml", "Validation KYC", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToCreateUserForm() {
+        navigateTo("/Admin/UserCreate.fxml", "Creation Utilisateur", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToMenu() {
+        navigateTo("/MenuGUI.fxml", "Menu Principal", "/Styles/MenuStyle.css");
+    }
+
+    @FXML
+    private void handleLogout() {
+        SessionContext.getInstance().logout();
+        navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToWalletDashboard() {
+        navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToProducts() {
+        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToPublications() {
+        infoLabel.setText("Module Publications: ouvrez depuis le menu principal.");
+        infoLabel.setStyle("-fx-text-fill: #1d6b34;");
+        goToMenu();
+    }
+
+    @FXML
+    private void goToBudget() {
+        infoLabel.setText("Module Budget: ouvrez depuis le menu principal.");
+        infoLabel.setStyle("-fx-text-fill: #1d6b34;");
+        goToMenu();
+    }
+
+    @FXML
+    private void goToLoans() {
+        infoLabel.setText("Module Loans: ouvrez depuis le menu principal.");
+        infoLabel.setStyle("-fx-text-fill: #1d6b34;");
+        goToMenu();
     }
 
     private void bindTables() {

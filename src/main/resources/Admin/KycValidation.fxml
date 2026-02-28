@@ -15,6 +15,30 @@
             stylesheets="@../Styles/StyleWallet.css"
             fx:controller="org.example.Controlleurs.AdminControlleur.AdminKycValidationController">
 
+    <left>
+        <VBox spacing="10" prefWidth="250"
+              style="-fx-background-color: linear-gradient(to bottom, #2f75d8, #4a9df7); -fx-padding: 22 16;">
+            <children>
+                <Label text="FinTrust Admin" style="-fx-text-fill: #f5f7fb; -fx-font-size: 24px; -fx-font-weight: 800;"/>
+                <Label text="Gestion centrale" style="-fx-text-fill: #e7f3ff; -fx-font-size: 13px;"/>
+                <Button text="Dashboard Utilisateurs" onAction="#goToDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ecf1f8; -fx-text-fill: #1a2d44; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Analytics" onAction="#goToAnalyticsDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Mes taches" onAction="#goToAdminTasks" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Validation KYC" onAction="#goToKycValidation" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Creer utilisateur" onAction="#goToCreateUserForm" maxWidth="1.7976931348623157E308" style="-fx-background-color: white; -fx-text-fill: #22466f; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                
+                <Label text="Modules metier" style="-fx-text-fill: #e7f3ff; -fx-font-size: 12px; -fx-font-weight: 700; -fx-padding: 8 0 0 0;"/>
+                <Button text="Gestion Wallet" onAction="#goToWalletDashboard" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Publications" onAction="#goToPublications" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Budget" onAction="#goToBudget" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Products" onAction="#goToProducts" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Button text="Loans" onAction="#goToLoans" maxWidth="1.7976931348623157E308" style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+                <Region VBox.vgrow="ALWAYS"/>
+                <Button text="Deconnexion" onAction="#handleLogout" maxWidth="1.7976931348623157E308" style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: 700; -fx-background-radius: 12;"/>
+            </children>
+        </VBox>
+    </left>
+
     <top>
         <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="10">
             <children>

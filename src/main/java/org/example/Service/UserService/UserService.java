@@ -350,6 +350,20 @@ public class UserService {
     public void updateUserStatus(User actor, int userId, UserStatus status) {
         ensureAdmin(actor);
         userRepository.updateStatus(userId, status);
+
+        userRepository.findById(userId).ifPresent(user -> {
+            if (user.getRole() == UserRole.CLIENT) {
+                String msg = switch (status) {
+                    case ACCEPTE -> "Votre compte a ete valide par l'administration.";
+                    case REFUSE -> "Votre compte a ete refuse par l'administration.";
+                    case EN_ATTENTE -> "Votre compte est remis en attente de verification.";
+                };
+                try {
+                    notificationService.create(userId, "ADMIN", msg);
+                } catch (Exception ignored) {
+                }
+            }
+        });
     }
 
     public void updateUserByAdmin(User actor, int userId, String nomRaw, String emailRaw, String numTelRaw, UserStatus status) {
@@ -369,6 +383,16 @@ public class UserService {
         }
 
         userRepository.updateByAdmin(userId, nom, email, numTel, status);
+
+        userRepository.findById(userId).ifPresent(user -> {
+            if (user.getRole() == UserRole.CLIENT) {
+                try {
+                    notificationService.create(userId, "ADMIN",
+                            "Votre profil a ete modifie par l'administration.");
+                } catch (Exception ignored) {
+                }
+            }
+        });
     }
 
     public void deleteUser(User actor, int userId) {
@@ -406,6 +430,11 @@ public class UserService {
         }
 
         userRepository.updateProfile(user.getId(), nom, email, numTel);
+        try {
+            notificationService.create(user.getId(), "SYSTEM",
+                    "Votre profil a ete mis a jour avec succes.");
+        } catch (Exception ignored) {
+        }
     }
 
     private void ensureAdmin(User actor) {

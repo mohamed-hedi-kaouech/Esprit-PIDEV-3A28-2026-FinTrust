@@ -43,6 +43,7 @@ public class ClientDashboardController {
     @FXML private Button profileButton;
     @FXML private Button loanButton;
     @FXML private Button budgetButton;
+    @FXML private Button productButton;
     @FXML private Button publicationButton;
 
     private final SessionContext session = SessionContext.getInstance();
@@ -83,6 +84,7 @@ public class ClientDashboardController {
         profileButton.setDisable(!allowed);
         loanButton.setDisable(!allowed);
         budgetButton.setDisable(!allowed);
+        productButton.setDisable(!allowed);
         publicationButton.setDisable(!allowed);
 
         refreshNotifBadge();
@@ -162,9 +164,20 @@ public class ClientDashboardController {
     }
 
     @FXML
+    private void goToProducts() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
     private void goToPublications() {
         if (!ensureKycApprovedOrShow()) return;
         navigateTo("/Publication/PublicationManagerGUI.fxml", "Publications", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToHome() {
+        navigateTo("/Client/ClientDashboard.fxml", "Dashboard Client", "/Styles/StyleWallet.css");
     }
 
     @FXML

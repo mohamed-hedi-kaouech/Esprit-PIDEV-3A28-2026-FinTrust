@@ -136,7 +136,71 @@ public class AdminTasksController {
 
     @FXML
     private void handleBack() {
+        goToDashboard();
+    }
+
+    @FXML
+    private void goToDashboard() {
         navigateTo("/Admin/UserDashboard.fxml", "Dashboard Admin", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToAnalyticsDashboard() {
+        navigateTo("/Admin/AnalyticsDashboard.fxml", "Data Analytics Dashboard", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToAdminTasks() {
+        handleRefresh();
+    }
+
+    @FXML
+    private void goToKycValidation() {
+        navigateTo("/Admin/KycValidation.fxml", "Validation KYC", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToCreateUserForm() {
+        navigateTo("/Admin/UserCreate.fxml", "Creation Utilisateur", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToMenu() {
+        navigateTo("/MenuGUI.fxml", "Menu Principal", "/Styles/MenuStyle.css");
+    }
+
+    @FXML
+    private void handleLogout() {
+        SessionContext.getInstance().logout();
+        navigateTo("/Auth/Login.fxml", "Connexion", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToWalletDashboard() {
+        navigateTo("/Wallet/dashboard.fxml", "Wallet", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToProducts() {
+        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+    }
+
+    @FXML
+    private void goToPublications() {
+        setInfo("Module Publications: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void goToBudget() {
+        setInfo("Module Budget: ouvrez depuis le menu principal.", false);
+        goToMenu();
+    }
+
+    @FXML
+    private void goToLoans() {
+        setInfo("Module Loans: ouvrez depuis le menu principal.", false);
+        goToMenu();
     }
 
     private void moveSelected(AdminTaskStatus target) {

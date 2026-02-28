@@ -6,7 +6,12 @@ import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
 import org.example.Model.User.UserRole;
 import org.example.Repository.KycRepository;
+import org.example.Repository.UserRepository;
+import org.example.Service.NotificationService.NotificationService;
+import org.example.Service.WalletService.WalletService;
 
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.HashSet;
@@ -23,13 +28,26 @@ public class KycService {
     private static final Pattern CIN_PATTERN = Pattern.compile("^\\d{8}$");
 
     private final KycRepository kycRepository;
+    private final UserRepository userRepository;
+    private final WalletService walletService;
+    private final NotificationService notificationService;
 
     public KycService() {
-        this(new KycRepository());
+        this(new KycRepository(), new UserRepository(), new WalletService(), new NotificationService());
     }
 
     public KycService(KycRepository kycRepository) {
+        this(kycRepository, new UserRepository(), new WalletService(), new NotificationService());
+    }
+
+    public KycService(KycRepository kycRepository,
+                      UserRepository userRepository,
+                      WalletService walletService,
+                      NotificationService notificationService) {
         this.kycRepository = kycRepository;
+        this.userRepository = userRepository;
+        this.walletService = walletService;
+        this.notificationService = notificationService;
     }
 
     public KycStateResult getClientKycState(User actor) {
@@ -72,10 +90,6 @@ public class KycService {
 
         KycStatus targetStatus = current.getStatut();
         String commentaire = current.getCommentaireAdmin();
-        if (targetStatus == KycStatus.APPROUVE && !dateNaissance.equals(current.getDateNaissance())) {
-            targetStatus = KycStatus.EN_ATTENTE;
-            commentaire = null;
-        }
 
         kycRepository.saveOrUpdateKyc(
                 actor.getId(),
@@ -154,6 +168,29 @@ public class KycService {
         return KycSubmitResult.success("KYC soumis avec succes. En attente de validation admin.");
     }
 
+    public String saveClientSignature(User actor, byte[] pngData) {
+        ensureClient(actor);
+        if (pngData == null || pngData.length == 0) {
+            throw new IllegalArgumentException("Signature vide.");
+        }
+        if (pngData.length > MAX_FILE_SIZE) {
+            throw new IllegalArgumentException("Signature trop volumineuse.");
+        }
+
+        try {
+            Path dir = Path.of("storage", "kyc", "signatures");
+            Files.createDirectories(dir);
+            String fileName = "signature_user_" + actor.getId() + "_" + System.currentTimeMillis() + ".png";
+            Path path = dir.resolve(fileName);
+            Files.write(path, pngData);
+            String normalizedPath = path.toString().replace('\\', '/');
+            kycRepository.updateSignaturePathByUserId(actor.getId(), normalizedPath);
+            return normalizedPath;
+        } catch (Exception e) {
+            throw new RuntimeException("Erreur sauvegarde signature KYC", e);
+        }
+    }
+
     public List<KycAdminRow> listKycForAdmin(User actor) {
         ensureAdmin(actor);
         return kycRepository.findAllAdminRows();
@@ -186,7 +223,13 @@ public class KycService {
 
     public void adminValidate(User actor, int kycId) {
         ensureAdmin(actor);
+        Kyc before = kycRepository.findById(kycId).orElse(null);
+        boolean wasAlreadyApproved = before != null && before.getStatut() == KycStatus.APPROUVE;
         kycRepository.updateKycStatusByAdmin(kycId, KycStatus.APPROUVE, null);
+        autoCreateWalletAfterKycApproval(kycId);
+        if (!wasAlreadyApproved) {
+            notifyClientKycApproved(kycId);
+        }
     }
 
     public void adminSetPending(User actor, int kycId) {
@@ -254,6 +297,33 @@ public class KycService {
         if (actor == null || actor.getRole() != UserRole.CLIENT) {
             throw new SecurityException("Action reservee a un client.");
         }
+    }
+
+    private void autoCreateWalletAfterKycApproval(int kycId) {
+        kycRepository.findById(kycId).ifPresent(kyc -> {
+            userRepository.findById(kyc.getUserId()).ifPresent(user -> {
+                String owner = user.getEmail();
+                if (owner.isBlank()) {
+                    owner = (user.getNom() + " " + user.getPrenom()).trim();
+                }
+                walletService.creerWalletParDefautSiAbsent(owner);
+            });
+        });
+    }
+
+    private void notifyClientKycApproved(int kycId) {
+        kycRepository.findById(kycId).ifPresent(kyc -> {
+            int userId = kyc.getUserId();
+            try {
+                notificationService.create(
+                        userId,
+                        "KYC",
+                        "Votre KYC a ete valide. Votre wallet FinTrust est maintenant cree et disponible."
+                );
+            } catch (Exception ignored) {
+                // Ne pas bloquer la validation KYC si la notification echoue.
+            }
+        });
     }
 
     public void deleteUser(User currentUser, int userId) {
