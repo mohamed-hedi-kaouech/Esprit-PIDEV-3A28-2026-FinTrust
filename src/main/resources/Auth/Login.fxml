@@ -1,56 +1,83 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Hyperlink?>
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.PasswordField?>
-<?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.VBox?>
 
-<BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1" styleClass="auth-root"
-            stylesheets="@../Styles/StyleWallet.css,@../Styles/AuthModern.css"
-            fx:controller="org.example.Controlleurs.AuthControlleur.AuthLoginController">
-
-    <top>
-        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="10">
-            <children>
-                <Label text="FinTrust - Connexion" styleClass="logo-text"/>
-                <Region HBox.hgrow="ALWAYS"/>
-                <Label text="Secure Access" styleClass="badge"/>
-            </children>
-        </HBox>
-    </top>
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.AuthControlleur.AuthLoginController"
+            prefHeight="500" prefWidth="800"
+            style="-fx-background-color: linear-gradient(to bottom right, #f3f8ff, #e9f3ff);">
 
     <center>
-        <ScrollPane fitToWidth="true" hbarPolicy="NEVER" vbarPolicy="AS_NEEDED" styleClass="admin-dashboard-scroll">
-            <content>
-                <VBox spacing="20" alignment="TOP_CENTER" styleClass="auth-shell">
-                    <VBox spacing="12" alignment="CENTER" styleClass="bank-card auth-card" maxWidth="540">
-                        <HBox alignment="CENTER" styleClass="section-header auth-header">
-                            <Label text="Se connecter" styleClass="section-title auth-title" />
-                        </HBox>
+        <HBox alignment="CENTER" spacing="0">
+            <VBox alignment="CENTER" spacing="20"
+                  prefWidth="350" prefHeight="500"
+                  style="-fx-background-color: linear-gradient(to bottom, #2a68c8, #3f8efc); -fx-padding: 50;">
 
-                        <Label text="Connectez-vous pour acceder a votre espace FinTrust" styleClass="section-subtitle auth-subtitle" />
+                <Label text="FinTrust"
+                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
 
-                        <Label text="Email" styleClass="form-label auth-label" />
-                        <TextField fx:id="emailField" promptText="votre@email.com" maxWidth="390" styleClass="auth-field" />
+                <Label text="La Confiance Par La Finance "
+                       style="-fx-font-size: 14px; -fx-text-fill: #d9e8ff;"/>
 
-                        <Label text="Mot de passe" styleClass="form-label auth-label" />
-                        <PasswordField fx:id="passwordField" promptText="Mot de passe" maxWidth="390" styleClass="auth-field" />
-
-                        <Button text="Se connecter" onAction="#handleLogin" styleClass="auth-primary-btn" maxWidth="260" />
-
-                        <Label fx:id="messageLabel" text="" styleClass="section-subtitle auth-message" maxWidth="430" wrapText="true" />
-
-                        <Hyperlink text="Creer un compte" onAction="#goToSignup" styleClass="auth-link auth-link-strong" />
-                        <Hyperlink text="Mot de passe oublie ?" onAction="#goToPasswordReset" styleClass="auth-link" />
-                    </VBox>
+                <VBox alignment="CENTER" spacing="15" style="-fx-padding: 30 0 0 0;">
+                    <Label text="&#128274;" style="-fx-font-size: 40px;"/>
+                    <Label text="Connexion securisee"
+                           style="-fx-font-size: 16px; -fx-font-weight: bold; -fx-text-fill: white;"/>
+                    <Label text="Authentification a deux facteurs"
+                           style="-fx-font-size: 12px; -fx-text-fill: #d9e8ff;"/>
                 </VBox>
-            </content>
-        </ScrollPane>
+            </VBox>
+
+            <VBox alignment="CENTER" spacing="22"
+                  prefWidth="450" prefHeight="500"
+                  style="-fx-background-color: white; -fx-padding: 50; -fx-background-radius: 0 18 18 0;">
+
+                <Label text="Espace Client"
+                       style="-fx-font-size: 28px; -fx-font-weight: bold; -fx-text-fill: #1e4f97;"/>
+
+                <Label text="Accedez a vos comptes en toute securite"
+                       style="-fx-font-size: 14px; -fx-text-fill: #6B7280;"/>
+
+                <VBox spacing="12" maxWidth="300">
+                    <Label text="Identifiant" style="-fx-font-weight: bold; -fx-text-fill: #1e4f97;"/>
+                    <TextField fx:id="emailField" promptText="Telephone ou Email"
+                               style="-fx-padding: 12; -fx-background-radius: 10; -fx-border-color: #d8e6ff; -fx-border-radius: 10;"/>
+
+                    <Label text="Code d'acces" style="-fx-font-weight: bold; -fx-text-fill: #1e4f97; -fx-padding: 8 0 0 0;"/>
+                    <PasswordField fx:id="passwordField" promptText="Mot de passe"
+                                   style="-fx-padding: 12; -fx-background-radius: 10; -fx-border-color: #d8e6ff; -fx-border-radius: 10;"/>
+                </VBox>
+
+                <Button text="Se connecter"
+                        onAction="#handleLogin"
+                        maxWidth="300"
+                        style="-fx-background-color: linear-gradient(to right, #2a68c8, #3f8efc); -fx-text-fill: white; -fx-padding: 12; -fx-background-radius: 30; -fx-font-size: 14px; -fx-font-weight: bold; -fx-cursor: hand;"/>
+
+                <Label fx:id="messageLabel" text="" wrapText="true" maxWidth="340"
+                       style="-fx-font-size: 13px; -fx-text-fill: #cc2e2e;"/>
+
+                <HBox spacing="8" alignment="CENTER">
+                    <Label text="Nouveau client ?" style="-fx-text-fill: #6B7280;"/>
+                    <Hyperlink text="Souscrire" onAction="#goToSignup"
+                               style="-fx-text-fill: #2a68c8; -fx-font-weight: bold;"/>
+                </HBox>
+
+                <Hyperlink text="Mot de passe oublie ?" onAction="#goToPasswordReset"
+                           style="-fx-text-fill: #2a68c8; -fx-font-weight: bold;"/>
+
+                <padding>
+                    <Insets top="4"/>
+                </padding>
+            </VBox>
+        </HBox>
     </center>
 </BorderPane>
