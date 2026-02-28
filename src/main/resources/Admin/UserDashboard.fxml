@@ -74,6 +74,7 @@
                     <Button text="☀" onAction="#handleThemeBoost" style="-fx-background-color: #fef3c7; -fx-text-fill: #8a5a00; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
                     <Button text="★" onAction="#handleFavoriteAction" style="-fx-background-color: #efe7ff; -fx-text-fill: #5f3dc4; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
                     <Button text="🔔" onAction="#handleAlertsAction" style="-fx-background-color: #ffe4e6; -fx-text-fill: #b42318; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
+                    <Button text="🧑" onAction="#handleProfileAction" style="-fx-background-color: #e2e8f0; -fx-text-fill: #1f2937; -fx-font-weight: 800; -fx-background-radius: 18; -fx-min-width: 44; -fx-min-height: 36;"/>
                     <Button text="Analytics" onAction="#goToAnalyticsDashboard" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                     <Button text="Mes taches" onAction="#goToAdminTasks" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>
                     <Button text="Validation KYC" onAction="#goToKycValidation" style="-fx-background-color: #eef3fb; -fx-text-fill: #21456d; -fx-font-weight: 700; -fx-background-radius: 12;"/>

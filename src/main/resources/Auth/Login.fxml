@@ -8,10 +8,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<<<<<<< HEAD
-=======
 <?import javafx.scene.layout.StackPane?>
->>>>>>> 71d9cfb (Version FINALE gestion users)
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
@@ -26,29 +23,8 @@
                   prefWidth="350" prefHeight="500"
                   style="-fx-background-color: linear-gradient(to bottom, #2a68c8, #3f8efc); -fx-padding: 50;">
 
-<<<<<<< HEAD
-                <Label text="FinTrust"
-                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-
-                <Label text="La Confiance Par La Finance "
-                       style="-fx-font-size: 14px; -fx-text-fill: #d9e8ff;"/>
-
-=======
-                <StackPane prefWidth="130" prefHeight="130"
-                           style="-fx-background-color: radial-gradient(center 35% 30%, radius 95%, #ffffff 0%, #e9f3ff 60%, #d9ecff 100%); -fx-background-radius: 999; -fx-border-color: #98bfff; -fx-border-width: 3; -fx-border-radius: 999;">
-                    <children>
-                        <Label text="B"
-                               style="-fx-font-size: 52px; -fx-font-weight: 900; -fx-text-fill: #1e3a8a;"/>
-                    </children>
-                </StackPane>
-
-                <Label text="FinTrust"
-                       style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
-
-                <Label text="Haute Finance Numerique"
-                       style="-fx-font-size: 14px; -fx-text-fill: #d9e8ff;"/>
-
->>>>>>> 71d9cfb (Version FINALE gestion users)
+                     <Label text ="FinTrust"
+                        style="-fx-font-size: 32px; -fx-font-weight: bold; -fx-text-fill: white;"/>
                 <VBox alignment="CENTER" spacing="15" style="-fx-padding: 30 0 0 0;">
                     <Label text="&#128274;" style="-fx-font-size: 40px;"/>
                     <Label text="Connexion securisee"
