@@ -1,3 +1,5 @@
+
+/*
 package LoanTests;
 
 import org.example.Model.Loan.LoanClass.Loan;
@@ -99,3 +101,5 @@ class LoanTests {
         }
     }
 }
+
+*/

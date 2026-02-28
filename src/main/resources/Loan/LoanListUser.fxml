@@ -50,6 +50,7 @@
                     <TableColumn fx:id="colDuration" text="Durée" prefWidth="100"/>
                     <TableColumn fx:id="colRate" text="Taux (%)" prefWidth="100"/>
                     <TableColumn fx:id="colRemaining" text="Capital restant" prefWidth="150"/>
+                    <TableColumn fx:id="colRisk" text="Risk"/>
                     <TableColumn fx:id="colStatus" text="Statut" prefWidth="120"/>
                     <TableColumn fx:id="colAction" text="Action" prefWidth="120"/>
                 </columns>

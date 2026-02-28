@@ -37,7 +37,7 @@ public class EmailService {
                     InternetAddress.parse(toEmail)
             );
 
-            message.setSubject("Paiement confirmé - Loan #" + loanId);
+            message.setSubject("Paiement confirmé - Client");
 
             message.setText("""
                 Bonjour,

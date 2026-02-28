@@ -2,6 +2,7 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
+<?import javafx.scene.chart.*?>
 
 <AnchorPane prefWidth="1200" prefHeight="750"
             stylesheets="@/Styles/LoanStyle.css"
@@ -26,7 +27,7 @@
                     onAction="#handleLogout"/>
         </HBox>
 
-        <!-- ================= STATISTICS CARDS ================= -->
+        <!-- ================= STATISTICS ================= -->
         <HBox spacing="30" alignment="CENTER">
 
             <VBox styleClass="loan-card loan-card-blue">
@@ -51,9 +52,57 @@
 
         </HBox>
 
+        <!-- ================= CHARTS ================= -->
+        <HBox spacing="40" alignment="CENTER">
+
+            <VBox styleClass="header-container" spacing="15">
+                <Label text="Loan Status Distribution"
+                       styleClass="page-title"/>
+                <PieChart fx:id="statusPieChart"
+                          prefWidth="350"
+                          prefHeight="300"/>
+            </VBox>
+
+            <VBox styleClass="header-container" spacing="15">
+                <Label text="Risk Level Distribution"
+                       styleClass="page-title"/>
+                <BarChart fx:id="riskBarChart"
+                          prefWidth="400"
+                          prefHeight="300">
+                    <xAxis>
+                        <CategoryAxis label="Risk Level"/>
+                    </xAxis>
+                    <yAxis>
+                        <NumberAxis label="Number of Loans"/>
+                    </yAxis>
+                </BarChart>
+            </VBox>
+
+        </HBox>
+
+        <!-- ================= AI INSIGHT ================= -->
+        <VBox spacing="18"
+              styleClass="ai-card">
+
+            <HBox alignment="CENTER_LEFT">
+                <Label text="AI Risk Insight"
+                       styleClass="page-title"/>
+            </HBox>
+
+            <ScrollPane fx:id="aiScrollPane"
+                        fitToWidth="true"
+                        prefHeight="170"
+                        styleClass="ai-scroll">
+
+                <Label fx:id="aiMessageLabel"
+                       wrapText="true"
+                       styleClass="ai-message"/>
+            </ScrollPane>
+
+        </VBox>
+
         <!-- ================= NAVIGATION ================= -->
         <HBox spacing="30" alignment="CENTER">
-
             <Button text="Voir Demandes"
                     styleClass="btn-primary"
                     onAction="#goToLoanList"/>

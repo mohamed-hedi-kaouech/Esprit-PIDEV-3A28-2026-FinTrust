@@ -79,8 +79,7 @@ public class PdfExportService {
         <body>
         """);
 
-        sb.append("<h2>Plan d'amortissement - Loan ID: ")
-                .append(loanId)
+        sb.append("<h2>Plan d'amortissement")
                 .append("</h2>");
 
         sb.append("""

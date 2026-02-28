@@ -64,7 +64,7 @@ public class MenuGUIController implements Initializable {
     @FXML
     private void goToLoan() {
         try {
-            navigateToScene("/Loan/LoanListUser.fxml", "Gestion des Loans");
+            navigateToScene("/Loan/AdminDashboard.fxml", "Gestion des Loans");
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
                     "Impossible d'accéder au module Gestion Loans.\n" + e.getMessage());

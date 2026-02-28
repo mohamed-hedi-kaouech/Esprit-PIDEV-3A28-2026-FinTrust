@@ -275,3 +275,46 @@
         -fx-background-color: #10b981;
         -fx-text-fill: white;
     }
+
+
+    /* ================= AI CARD ================= */
+
+    .ai-card {
+        -fx-background-color: linear-gradient(to bottom right, #f8fbff, #eef3f9);
+        -fx-background-radius: 18;
+        -fx-padding: 22;
+        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.08), 18, 0.3, 0, 6);
+    }
+
+    /* ScrollPane clean look */
+    .ai-scroll {
+        -fx-background-color: transparent;
+        -fx-background-insets: 0;
+    }
+
+    .ai-scroll > .viewport {
+        -fx-background-color: transparent;
+    }
+
+    /* Message text */
+    .ai-message {
+        -fx-font-size: 15px;
+        -fx-text-fill: #1f2937;
+        -fx-line-spacing: 3px;
+    }
+
+    /* Risk Highlight Variants */
+
+    .ai-low {
+        -fx-background-color: linear-gradient(to bottom right, #e9fbe9, #d4f5d4);
+    }
+
+    .ai-medium {
+        -fx-background-color: linear-gradient(to bottom right, #fff8e6, #ffe9c2);
+    }
+
+    .ai-high {
+        -fx-background-color: linear-gradient(to bottom right, #ffeaea, #ffd4d4);
+        -fx-border-color: #ff4d4d;
+        -fx-border-width: 1.5;
+    }
