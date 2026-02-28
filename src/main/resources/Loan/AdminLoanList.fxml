@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import java.util.*?>
+<?import javafx.scene.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane prefWidth="1200" prefHeight="750"
+            stylesheets="@/Styles/LoanStyle.css"
+            xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="org.example.Controlleurs.LoanControlleur.AdminLoanController"
+            styleClass="root">
+
+    <VBox spacing="30"
+          AnchorPane.topAnchor="30"
+          AnchorPane.leftAnchor="50"
+          AnchorPane.rightAnchor="50"
+          AnchorPane.bottomAnchor="30">
+
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Label text="Demandes de prêts"
+                   styleClass="page-title"/>
+
+            <Region HBox.hgrow="ALWAYS"/>
+
+            <Button text="Retour"
+                    styleClass="btn-back"
+                    onAction="#handleBack"/>
+        </HBox>
+
+        <VBox styleClass="header-container" VBox.vgrow="ALWAYS">
+
+            <TableView fx:id="loanTable" VBox.vgrow="ALWAYS">
+                <columns>
+                    <TableColumn fx:id="colId" text="ID"/>
+                    <TableColumn fx:id="colType" text="Type"/>
+                    <TableColumn fx:id="colAmount" text="Montant"/>
+                    <TableColumn fx:id="colDuration" text="Durée"/>
+                    <TableColumn fx:id="colStatus" text="Statut"/>
+                    <TableColumn fx:id="colAction" text="Action"/>
+                </columns>
+            </TableView>
+
+        </VBox>
+
+    </VBox>
+</AnchorPane>

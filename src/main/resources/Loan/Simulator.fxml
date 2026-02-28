@@ -1,57 +1,130 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
+<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.layout.AnchorPane?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.geometry.Insets?>
-<?import javafx.scene.layout.HBox?>
-<AnchorPane prefWidth="800" prefHeight="600"
+
+<AnchorPane prefWidth="950" prefHeight="680"
             stylesheets="@/Styles/LoanStyle.css"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="org.example.Controlleurs.LoanControlleur.SimulatorControlleur">
+            fx:controller="org.example.Controlleurs.LoanControlleur.SimulatorController">
 
-    <!-- HEADER -->
-    <HBox alignment="CENTER_LEFT" spacing="15"
-          AnchorPane.topAnchor="0"
-          AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0">
+    <VBox alignment="TOP_CENTER"
+          spacing="35"
+          AnchorPane.topAnchor="30"
+          AnchorPane.leftAnchor="60"
+          AnchorPane.rightAnchor="60">
 
-        <padding>
-            <Insets top="20" left="30" right="30"/>
-        </padding>
+        <HBox alignment="CENTER_LEFT" spacing="20">
+            <Button text="Retour"
+                    styleClass="btn-back"
+                    onAction="#handleBack"/>
 
-        <Button text="⬅ Retour"
-                styleClass="btn-back"
-                onAction="#handleBack"/>
-    </HBox>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
 
-    <!-- MAIN CONTENT -->
-    <VBox spacing="20" alignment="CENTER"
-          AnchorPane.topAnchor="80"
-          AnchorPane.leftAnchor="0"
-          AnchorPane.rightAnchor="0"
-          AnchorPane.bottomAnchor="0">
+        <!-- ================= TITLE ================= -->
+        <Label text="Simulation du prêt"
+               styleClass="page-title"/>
 
-        <padding>
-            <Insets top="40" left="40" right="40" bottom="40"/>
-        </padding>
+        <!-- ================= TYPE SELECTION ================= -->
+        <HBox spacing="25" alignment="CENTER">
 
-        <Label text="Simulateur de Prêt" styleClass="page-title"/>
+            <Button text="🏠 Immobilier"
+                    styleClass="loan-card-red"
+                    onAction="#selectHousing"/>
 
-        <VBox spacing="15" styleClass="form-container">
+            <Button text="🚗 Auto"
+                    styleClass="loan-card-blue"
+                    onAction="#selectCar"/>
 
-            <TextField fx:id="ageField" promptText="Âge" styleClass="form-input numeric"/>
-            <TextField fx:id="incomeField" promptText="Revenu mensuel (DT)" styleClass="form-input numeric"/>
-            <TextField fx:id="amountField" promptText="Montant demandé (DT)" styleClass="form-input numeric"/>
-            <TextField fx:id="durationField" promptText="Durée (mois)" styleClass="form-input numeric"/>
+            <Button text="🛒 Personnel"
+                    styleClass="loan-card-green"
+                    onAction="#selectPersonal"/>
 
-            <Button text="Vérifier"
+        </HBox>
+
+        <!-- ================= LOAN INFO ================= -->
+        <HBox spacing="60"
+              alignment="CENTER"
+              styleClass="header-container">
+
+            <VBox alignment="CENTER">
+                <Label text="Montant maximal"/>
+                <Label fx:id="maxAmountLabel"
+                       styleClass="info-green"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Taux d'intérêt"/>
+                <Label fx:id="rateLabel"
+                       styleClass="info-blue"/>
+            </VBox>
+
+            <VBox alignment="CENTER">
+                <Label text="Durée maximale"/>
+                <Label fx:id="maxDurationLabel"
+                       styleClass="info-red"
+                />
+            </VBox>
+
+        </HBox>
+
+        <!-- ================= FORM ================= -->
+        <VBox spacing="25"
+              styleClass="form-container"
+              alignment="CENTER">
+
+            <HBox spacing="20" alignment="CENTER_LEFT">
+                <Label text="Montant du prêt :"/>
+                <TextField fx:id="amountField"
+                           promptText="Entrez le montant"/>
+            </HBox>
+
+            <VBox spacing="10">
+                <Label text="Durée (mois)"/>
+                <Slider fx:id="durationSlider"
+                        min="12"
+                        max="240"
+                        blockIncrement="12"
+                        showTickLabels="true"
+                        showTickMarks="true"/>
+                <Label fx:id="durationValueLabel"/>
+            </VBox>
+
+            <HBox spacing="30">
+                <VBox spacing="8">
+                    <Label text="Âge :"/>
+                    <TextField fx:id="ageField"/>
+                </VBox>
+
+                <VBox spacing="8">
+                    <Label text="Revenu mensuel :"/>
+                    <TextField fx:id="incomeField"/>
+                </VBox>
+            </HBox>
+
+            <Button text="Lancer la simulation"
                     styleClass="btn-primary"
                     onAction="#handleSimulation"/>
+
+        </VBox>
+
+        <!-- ================= RESULT CARD ================= -->
+        <VBox fx:id="resultCard"
+              spacing="15"
+              alignment="CENTER"
+              visible="false"
+              styleClass="form-container">
+
+            <Label text="Résultat de la simulation"
+                   styleClass="result-title"/>
+
+            <Label fx:id="monthlyResultLabel"
+                   styleClass="result-main"/>
+
+            <Label fx:id="totalResultLabel"
+                   styleClass="result-secondary"/>
 
         </VBox>
 

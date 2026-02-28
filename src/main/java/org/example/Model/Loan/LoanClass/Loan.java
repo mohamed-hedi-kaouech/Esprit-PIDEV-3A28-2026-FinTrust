@@ -1,160 +1,105 @@
 package org.example.Model.Loan.LoanClass;
 
 import org.example.Model.Loan.LoanEnum.LoanStatus;
+import org.example.Model.Loan.LoanEnum.LoanType;
+import org.example.Model.Loan.LoanEnum.RepaymentStatus;
+
 
 import java.time.LocalDateTime;
+import java.util.ArrayList;
 import java.util.List;
 
 public class Loan {
 
-    //Attributs
     private int loanId;
+    private LoanType loanType;
     private double amount;
-    private int duration;
-    private LoanStatus status;              // duration in months
-    private double interestRate;         // annual interest rate
+    private int duration; // months
+    private LoanStatus status;
+    private double interestRate;
     private double remainingPrincipal;
-    private List<Repayment> repayments;
     private LocalDateTime createdAt;
 
-    // Constructor (called AFTER eligibility check)
-    public Loan(
-            double amount,
-            int duration,
-            double interestRate,
-            double remainingPrincipal) {
+    // ======================
+    // MAIN CONSTRUCTOR
+    // ======================
+    public Loan(LoanType loanType, double amount, int duration) {
 
+        this.loanType = loanType;
         this.amount = amount;
         this.duration = duration;
-        this.interestRate = interestRate;
-        this.remainingPrincipal = remainingPrincipal ;
+        this.interestRate = loanType.getInterestRate();
+        this.remainingPrincipal = amount;
         this.status = LoanStatus.PENDING;
         this.createdAt = LocalDateTime.now();
     }
-    public Loan(
-            int loanId,
-            double amount,
-            int duration,
-            LoanStatus status,
-            double interestRate,
-            double remainingPrincipal
-            ) {
-        this.loanId= loanId;
-        this.amount = amount;
-        this.duration = duration;
-        this.interestRate = interestRate;
-        this.remainingPrincipal = remainingPrincipal;
-        this.status = status ;
-        this.createdAt = LocalDateTime.now();
-    }
 
-
-
+    // Empty constructor (for DB mapping)
     public Loan() {}
 
-    // toString
+    public Loan(double amount, int duration, double interestRate, double amount1) {
+    }
+
+    // ======================
+    // GETTERS & SETTERS
     // ======================
 
-    // ======================
-    // Getters & Setters
-    // ======================
+    public int getLoanId() { return loanId; }
+    public void setLoanId(int loanId) { this.loanId = loanId; }
 
-    public int getLoanId() {
-        return loanId;
-    }
+    public LoanType getLoanType() { return loanType; }
+    public void setLoanType(LoanType loanType) { this.loanType = loanType; }
 
-    public void setLoanId(int id) {
-        this.loanId = id;
-    }
-    public double getAmount() {
-        return amount;
-    }
+    public double getAmount() { return amount; }
+    public void setAmount(double amount) { this.amount = amount; }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
-    }
+    public int getDuration() { return duration; }
+    public void setDuration(int duration) { this.duration = duration; }
 
-    public int getDuration() {
-        return duration;
-    }
+    public LoanStatus getStatus() { return status; }
+    public void setStatus(LoanStatus status) { this.status = status; }
 
-    public void setDuration(int duration) {
-        this.duration = duration;
-    }
+    public double getInterestRate() { return interestRate; }
+    public void setInterestRate(double interestRate) { this.interestRate = interestRate; }
 
-    public double getInterestRate() {
-        return interestRate;
-    }
+    public double getRemainingPrincipal() { return remainingPrincipal; }
+    public void setRemainingPrincipal(double remainingPrincipal) { this.remainingPrincipal = remainingPrincipal; }
 
-    public void setInterestRate(double interestRate) {
-        this.interestRate = interestRate;
-    }
-
-    /*public double getMonthlyPayment() {
-        return monthlyPayment;
-    }*/
-
-    /*public void setMonthlyPayment(double monthlyPayment) {this.monthlyPayment = monthlyPayment;}*/
-
-    public double getRemainingPrincipal() {
-        return remainingPrincipal;
-    }
-
-    public void setRemainingPrincipal(double remainingPrincipal) {
-        this.remainingPrincipal = remainingPrincipal;
-    }
-
-    public LoanStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(LoanStatus status) {
-        this.status = status;
-    }
-
-    public LocalDateTime getCreationDate() {
-        return createdAt;
-    }
-
-    public void setCreationDate(LocalDateTime creationDate) {
-        this.createdAt = creationDate;
-    }
+    public LocalDateTime getCreationDate() { return createdAt; }
+    public void setCreationDate(LocalDateTime createdAt) { this.createdAt = createdAt; }
 
     @Override
     public String toString() {
         return "Loan{" +
-                "id=" + loanId +
+                "loanId=" + loanId +
+                ", loanType=" + loanType +
                 ", amount=" + amount +
                 ", duration=" + duration +
-                ", interestRate=" + interestRate +
-                ", remainingPrincipal=" + remainingPrincipal +
                 ", status=" + status +
-                ", creationDate=" + createdAt +
+                ", remainingPrincipal=" + remainingPrincipal +
                 '}';
-    }
-
-
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-
-        Loan loan = (Loan) o;
-
-        return this.loanId == loan.loanId ;
     }
 
     public static String SQLTable() {
         return """
-                CREATE TABLE IF NOT EXISTS loan (
-                    loanId INT PRIMARY KEY AUTO_INCREMENT,
-                    amount DOUBLE NOT NULL,
-                    duration INT NOT NULL,
-                    status VARCHAR(50) NOT NULL,
-                    interest_rate DOUBLE NOT NULL,
-                    remaining_principal DOUBLE NOT NULL,
-                    createdAt TIMESTAMP NOT NULL DEFAULT CURRENT_TIMESTAMP
-                );
-                """;
+        CREATE TABLE IF NOT EXISTS loan (
+            loanId INT PRIMARY KEY AUTO_INCREMENT,
+            loanType VARCHAR(50) NOT NULL,
+            amount DECIMAL(12,2) NOT NULL,
+            duration INT NOT NULL,
+            interest_rate DECIMAL(5,2) NOT NULL,
+            remaining_principal DECIMAL(12,2) NOT NULL,
+            status VARCHAR(20) NOT NULL,
+            createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+        );
+    """;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (!(o instanceof Loan)) return false;
+        Loan loan = (Loan) o;
+        return loanId == loan.loanId;
     }
 }

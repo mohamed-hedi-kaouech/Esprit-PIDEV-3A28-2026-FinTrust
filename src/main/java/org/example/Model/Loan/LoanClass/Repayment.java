@@ -3,54 +3,61 @@ package org.example.Model.Loan.LoanClass;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
 
 public class Repayment {
-
     private int repayId;
     private int loanId;
-    private int number;
-    private double amount;
+    private int month;
+    private double startingBalance;
+    private double monthlyPayment;
     private double capitalPart;
     private double interestPart;
+    private double remainingBalance;
     private RepaymentStatus status;
 
-
-    // Default Constructor
-    public Repayment() {
-    }
-
-    // Constructor without ID (for INSERT)
+    // Constructor for INSERT (without ID)
     public Repayment(int loanId,
-                     int number,
-                     double amount,
+                     int month,
+                     double startingBalance,
+                     double monthlyPayment,
                      double capitalPart,
                      double interestPart,
+                     double remainingBalance,
                      RepaymentStatus status) {
-
         this.loanId = loanId;
-        this.number = number;
-        this.amount = amount;
+        this.month = month;
+        this.startingBalance = startingBalance;
+        this.monthlyPayment = monthlyPayment;
         this.capitalPart = capitalPart;
         this.interestPart = interestPart;
+        this.remainingBalance = remainingBalance;
         this.status = status;
     }
 
-    // Constructor with ID (for UPDATE / SELECT)
-    public Repayment(int repayId,
-                     int loanId,
-                     int number,
-                     double amount,
-                     double capitalPart,
-                     double interestPart,
-                     RepaymentStatus status) {
 
-        this.repayId = repayId;
-        this.loanId = loanId;
-        this.number = number;
-        this.amount = amount;
-        this.capitalPart = capitalPart;
-        this.interestPart = interestPart;
-        this.status = status;
+    // Constructor for SELECT (with ID)
+        public Repayment(int repayId,
+                         int loanId,
+                         int month,
+                         double startingBalance,
+                         double amount,
+                         double capitalPart,
+                         double interestPart,
+                         double remainingBalance,
+                         RepaymentStatus status) {
+
+            this.repayId = repayId;
+            this.loanId = loanId;
+            this.month = month;
+            this.startingBalance = startingBalance;
+            this.monthlyPayment = amount;
+            this.capitalPart = capitalPart;
+            this.interestPart = interestPart;
+            this.remainingBalance = remainingBalance;
+            this.status = status;
+        }
+
+    public Repayment() {
+
     }
-
 
     // Getters & Setters
     public int getRepayId() {
@@ -69,20 +76,20 @@ public class Repayment {
         this.loanId = loanId;
     }
 
-    public int getNumber() {
-        return number;
+    public int getMonth() {
+        return month;
     }
 
-    public void setNumber(int number) {
-        this.number = number;
+    public void setMonth(int month) {
+        this.month = month;
     }
 
-    public double getAmount() {
-        return amount;
+    public double getStartingBalance() {
+        return startingBalance;
     }
 
-    public void setAmount(double amount) {
-        this.amount = amount;
+    public void setStartingBalance(double startingBalance) {
+        this.startingBalance = startingBalance;
     }
 
     public double getCapitalPart() {
@@ -109,36 +116,42 @@ public class Repayment {
         this.status = status;
     }
 
-    // toString
-    @Override
-    public String toString() {
-        return "Repayment{" +
-                "repayId=" + repayId +
-                ", loanId=" + loanId +
-                ", number=" + number +
-                ", amount=" + amount +
-                ", capitalPart=" + capitalPart +
-                ", interestPart=" + interestPart +
-                ", status=" + status +
-                '}';
+    public double getMonthlyPayment() {
+        return monthlyPayment;
+    }
+
+    public void setMonthlyPayment(double monthlyPayment) {
+        this.monthlyPayment = monthlyPayment;
+    }
+
+    public double getRemainingBalance() {
+        return remainingBalance;
+    }
+
+    public void setRemainingBalance(double remainingBalance) {
+        this.remainingBalance = remainingBalance;
     }
 
     public static String SQLTable() {
         return """
-                CREATE TABLE IF NOT EXISTS repayment (
-                   repayId INT PRIMARY KEY AUTO_INCREMENT,
-                   loanId INT NOT NULL,
-                   number INT NOT NULL,
-                   amount DECIMAL(10,2) NOT NULL,
-                   capitalPart DECIMAL(10,2) NOT NULL,
-                   interestPart DECIMAL(10,2) NOT NULL,
-                   status VARCHAR(20) NOT NULL,
-
-                   CONSTRAINT fk_repayment_loan
-                   FOREIGN KEY (loanId)
-                   REFERENCES loan(loanId)
-                   ON DELETE CASCADE
-               );
+            CREATE TABLE IF NOT EXISTS repayment (
+                repayId INT PRIMARY KEY AUTO_INCREMENT,
+                loanId INT NOT NULL,
+                month INT NOT NULL,
+            
+                startingBalance DECIMAL(10,2) NOT NULL,
+                monthlyPayment DECIMAL(10,2) NOT NULL,
+                capitalPart DECIMAL(10,2) NOT NULL,
+                interestPart DECIMAL(10,2) NOT NULL,
+                remainingBalance DECIMAL(10,2) NOT NULL,
+            
+                status VARCHAR(20) NOT NULL,
+            
+                CONSTRAINT fk_repayment_loan
+                    FOREIGN KEY (loanId)
+                    REFERENCES loan(loanId)
+                    ON DELETE CASCADE
+            );
                 """;
     }
 }

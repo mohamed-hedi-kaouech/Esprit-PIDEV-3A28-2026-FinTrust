@@ -74,9 +74,6 @@ public class MaConnexion {
                 st.executeUpdate(Alerte.SQLTable());
 
 
-                //Transaction TABLE
-                st.executeUpdate(Transaction.SQLTable());
-
                 //Wallet TABLE
                 st.executeUpdate(Wallet.SQLTable());
                 //Transaction TABLE

@@ -219,6 +219,7 @@ public class MenuGUIController implements Initializable {
         stage.show();
     }
 
+    //Show error alert
     private void showErrorAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle(title);
@@ -226,6 +227,7 @@ public class MenuGUIController implements Initializable {
         alert.setContentText(message);
         alert.showAndWait();
     }
+
 
     private void showInfoAlert(String title, String message) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
