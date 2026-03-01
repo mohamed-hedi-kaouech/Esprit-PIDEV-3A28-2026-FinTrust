@@ -137,7 +137,7 @@ public class ClientDashboardController {
         navigateTo("/Client/ClientProfile.fxml", "Profil Client", "/Styles/StyleWallet.css");
     }
 
-    // ✅ MÉTHODE MODIFIÉE POUR REDIRIGER VERS LOGIN CLIENT
+    // ✅ MÉTHODE CORRIGÉE POUR UTILISER L'INTERFACE CLIENT SIMPLIFIÉE
     @FXML
     private void goToWalletDashboard() {
         if (!ensureKycApprovedOrShow()) return;
@@ -167,7 +167,6 @@ public class ClientDashboardController {
                 FXMLLoader loader = new FXMLLoader(fxmlUrl);
                 Parent root = loader.load();
 
-                // ✅ Passer l'email au contrôleur de login
                 Object controller = loader.getController();
                 if (controller instanceof org.example.Controlleurs.WalletControlleur.ClientLoginController) {
                     ((org.example.Controlleurs.WalletControlleur.ClientLoginController) controller)
@@ -184,10 +183,13 @@ public class ClientDashboardController {
                 stage.show();
 
             } else {
-                // Rediriger vers la création de wallet
-                String fxmlPath = "/Wallet/wallet.fxml";
+                // ✅ NOUVEAU : Rediriger vers l'interface client simplifiée (sans CRUD ni liste)
+                String fxmlPath = "/Wallet/client_wallet_creation.fxml";
+                System.out.println("🔍 Chargement de l'interface client simplifiée: " + fxmlPath);
+
                 URL fxmlUrl = getClass().getResource(fxmlPath);
                 if (fxmlUrl == null) {
+                    System.err.println("❌ FXML non trouvé: " + fxmlPath);
                     showError("Erreur", "FXML introuvable: " + fxmlPath);
                     return;
                 }
@@ -195,13 +197,14 @@ public class ClientDashboardController {
                 FXMLLoader loader = new FXMLLoader(fxmlUrl);
                 Parent root = loader.load();
 
-                org.example.Controlleurs.WalletControlleur.WalletController controller =
+                org.example.Controlleurs.WalletControlleur.ClientWalletCreationController controller =
                         loader.getController();
                 controller.setCurrentUserId(user.getId());
-                controller.preRemplirCreation(
-                        user.getPrenom() + " " + user.getNom(),
-                        "TND",
-                        0.0
+                controller.setUserInfo(
+                        user.getPrenom(),
+                        user.getNom(),
+                        user.getEmail(),
+                        user.getNumTel()
                 );
 
                 Scene scene = new Scene(root);
