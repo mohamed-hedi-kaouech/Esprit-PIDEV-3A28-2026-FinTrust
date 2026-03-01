@@ -20,6 +20,7 @@ import java.util.function.UnaryOperator;
 import org.example.Model.Budget.Categorie;
 import org.example.Model.Budget.Item;
 import org.example.Service.BudgetService.ItemService;
+import org.example.Utils.NotificationCenter;
 
 public class ItemCreateController {
 
@@ -118,6 +119,44 @@ public class ItemCreateController {
             return;
         }
 
+        // block if the new item alone or in total would exceed the budget prévu
+        if (categorie != null) {
+            double budgetPrev = categorie.getBudgetPrevu();
+            try {
+                java.util.List<org.example.Model.Budget.Item> existing = itemService.ReadByCategory(categorie.getIdCategorie());
+                double spent = existing.stream().mapToDouble(org.example.Model.Budget.Item::getMontant).sum();
+                // individual amount cannot exceed the budget itself
+                if (montant > budgetPrev) {
+                    showErrorAlert("Budget dépassé", "Le montant de l'item (" + String.format("%.2f DT", montant) + ")\n" +
+                            "est supérieur au budget prévu (" + String.format("%.2f DT", budgetPrev) + ").");
+                    return;
+                }
+                // total spending must stay within budget
+                if (spent + montant > budgetPrev) {
+                    showErrorAlert("Budget dépassé", "Impossible d'ajouter cet item : le total après ajout (" + String.format("%.2f DT", spent + montant) + ")\n" +
+                            "dépasserait le budget prévu (" + String.format("%.2f DT", budgetPrev) + ").");
+                    return;
+                }
+
+                // if threshold will be crossed by this addition, send an alert email immediately
+                double seuil = categorie.getSeuilAlerte();
+                if (seuil > 0 && spent < seuil && spent + montant >= seuil) {
+                    // create alert record & dispatch
+                    org.example.Model.Budget.Alerte a = new org.example.Model.Budget.Alerte(categorie.getIdCategorie(),
+                            "Seuil d'alerte atteint par ajout d'item", seuil);
+                    try {
+                        new org.example.Service.BudgetService.AlerteService().Add(a);
+                    } catch (Exception ignore) {}
+                    NotificationCenter.getInstance().postAlerte(a);
+                }
+
+            } catch (Exception ex) {
+                ex.printStackTrace();
+                showErrorAlert("Erreur", "Impossible de vérifier le budget: " + ex.getMessage());
+                return;
+            }
+        }
+
         Item item = new Item();
         item.setLibelle(libelle);
         item.setCategorie(categorie);
@@ -162,7 +201,9 @@ public class ItemCreateController {
     @FXML
     private void reinitialiser() {
         tfLibelle.clear();
+        // Clear and reset montant field to work around TextFormatter
         tfMontant.clear();
+        tfMontant.setText("");
         tfFilePath.clear();
         taOcrResult.clear();
         dpDate.setValue(null);

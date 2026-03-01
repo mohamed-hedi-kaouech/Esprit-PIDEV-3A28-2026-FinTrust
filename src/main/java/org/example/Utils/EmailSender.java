@@ -32,6 +32,9 @@ public class EmailSender {
                 body.append("Date: ").append(alerte.getCreatedAt()).append("\n");
             }
 
+            // Log configuration for debugging
+            System.out.println("[EmailSender] Config host=" + EmailConfig.SMTP_HOST + " port=" + EmailConfig.SMTP_PORT + " user=" + (EmailConfig.SMTP_USER.isEmpty()?"(none)":EmailConfig.SMTP_USER) + " testMode=" + EmailConfig.TEST_MODE);
+
             // Test mode: just log the email instead of sending
             if (EmailConfig.TEST_MODE) {
                 System.out.println("\n" + "=".repeat(70));

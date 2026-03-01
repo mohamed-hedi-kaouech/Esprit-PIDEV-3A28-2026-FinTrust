@@ -65,11 +65,7 @@
                     </HBox>
                 </VBox>
 
-                <!-- Catégorie -->
-                <VBox spacing="8" styleClass="input-group">
-                    <Label text="Catégorie *" styleClass="input-label"/>
-                    <ComboBox fx:id="cbCategorie" styleClass="input-field"/>
-                </VBox>
+                <!-- Catégorie removed -->
 
                 <!-- Preview Section -->
                 <VBox spacing="10" styleClass="preview-box">
@@ -101,10 +97,7 @@
                             <Label text="Montant:" styleClass="current-label"/>
                             <Label fx:id="lblCurrentMontant" text="-" styleClass="current-value-budget"/>
                         </VBox>
-                        <VBox spacing="4">
-                            <Label text="Catégorie:" styleClass="current-label"/>
-                            <Label fx:id="lblCurrentCategorie" text="-" styleClass="current-value-seuil"/>
-                        </VBox>
+                        <!-- category display removed -->
                     </HBox>
                 </VBox>
 

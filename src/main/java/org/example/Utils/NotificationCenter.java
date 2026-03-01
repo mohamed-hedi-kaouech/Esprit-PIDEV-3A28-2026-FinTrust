@@ -2,6 +2,8 @@ package org.example.Utils;
 
 import org.example.Model.Budget.Alerte;
 import org.example.Service.BudgetService.BudgetService;
+import javafx.application.Platform;
+import javafx.scene.control.Alert;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -51,7 +53,17 @@ public class NotificationCenter {
                 BudgetService bs = new BudgetService();
                 var categorie = bs.ReadId(a.getIdCategorie());
                 String categoryName = (categorie != null) ? categorie.getNomCategorie() : ("Categorie_" + a.getIdCategorie());
-                EmailSender.sendAlerteEmail(a, categoryName);
+                boolean success = EmailSender.sendAlerteEmail(a, categoryName);
+                if (!success) {
+                    // show alert on UI thread
+                    javafx.application.Platform.runLater(() -> {
+                        Alert alert = new Alert(Alert.AlertType.ERROR);
+                        alert.setTitle("Erreur email");
+                        alert.setHeaderText("Échec de l'envoi de l'alerte par email");
+                        alert.setContentText("Vérifiez la configuration SMTP et les logs en console.");
+                        alert.showAndWait();
+                    });
+                }
             } catch (Exception e) {
                 System.err.println("[NotificationCenter] Failed to send alert email: " + e.getMessage());
                 e.printStackTrace();

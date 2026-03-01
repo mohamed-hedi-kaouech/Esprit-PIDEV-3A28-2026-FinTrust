@@ -1,6 +1,5 @@
 package org.example.Controlleurs.BudgetControlleur;
 
-import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -9,9 +8,10 @@ import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.Model.Budget.Item;
-import org.example.Model.Budget.Categorie;
 import org.example.Service.BudgetService.ItemService;
 import org.example.Service.BudgetService.BudgetService;
+import javafx.scene.control.TextFormatter;
+import java.util.function.UnaryOperator;
 
 import java.io.IOException;
 import java.net.URL;
@@ -22,45 +22,42 @@ public class ItemUpdateController implements Initializable {
 
     @FXML private TextField tfNomItem;
     @FXML private TextField tfPrix;
-    @FXML private ComboBox<Categorie> cbCategorie;
     @FXML private Label lblCurrentLibelle;
     @FXML private Label lblCurrentMontant;
-    @FXML private Label lblCurrentCategorie;
 
     private ItemService itemService;
     private BudgetService budgetService;
 
     private Item currentItem; // FIXED: should be Item, not Integer
     private String originalNom;
-    private Categorie originalCategorie;
     private double originalPrix;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         itemService = new ItemService();
         budgetService = new BudgetService();
-        loadCategories();
+        // numeric filter for montant
+        UnaryOperator<TextFormatter.Change> numberFilter = change -> {
+            String newText = change.getControlNewText();
+            if (newText.isEmpty()) return change;
+            if (newText.matches("\\d*([.,]\\d{0,2})?")) return change;
+            return null;
+        };
+        tfPrix.setTextFormatter(new TextFormatter<>(numberFilter));
     }
 
-    private void loadCategories() {
-        List<Categorie> categories = budgetService.ReadAll();
-        cbCategorie.setItems(FXCollections.observableArrayList(categories));
-    }
 
     public void loadItem(Item item) {
         this.currentItem = item;
 
         originalNom = item.getLibelle();
-        originalCategorie = item.getCategorie();
         originalPrix = item.getMontant();
 
         tfNomItem.setText(originalNom);
         tfPrix.setText(String.valueOf(originalPrix));
-        cbCategorie.setValue(originalCategorie);
 
         lblCurrentLibelle.setText(originalNom);
         lblCurrentMontant.setText(originalPrix + " DT");
-        lblCurrentCategorie.setText(originalCategorie != null ? originalCategorie.getNomCategorie() : "-");
     }
 
     @FXML
@@ -69,7 +66,7 @@ public class ItemUpdateController implements Initializable {
 
         currentItem.setLibelle(tfNomItem.getText().trim());
         currentItem.setMontant(Double.parseDouble(tfPrix.getText().trim()));
-        currentItem.setCategorie(cbCategorie.getValue());
+        // category unchanged
 
         try {
             itemService.Update(currentItem);
@@ -83,15 +80,15 @@ public class ItemUpdateController implements Initializable {
     @FXML
     private void reinitialiser() {
         tfNomItem.setText(originalNom);
-        tfPrix.setText(String.valueOf(originalPrix));
-        cbCategorie.setValue(originalCategorie);
+        // Clear and reset prix field to work around TextFormatter
+        tfPrix.clear();
+        tfPrix.setText(String.format("%.2f", originalPrix));
         clearStyles();
     }
 
     private void clearStyles() {
         tfNomItem.getStyleClass().removeAll("error", "success");
         tfPrix.getStyleClass().removeAll("error", "success");
-        cbCategorie.getStyleClass().removeAll("error", "success");
     }
 
     private boolean validateInput() {
@@ -107,14 +104,7 @@ public class ItemUpdateController implements Initializable {
             tfNomItem.getStyleClass().add("success");
         }
 
-        if (cbCategorie.getValue() == null) {
-            errors.append("- Veuillez sélectionner une catégorie.\n");
-            cbCategorie.getStyleClass().add("error");
-            isValid = false;
-        } else {
-            cbCategorie.getStyleClass().removeAll("error");
-            cbCategorie.getStyleClass().add("success");
-        }
+        // category selection removed from update form
 
         String prixText = tfPrix.getText().trim();
         if (prixText.isEmpty()) {
