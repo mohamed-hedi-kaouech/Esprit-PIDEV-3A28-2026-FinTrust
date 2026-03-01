@@ -89,7 +89,6 @@
             <artifactId>okhttp</artifactId>
             <version>4.12.0</version>
         </dependency>
-
         <!-- JACKSON pour le JSON -->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
