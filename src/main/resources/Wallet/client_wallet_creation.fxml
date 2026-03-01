@@ -1,0 +1,127 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.collections.FXCollections?>
+<?import java.lang.String?>
+
+<BorderPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.WalletControlleur.ClientWalletCreationController"
+            prefHeight="700" prefWidth="550"
+            style="-fx-background-color: linear-gradient(to bottom, #f0f7ff, #e6f0ff);">
+
+    <!-- Header avec bouton retour -->
+    <top>
+        <VBox spacing="10" style="-fx-background-color: linear-gradient(to right, #003366, #1e3b5c); -fx-padding: 15 25;">
+            <HBox alignment="CENTER_LEFT" spacing="20">
+                <Button text="← Retour" onAction="#handleRetour"
+                        style="-fx-background-color: transparent; -fx-text-fill: white; -fx-border-color: white; -fx-border-radius: 20; -fx-padding: 8 20; -fx-cursor: hand; -fx-font-size: 14px;"/>
+                <Region HBox.hgrow="ALWAYS" />
+                <Label text="Création de votre Wallet"
+                       style="-fx-text-fill: white; -fx-font-size: 22px; -fx-font-weight: bold; -fx-font-family: 'System';"/>
+            </HBox>
+            <Label text="Bienvenue ! Créez votre premier wallet en toute sécurité"
+                   style="-fx-text-fill: #b0c4de; -fx-font-size: 14px; -fx-font-family: 'System'; -fx-padding: 0 0 0 50;"/>
+        </VBox>
+    </top>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
+            <VBox spacing="25" alignment="CENTER" style="-fx-padding: 30;">
+
+                <!-- Formulaire de création (sans liste de wallets) -->
+                <VBox spacing="20" maxWidth="450" style="-fx-background-color: white; -fx-background-radius: 20; -fx-padding: 30; -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.1), 15, 0, 0, 5);">
+
+                    <Label text="📝 Informations du Wallet"
+                           style="-fx-font-size: 20px; -fx-font-weight: bold; -fx-text-fill: #003366; -fx-font-family: 'System';"/>
+
+                    <Separator style="-fx-background-color: #e0e7ff;"/>
+
+                    <VBox spacing="15">
+                        <!-- Propriétaire -->
+                        <Label text="Propriétaire *" style="-fx-font-weight: bold; -fx-text-fill: #2f75d8; -fx-font-size: 14px;"/>
+                        <TextField fx:id="txtNomProprietaire" promptText="mourad hajji"
+                                   style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+                        <Label fx:id="lblErrorNom" style="-fx-text-fill: #e53e3e; -fx-font-size: 11px;"/>
+
+                        <!-- Téléphone -->
+                        <Label text="Téléphone" style="-fx-font-weight: bold; -fx-text-fill: #2e8b57; -fx-font-size: 14px;"/>
+                        <TextField fx:id="txtTelephone" promptText="+216XXXXXXXX"
+                                   style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+                        <Label fx:id="lblErrorTelephone" style="-fx-text-fill: #e53e3e; -fx-font-size: 11px;"/>
+
+                        <!-- Email -->
+                        <Label text="Email *" style="-fx-font-weight: bold; -fx-text-fill: #ff8c00; -fx-font-size: 14px;"/>
+                        <TextField fx:id="txtEmail" promptText="client@email.com"
+                                   style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+                        <Label fx:id="lblErrorEmail" style="-fx-text-fill: #e53e3e; -fx-font-size: 11px;"/>
+
+                        <!-- Solde initial -->
+                        <Label text="Solde initial *" style="-fx-font-weight: bold; -fx-text-fill: #1f4ea0; -fx-font-size: 14px;"/>
+                        <TextField fx:id="txtSolde" promptText="0.0"
+                                   style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+                        <Label fx:id="lblErrorSolde" style="-fx-text-fill: #e53e3e; -fx-font-size: 11px;"/>
+
+                        <!-- Devise -->
+                        <Label text="Devise *" style="-fx-font-weight: bold; -fx-text-fill: #2f75d8; -fx-font-size: 14px;"/>
+                        <ComboBox fx:id="comboDevise" promptText="Sélectionner une devise"
+                                  style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 8 15; -fx-font-size: 14px;">
+                            <items>
+                                <FXCollections fx:factory="observableArrayList">
+                                    <String fx:value="TND"/>
+                                    <String fx:value="EUR"/>
+                                    <String fx:value="USD"/>
+                                </FXCollections>
+                            </items>
+                        </ComboBox>
+
+                        <!-- Statut (caché - valeur par défaut ACTIVE) -->
+                        <ComboBox fx:id="comboStatut" visible="false" managed="false"/>
+
+                        <!-- ✅ Plafond découvert (MAINTENANT MODIFIABLE) -->
+                        <Label text="Plafond découvert" style="-fx-font-weight: bold; -fx-text-fill: #6B7280; -fx-font-size: 14px;"/>
+                        <TextField fx:id="txtPlafondDecouvert" text="0"
+                                   style="-fx-background-color: #f8faff; -fx-background-radius: 12; -fx-border-color: #cbd5e1; -fx-border-radius: 12; -fx-padding: 12 15; -fx-font-size: 14px;"/>
+                        <Label text="(Montant maximum autorisé en négatif)"
+                               style="-fx-text-fill: #8fa8c5; -fx-font-size: 11px; -fx-font-style: italic;"/>
+                        <Label fx:id="lblErrorPlafond" style="-fx-text-fill: #e53e3e; -fx-font-size: 11px;"/>
+
+                        <!-- Message d'information -->
+                        <HBox style="-fx-background-color: #e6f0ff; -fx-background-radius: 12; -fx-padding: 15; -fx-margin: 20 0 0 0;">
+                            <Label text="ℹ️" style="-fx-font-size: 20px; -fx-padding: 0 10 0 0;"/>
+                            <Label text="Un code d'accès vous sera envoyé après la création de votre wallet."
+                                   wrapText="true"
+                                   style="-fx-text-fill: #2f75d8; -fx-font-size: 13px; -fx-font-family: 'System';"/>
+                        </HBox>
+
+                        <!-- Boutons Ajouter et Annuler -->
+                        <HBox spacing="20" alignment="CENTER" style="-fx-padding: 20 0 10 0;">
+                            <Button text="✅ Ajouter" onAction="#handleCreerWallet"
+                                    style="-fx-background-color: #27ae60; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px; -fx-padding: 12 40; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(39,174,96,0.3), 8, 0, 0, 2);"/>
+                            <Button text="❌ Annuler" onAction="#handleAnnuler"
+                                    style="-fx-background-color: #e53e3e; -fx-text-fill: white; -fx-font-weight: bold; -fx-font-size: 15px; -fx-padding: 12 40; -fx-background-radius: 30; -fx-cursor: hand; -fx-effect: dropshadow(gaussian, rgba(229,62,62,0.3), 8, 0, 0, 2);"/>
+                        </HBox>
+
+                        <!-- Message d'erreur général -->
+                        <Label fx:id="lblError" style="-fx-text-fill: #e53e3e; -fx-font-size: 12px;" alignment="CENTER"/>
+
+                        <!-- Message de succès avec code -->
+                        <VBox fx:id="codeInfoBox" visible="false" managed="false"
+                              style="-fx-background-color: #e6f0ff; -fx-background-radius: 12; -fx-padding: 20; -fx-margin: 10 0 0 0;">
+                            <Label text="✅ Wallet créé avec succès !" style="-fx-text-fill: #27ae60; -fx-font-weight: bold; -fx-font-size: 16px;"/>
+                            <Label text="Votre code d'accès :" style="-fx-text-fill: #2f75d8; -fx-font-size: 14px; -fx-padding: 10 0 5 0;"/>
+                            <Label fx:id="lblCodeInfo" style="-fx-text-fill: #003366; -fx-font-size: 24px; -fx-font-weight: bold; -fx-font-family: monospace; -fx-padding: 10; -fx-background-color: white; -fx-background-radius: 8; -fx-alignment: center;"/>
+                            <Label text="Veuillez conserver ce code précieusement. Il vous sera demandé pour vous connecter."
+                                   wrapText="true"
+                                   style="-fx-text-fill: #6B7280; -fx-font-size: 12px; -fx-padding: 15 0 10 0;"/>
+                            <Button text="Continuer vers la connexion" onAction="#handleContinuerVersLogin"
+                                    style="-fx-background-color: #1f4ea0; -fx-text-fill: white; -fx-font-weight: bold; -fx-padding: 12 25; -fx-background-radius: 30; -fx-cursor: hand; -fx-font-size: 14px; -fx-margin: 10 0 0 0;"/>
+                        </VBox>
+                    </VBox>
+                </VBox>
+            </VBox>
+        </ScrollPane>
+    </center>
+</BorderPane>
