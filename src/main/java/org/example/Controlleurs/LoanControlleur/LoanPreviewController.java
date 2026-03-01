@@ -12,6 +12,7 @@ import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.LoanStatus;
 import org.example.Service.LoanService.LoanService;
 import org.example.Service.LoanService.RepaymentService;
+import org.example.Utils.SessionContext;
 
 import java.util.List;
 
@@ -32,7 +33,7 @@ public class LoanPreviewController {
     @FXML private TableColumn<Repayment, Double> colRemaining;
 
     private Loan loan;
-
+    private final SessionContext session = SessionContext.getInstance();
     private final LoanService loanService = new LoanService();
     private final RepaymentService repaymentService = new RepaymentService();
 
@@ -100,7 +101,7 @@ public class LoanPreviewController {
         }
 
         try {
-
+            loan.setId_user(SessionContext.getInstance().getCurrentUser().getId());
             loan.setStatus(LoanStatus.PENDING);
 
             loanService.Add(loan);

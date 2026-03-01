@@ -9,8 +9,12 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import org.example.Model.Loan.LoanClass.Loan;
+import org.example.Model.User.User;
+import org.example.Model.User.UserRole;
 import org.example.Service.LoanService.LoanService;
+import org.example.Utils.SessionContext;
 
+import java.io.IOException;
 import java.util.List;
 
 public class userViewControll {
@@ -25,10 +29,29 @@ public class userViewControll {
     @FXML private TableColumn<Loan, Void> colAction;
 
     private final LoanService loanService = new LoanService();
+    private final SessionContext session = SessionContext.getInstance();
 
     @FXML
     public void initialize() {
+        User user = session.getCurrentUser();
+        if (user == null || user.getRole() != UserRole.CLIENT) {
+            try {
+                Parent root = FXMLLoader.load(
+                        getClass().getResource("/Auth/Login.fxml")
+                );
 
+                Stage stage = (Stage) Stage.getWindows()
+                        .filtered(window -> window.isShowing())
+                        .get(0);
+
+                stage.setScene(new Scene(root));
+                stage.setTitle("Connexion");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         colType.setCellValueFactory(cell ->
                 new javafx.beans.property.SimpleStringProperty(
                         cell.getValue().getLoanType().name()));
@@ -50,7 +73,8 @@ public class userViewControll {
     }
 
     private void loadData() {
-        List<Loan> loans = loanService.ReadAll();
+
+        List<Loan> loans = loanService.ReadByUserId(SessionContext.getInstance().getCurrentUser().getId());
         loanTable.setItems(FXCollections.observableArrayList(loans));
     }
 

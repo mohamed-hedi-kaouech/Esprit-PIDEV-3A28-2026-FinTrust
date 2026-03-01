@@ -15,6 +15,7 @@ import org.example.Model.Loan.LoanEnum.LoanStatus;
 import org.example.Model.Loan.LoanEnum.LoanType;
 import org.example.Service.LoanService.LoanService;
 import org.example.Service.LoanService.RepaymentService;
+import org.example.Utils.SessionContext;
 
 import java.io.IOException;
 import java.util.List;
@@ -32,6 +33,7 @@ public class SimulatorController {
     @FXML private Label maxDurationLabel;
 
     private final LoanService loanService = new LoanService();
+    private final SessionContext session = SessionContext.getInstance();
 
     private LoanType loanType;
 
@@ -89,9 +91,7 @@ public class SimulatorController {
                 showError("Condition d'âge non respectée.");
                 return;
             }
-
             Loan loan = new Loan(loanType, amount, duration);
-
             double monthly = loanService.calculateMonthlyPayment(loan);
 
             if (monthly > income * 0.4) {

@@ -19,10 +19,23 @@ public class Loan {
     private double interestRate;
     private double remainingPrincipal;
     private LocalDateTime createdAt;
+    private int id_user;
+
 
     // ======================
     // MAIN CONSTRUCTOR
     // ======================
+    public Loan(LoanType loanType, double amount, int duration,int id_user) {
+
+        this.loanType = loanType;
+        this.amount = amount;
+        this.duration = duration;
+        this.interestRate = loanType.getInterestRate();
+        this.remainingPrincipal = amount;
+        this.status = LoanStatus.PENDING;
+        this.createdAt = LocalDateTime.now();
+        this.id_user=id_user;
+    }
     public Loan(LoanType loanType, double amount, int duration) {
 
         this.loanType = loanType;
@@ -32,6 +45,7 @@ public class Loan {
         this.remainingPrincipal = amount;
         this.status = LoanStatus.PENDING;
         this.createdAt = LocalDateTime.now();
+        this.id_user=id_user;
     }
 
     // Empty constructor (for DB mapping)
@@ -67,6 +81,14 @@ public class Loan {
 
     public LocalDateTime getCreationDate() { return createdAt; }
     public void setCreationDate(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+    public int getId_user() {
+        return id_user;
+    }
+
+    public void setId_user(int id_user) {
+        this.id_user = id_user;
+    }
 
     @Override
     public String toString() {

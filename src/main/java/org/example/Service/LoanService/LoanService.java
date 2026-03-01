@@ -24,21 +24,22 @@ public class LoanService implements InterfaceGlobal<Loan> {
 
         String sql = """
             INSERT INTO loan
-            (loanType, amount, duration, status,
+            (id_user,loanType, amount, duration, status,
              interest_rate, remaining_principal, createdAt)
-            VALUES (?, ?, ?, ?, ?, ?, ?)
+            VALUES (?,?, ?, ?, ?, ?, ?, ?)
             """;
 
         try (PreparedStatement ps =
                      cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
 
-            ps.setString(1, loan.getLoanType().name());
-            ps.setDouble(2, loan.getAmount());
-            ps.setInt(3, loan.getDuration());
-            ps.setString(4, loan.getStatus().name());
-            ps.setDouble(5, loan.getInterestRate());
-            ps.setDouble(6, loan.getRemainingPrincipal());
-            ps.setTimestamp(7, Timestamp.valueOf(loan.getCreationDate()));
+            ps.setInt(1, loan.getId_user());
+            ps.setString(2, loan.getLoanType().name());
+            ps.setDouble(3, loan.getAmount());
+            ps.setInt(4, loan.getDuration());
+            ps.setString(5, loan.getStatus().name());
+            ps.setDouble(6, loan.getInterestRate());
+            ps.setDouble(7, loan.getRemainingPrincipal());
+            ps.setTimestamp(8, Timestamp.valueOf(loan.getCreationDate()));
 
             ps.executeUpdate();
 
@@ -153,6 +154,29 @@ public class LoanService implements InterfaceGlobal<Loan> {
         return null;
     }
 
+
+
+    public List<Loan> ReadByUserId(Integer Clientid) {
+
+        String sql = "SELECT * FROM loan WHERE id_user = ?";
+        List<Loan> loans = new ArrayList<>();
+
+        try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+
+            ps.setInt(1, Clientid);
+            ResultSet rs = ps.executeQuery();
+
+            while (rs.next()) {
+                loans.add(mapRow(rs));
+            }
+            return loans;
+
+        } catch (SQLException e) {
+            throw new RuntimeException("Error reading loan by id", e);
+        }
+    }
+
+
     // ======================
     // ACTIVATE LOAN
     // ======================
@@ -179,6 +203,7 @@ public class LoanService implements InterfaceGlobal<Loan> {
         Loan loan = new Loan();
 
         loan.setLoanId(rs.getInt("loanId"));
+        loan.setId_user(rs.getInt("id_user"));
         loan.setLoanType(
                 LoanType.valueOf(rs.getString("loanType"))
         );

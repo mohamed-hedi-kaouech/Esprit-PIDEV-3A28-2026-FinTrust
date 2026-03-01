@@ -16,15 +16,20 @@ import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.LoanStatus;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
 //import org.example.Service.LoanService.EmailService;
+import org.example.Model.Wallet.ClassWallet.Wallet;
 import org.example.Service.LoanService.EmailService;
 import org.example.Service.LoanService.LoanService;
 import org.example.Service.LoanService.PdfExportService;
 import org.example.Service.LoanService.RepaymentService;
+import org.example.Service.WalletService.WalletService;
+import org.example.Utils.SessionContext;
 
 import java.io.File;
 import java.nio.file.Files;
 import java.util.List;
 import java.util.Optional;
+
+import static com.itextpdf.kernel.pdf.PdfName.WS;
 
 public class RepaymentListController {
 
@@ -38,6 +43,8 @@ public class RepaymentListController {
 
     private final RepaymentService service = new RepaymentService();
     private final LoanService loanService = new LoanService();
+    private final WalletService walletService = new WalletService();
+    private final SessionContext session = SessionContext.getInstance();
     private final ObservableList<Repayment> repaymentList = FXCollections.observableArrayList();
     private LoanStatus currentLoanStatus;
     private int loanId;
@@ -188,46 +195,53 @@ public class RepaymentListController {
     // HANDLE PAY
     // ======================
     private void handlePay(Repayment r) {
+        Wallet w = walletService.getWalletByMail(SessionContext.getInstance().getCurrentUser().getEmail());
+        if(w.getSolde()>r.getMonthlyPayment()) {
+            walletService.modifiersolde(w.getId_wallet(), w.getSolde()-r.getMonthlyPayment());
+            if (r.getStatus() == RepaymentStatus.PAID) {
+                showError("Cette échéance est déjà payée.");
+                return;
+            }
 
-        if (r.getStatus() == RepaymentStatus.PAID) {
-            showError("Cette échéance est déjà payée.");
-            return;
+            // 🔥 NEW VALIDATION
+            if (!service.canPayRepayment(r.getLoanId(), r.getMonth())) {
+                showError("Vous devez payer les échéances précédentes d'abord.");
+                return;
+            }
+
+            Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
+            confirm.setTitle("Confirmation");
+            confirm.setHeaderText("Paiement échéance n° " + r.getMonth());
+            confirm.setContentText("Confirmer le paiement ?");
+
+            Optional<ButtonType> result = confirm.showAndWait();
+
+            if (result.isPresent() && result.get() == ButtonType.OK) {
+
+                service.markAsPaid(r.getRepayId());
+                service.updateRemainingPrincipal(
+                        r.getLoanId(),
+                        r.getCapitalPart()
+                );
+                service.updateLoanStatusIfCompleted(
+                        r.getLoanId()
+                );
+
+                EmailService emailService = new EmailService();
+                emailService.sendRepaymentConfirmation(
+                        System.getenv("MAIL_USER"),
+                        r.getLoanId(),
+                        r.getMonth(),
+                        r.getMonthlyPayment()
+                );
+
+                loadData();
+            }
+        }
+        else{
+            showError("montant insuffisant");
         }
 
-        // 🔥 NEW VALIDATION
-        if (!service.canPayRepayment(r.getLoanId(), r.getMonth())) {
-            showError("Vous devez payer les échéances précédentes d'abord.");
-            return;
-        }
-
-        Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Confirmation");
-        confirm.setHeaderText("Paiement échéance n° " + r.getMonth());
-        confirm.setContentText("Confirmer le paiement ?");
-
-        Optional<ButtonType> result = confirm.showAndWait();
-
-        if (result.isPresent() && result.get() == ButtonType.OK) {
-
-            service.markAsPaid(r.getRepayId());
-            service.updateRemainingPrincipal(
-                    r.getLoanId(),
-                    r.getCapitalPart()
-            );
-            service.updateLoanStatusIfCompleted(
-                    r.getLoanId()
-            );
-
-            EmailService emailService = new EmailService();
-            emailService.sendRepaymentConfirmation(
-                   System.getenv("MAIL_USER"),
-                   r.getLoanId(),
-                   r.getMonth(),
-                   r.getMonthlyPayment()
-           );
-
-            loadData();
-        }
     }
 
 
