@@ -191,9 +191,9 @@ public class AdminDashboardController {
     }
 
     @FXML
-    private void handleLogout() throws Exception {
+    private void handleback() throws Exception {
         Parent root = FXMLLoader.load(
-                getClass().getResource("/MenuGUI.fxml"));
+                getClass().getResource("/Admin/UserDashboard.fxml"));
         Stage stage = (Stage) totalLoansLabel.getScene().getWindow();
         stage.setScene(new Scene(root));
     }

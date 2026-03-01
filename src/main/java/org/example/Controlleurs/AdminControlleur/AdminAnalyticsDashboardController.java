@@ -177,9 +177,7 @@ public class AdminAnalyticsDashboardController {
 
     @FXML
     private void goToLoans() {
-        infoLabel.setText("Module Loans: ouvrez depuis le menu principal.");
-        infoLabel.setStyle("-fx-text-fill: #1d6b34;");
-        goToMenu();
+        navigateTo("/Loan/AdminDashboard.fxml", "Gestion des Loans",null);
     }
 
     private void bindTables() {

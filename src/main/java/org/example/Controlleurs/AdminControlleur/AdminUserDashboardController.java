@@ -243,9 +243,9 @@ public class AdminUserDashboardController {
     }
 
     @FXML
-    private void goToLoans() {
-        setInfo("Module Loans: ouvrez depuis le menu principal.", false);
-        goToMenu();
+    private void goToLoan() {
+        navigateTo("/Loan/AdminDashboard.fxml", "Gestion des Loans",null);
+
     }
 
     @FXML

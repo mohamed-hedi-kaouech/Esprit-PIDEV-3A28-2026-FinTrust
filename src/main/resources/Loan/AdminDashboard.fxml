@@ -24,7 +24,7 @@
             <Region HBox.hgrow="ALWAYS"/>
             <Button text="back"
                     styleClass="btn-back"
-                    onAction="#handleLogout"/>
+                    onAction="#handleback"/>
         </HBox>
 
         <!-- ================= STATISTICS ================= -->

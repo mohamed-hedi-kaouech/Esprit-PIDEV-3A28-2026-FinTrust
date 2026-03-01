@@ -16,6 +16,7 @@ import org.example.Model.Loan.LoanClass.Repayment;
 import org.example.Model.Loan.LoanEnum.LoanStatus;
 import org.example.Model.Loan.LoanEnum.RepaymentStatus;
 //import org.example.Service.LoanService.EmailService;
+import org.example.Service.LoanService.EmailService;
 import org.example.Service.LoanService.LoanService;
 import org.example.Service.LoanService.PdfExportService;
 import org.example.Service.LoanService.RepaymentService;
@@ -217,13 +218,13 @@ public class RepaymentListController {
                     r.getLoanId()
             );
 
-//            EmailService emailService = new EmailService();
-//            emailService.sendRepaymentConfirmation(
-//                    System.getenv("MAIL_USER"),
-//                    r.getLoanId(),
-//                    r.getMonth(),
-//                    r.getMonthlyPayment()
-//            );
+            EmailService emailService = new EmailService();
+            emailService.sendRepaymentConfirmation(
+                   System.getenv("MAIL_USER"),
+                   r.getLoanId(),
+                   r.getMonth(),
+                   r.getMonthlyPayment()
+           );
 
             loadData();
         }
