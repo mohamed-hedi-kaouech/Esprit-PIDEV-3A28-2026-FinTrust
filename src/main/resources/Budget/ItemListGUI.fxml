@@ -8,7 +8,7 @@
 <BorderPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.ItemListController"
             prefWidth="900" prefHeight="600"
-            stylesheets="/Styles/StyleBudget.css"
+            stylesheets="/Styles/StyleBudgetWhite.css"
             styleClass="main-container">
 
     <!-- TOP BAR -->
@@ -68,7 +68,7 @@
                     <Insets top="15" right="30" bottom="15" left="30"/>
                 </padding>
 
-                <Button text="➕ Ajouter Item" onAction="#goToCreate" styleClass="btn-add">
+                <Button text="➕ Ajouter Item" onAction="#goToCreate" styleClass="btn-add" style="-fx-font-size: 13px; -fx-padding: 10px 20px;">
                     <font>
                         <Font name="System Bold" size="13.0"/>
                     </font>
@@ -78,13 +78,13 @@
 
                 <!-- Search Bar -->
                 <TextField fx:id="tfSearch" promptText="🔍 Rechercher un item..."
-                           prefWidth="250.0" styleClass="search-field">
+                           prefWidth="280.0" styleClass="search-field" style="-fx-font-size: 13px;">
                     <font>
                         <Font size="13.0"/>
                     </font>
                 </TextField>
 
-                <Button text="Réinitialiser" onAction="#resetSearch" styleClass="btn-reset">
+                <Button text="🔄 Réinitialiser" onAction="#resetSearch" styleClass="btn-reset" style="-fx-font-size: 12px; -fx-padding: 8px 15px;">
                     <font>
                         <Font size="12.0"/>
                     </font>
@@ -109,27 +109,20 @@
                     </font>
                 </Label>
                 <Region HBox.hgrow="ALWAYS"/>
-                <Label fx:id="lblFilteredCount" text="Affichage: 0 items" styleClass="filter-count">
+                <Label fx:id="lblFilteredCount" text="" styleClass="filter-count">
                     <font>
                         <Font size="11.0"/>
                     </font>
                 </Label>
             </HBox>
 
-            <!-- Table Column Headers -->
+
+            <!-- Header for list -->
             <HBox spacing="12" styleClass="table-header">
                 <padding>
-                    <Insets top="8" right="12" bottom="8" left="12"/>
+                    <Insets top="0" right="0" bottom="0" left="0"/>
                 </padding>
-
-                <Label text="ID" styleClass="table-col id-col" />
-                <Label text="Nom" styleClass="table-col name-col" HBox.hgrow="ALWAYS" />
-                <Label text="Catégorie" styleClass="table-col category-col" />
-                <Label text="Montant" styleClass="table-col montant-col" />
-                <Region HBox.hgrow="ALWAYS" />
-                <Label text="Actions" styleClass="table-col actions-col" />
             </HBox>
-
             <!-- ListView -->
             <ListView fx:id="itemListView" styleClass="item-listview categorie-listview" VBox.vgrow="ALWAYS"/>
 

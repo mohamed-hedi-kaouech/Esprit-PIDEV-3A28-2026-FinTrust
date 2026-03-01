@@ -17,12 +17,18 @@ public class ItemService implements InterfaceGlobal<Item> {
     @Override
     public void Add(Item item) {
         String req = "INSERT INTO item(libelle, montant, idCategorie) VALUES (?, ?, ?)";
-        try (PreparedStatement ps = cnx.prepareStatement(req)) {
+        try (PreparedStatement ps = cnx.prepareStatement(req, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, item.getLibelle());
             ps.setDouble(2, item.getMontant());
             ps.setInt(3, item.getCategorie().getIdCategorie());
             ps.executeUpdate();
-            System.out.println("✅ Item ajouté avec succès !");
+            try (ResultSet generated = ps.getGeneratedKeys()) {
+                if (generated.next()) {
+                    int id = generated.getInt(1);
+                    item.setIdItem(id);
+                }
+            }
+            System.out.println("✅ Item ajouté avec succès ! ID=" + item.getIdItem());
         } catch (SQLException e) {
             e.printStackTrace();
             throw new RuntimeException(e);

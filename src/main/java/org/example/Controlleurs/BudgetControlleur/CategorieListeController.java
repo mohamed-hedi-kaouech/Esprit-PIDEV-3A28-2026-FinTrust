@@ -24,8 +24,11 @@ import javafx.scene.layout.GridPane;
 
 import java.io.IOException;
 import java.net.URL;
+import java.nio.file.Path;
+import java.util.ArrayList;
 import java.util.Optional;
 import java.util.ResourceBundle;
+
 
 public class CategorieListeController implements Initializable {
 
@@ -133,6 +136,20 @@ public class CategorieListeController implements Initializable {
             notificationMenu.getItems().add(err);
         }
     }
+
+    @FXML
+    private void sendMonthlyReport() {
+        try {
+            // use existing services to build report
+            org.example.Service.BudgetService.ItemService itemService = new org.example.Service.BudgetService.ItemService();
+            Path out = org.example.Utils.PdfReportService.createCategoryReport(new ArrayList<>(categorieList), itemService);
+            showSuccessAlert("Rapport généré", "Fichier créé: " + out.toAbsolutePath());
+        } catch (Exception e) {
+            e.printStackTrace();
+            showErrorAlert("Erreur", "Impossible de générer le rapport: " + e.getMessage());
+        }
+    }
+
 
     private void showAlerteDetails(org.example.Model.Budget.Alerte a) {
         StringBuilder sb = new StringBuilder();
