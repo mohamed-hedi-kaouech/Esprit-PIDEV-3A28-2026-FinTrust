@@ -50,7 +50,7 @@ public class ListeProductControlleur implements Initializable {
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         User user = session.getCurrentUser();
-        if (user == null || user.getRole() != UserRole.CLIENT) {
+        if (user == null || user.getRole() != UserRole.ADMIN) {
             try {
                 Parent root = FXMLLoader.load(
                         getClass().getResource("/Auth/Login.fxml")
@@ -96,7 +96,7 @@ public class ListeProductControlleur implements Initializable {
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/MenuGUI.fxml")
+                    getClass().getResource("/Admin/UserDashboard.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

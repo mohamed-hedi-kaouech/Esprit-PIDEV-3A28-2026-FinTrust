@@ -41,6 +41,14 @@ public class Wallet {
         this.plafondDecouvert = 0;
         this.dateCreation = LocalDateTime.now();
     }
+    public Wallet(int id_wallet, String nom_proprietaire, double solde, WalletDevise devise) {
+        this.idWallet = id_wallet;
+        this.nomProprietaire = nom_proprietaire;
+        this.solde = solde;
+        this.devise = devise;
+        this.statut = WalletStatut.DRAFT;
+        this.dateCreation = LocalDateTime.now();
+    }
 
     public Wallet(String nomProprietaire, String telephone, String email,
                   double solde, WalletDevise devise) {

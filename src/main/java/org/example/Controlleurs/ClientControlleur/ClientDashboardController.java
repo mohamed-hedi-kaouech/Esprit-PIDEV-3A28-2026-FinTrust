@@ -42,7 +42,8 @@ public class ClientDashboardController {
     @FXML private Button profileButton;
     @FXML private Button loanButton;
     @FXML private Button budgetButton;
-    @FXML private Button productButton;
+    @FXML private Button MarketButton;
+    @FXML private Button AbonnementsButton;
     @FXML private Button publicationButton;
 
     private final SessionContext session = SessionContext.getInstance();
@@ -84,7 +85,8 @@ public class ClientDashboardController {
         profileButton.setDisable(!allowed);
         loanButton.setDisable(!allowed);
         budgetButton.setDisable(!allowed);
-        productButton.setDisable(!allowed);
+        MarketButton.setDisable(!allowed);
+        AbonnementsButton.setDisable(!allowed);
         publicationButton.setDisable(!allowed);
 
         refreshNotifBadge();
@@ -224,7 +226,7 @@ public class ClientDashboardController {
     @FXML
     private void goToLoan() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Loan/LoanList.fxml", "Loans", "/Styles/StyleWallet.css");
+        navigateTo("/Loan/LoanListUser.fxml", "Loans", "/Styles/StyleWallet.css");
     }
 
     @FXML
@@ -234,9 +236,15 @@ public class ClientDashboardController {
     }
 
     @FXML
-    private void goToProducts() {
+    public void goToMarket() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+        navigateTo("/Product/Client/ClientMarketGUI.fxml", "Produit", "/Styles/StyleProduct.css");
+    }
+
+    @FXML
+    public void goToAbonnements() {
+        if (!ensureKycApprovedOrShow()) return;
+        navigateTo("/Product/Client/ClientListeProductGUI.fxml", "Abonnements", "/Styles/StyleProduct.css");
     }
 
     @FXML

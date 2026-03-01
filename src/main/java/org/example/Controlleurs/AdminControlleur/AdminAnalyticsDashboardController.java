@@ -110,6 +110,8 @@ public class AdminAnalyticsDashboardController {
         navigateTo("/Admin/UserDashboard.fxml", "Dashboard Admin", "/Styles/StyleWallet.css");
     }
 
+
+
     @FXML
     private void goToAnalyticsDashboard() {
         handleRefresh();
@@ -148,7 +150,15 @@ public class AdminAnalyticsDashboardController {
 
     @FXML
     private void goToProducts() {
-        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+        navigateTo("/Product/Admin/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+    }
+    @FXML
+    private void goToSubProducts() {
+        navigateTo("/Product/Admin/ListeSubProductGUI.fxml", "Abonnements", "/Styles/StyleWallet.css");
+    }
+    @FXML
+    private void goToDashboardProduit() {
+        navigateTo("/Product/Admin/AdminDashboardGUI.fxml", "Dashboard Produit", "/Styles/StyleWallet.css");
     }
 
     @FXML

@@ -9,9 +9,12 @@ import javafx.scene.control.*;
 import javafx.stage.Stage;
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.EnumProduct.SubscriptionStatus;
+import org.example.Model.User.User;
+import org.example.Model.User.UserRole;
 import org.example.Service.ProductService.ProductService;
 import org.example.Service.ProductService.ProductSubscriptionService;
 import org.example.Model.Product.EnumProduct.SubscriptionType;
+import org.example.Utils.SessionContext;
 
 import java.io.IOException;
 import java.net.URL;
@@ -47,12 +50,31 @@ public class SubscriptionUpdateController implements Initializable {
 
     private ProductSubscriptionService Ps;
     private ProductSubscription currentSubscription;
-
+    private final SessionContext session = SessionContext.getInstance();
     private ProductService P;
 
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
+        User user = session.getCurrentUser();
+        if (user == null || user.getRole() != UserRole.ADMIN) {
+            try {
+                Parent root = FXMLLoader.load(
+                        getClass().getResource("/Auth/Login.fxml")
+                );
+
+                Stage stage = (Stage) Stage.getWindows()
+                        .filtered(window -> window.isShowing())
+                        .get(0);
+
+                stage.setScene(new Scene(root));
+                stage.setTitle("Connexion");
+
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            return;
+        }
         Ps = new ProductSubscriptionService();
 
         setupDateListeners();

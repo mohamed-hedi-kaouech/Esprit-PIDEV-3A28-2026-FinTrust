@@ -31,6 +31,7 @@ import org.example.Service.UserService.UserService;
 import org.example.Utils.SessionContext;
 
 import java.io.File;
+import java.io.IOException;
 import java.net.URL;
 import java.nio.file.Path;
 import java.time.LocalDate;
@@ -42,7 +43,10 @@ import java.util.Locale;
 import java.util.Map;
 import java.util.TreeMap;
 import java.util.concurrent.CompletableFuture;
-
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.stage.Stage;
+import javafx.fxml.FXMLLoader;
 public class AdminUserDashboardController {
 
     @FXML private TableView<User> usersTable;
@@ -216,9 +220,16 @@ public class AdminUserDashboardController {
 
     @FXML
     private void goToProducts() {
-        navigateTo("/Product/ListeProductGUI.fxml", "Produits", "/Styles/StyleWallet.css");
+        loadScene("/Product/Admin/ListeProductGUI.fxml", "Produits");
     }
-
+    @FXML
+    private void goToSubProducts() {
+        loadScene("/Product/Admin/ListeSubProductGUI.fxml", "Abonnements");
+    }
+    @FXML
+    private void goToDashboardProduit() {
+        loadScene("/Product/Admin/AdminDashboardGUI.fxml", "Dashboard Produit");
+    }
     @FXML
     private void goToPublications() {
         setInfo("Module Publications: ouvrez depuis le menu principal.", false);
@@ -683,7 +694,21 @@ public class AdminUserDashboardController {
         infoLabel.setText(text == null ? "" : text);
         infoLabel.setStyle(isError ? "-fx-text-fill: #cc2e2e;" : "-fx-text-fill: #1d6b34;");
     }
+    private void loadScene(String fxmlPath, String title) {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource(fxmlPath)
+            );
+            Stage stage = (Stage) Stage.getWindows()
+                    .filtered(window -> window.isShowing())
+                    .get(0);
+            stage.setScene(new Scene(root));
+            stage.setTitle(title);
 
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
     private void navigateTo(String fxmlPath, String title, String stylesheet) {
         try {
             URL fxmlUrl = getClass().getResource(fxmlPath);

@@ -156,4 +156,3 @@ public class SimulatorController {
         new Alert(Alert.AlertType.ERROR, msg).showAndWait();
     }
 }
-

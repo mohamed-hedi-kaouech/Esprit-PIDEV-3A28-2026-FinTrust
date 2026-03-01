@@ -377,4 +377,36 @@ public class WalletService {
         }
         return false;
     }
+
+    public Wallet getWalletByMail(String mail) {
+        String query = "SELECT * FROM wallet WHERE email = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+
+            pstmt.setString(1, mail);
+            ResultSet rs = pstmt.executeQuery();
+            if (rs.next()) {
+                return new Wallet(
+                        rs.getInt("id_wallet"),
+                        rs.getString("nom_proprietaire"),
+                        rs.getDouble("solde"),
+                        WalletDevise.valueOf(rs.getString("devise")));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    // Update
+    public boolean modifiersolde(int id, double solde) {
+        String query = "UPDATE wallet SET  solde = ? WHERE id_wallet = ?";
+        try (PreparedStatement pstmt = connection.prepareStatement(query)) {
+            pstmt.setDouble(1, solde);
+            pstmt.setInt(2, id);
+            return pstmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return false;
+    }
 }

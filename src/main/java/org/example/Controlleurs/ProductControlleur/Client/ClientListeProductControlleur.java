@@ -84,7 +84,7 @@ public class ClientListeProductControlleur implements Initializable {
 
     private void loadProductData() {
         SubProductsListe.clear();
-        SubProductsListe.addAll(PSS.getSubProducts(1));
+        SubProductsListe.addAll(PSS.getSubProducts(SessionContext.getInstance().getCurrentUser().getId()));
         filteredList.setAll(SubProductsListe);
         SubProductsListeView.setItems(filteredList);
         updateTotalLabel();
