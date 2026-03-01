@@ -16,10 +16,10 @@ echo ========================================
 echo.
 
 REM Email is in test mode by default
-set EMAIL_TEST_MODE=true
+set EMAIL_TEST_MODE=false
 set SMTP_HOST=localhost
 set SMTP_PORT=25
-set SMTP_FROM=alerts@pidev.local
-set ALERT_EMAIL_TO=admin@pidev.local
+set SMTP_FROM=mohamedhedi322@gmail.com
+set ALERT_EMAIL_TO=kaouechmohamedhedi29@gmail.com
 
 mvn javafx:run

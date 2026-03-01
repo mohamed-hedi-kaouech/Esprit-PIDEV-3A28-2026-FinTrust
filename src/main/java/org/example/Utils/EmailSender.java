@@ -60,6 +60,9 @@ public class EmailSender {
             props.put("mail.smtp.ssl.protocols", "TLSv1.2");
 
             Session session;
+
+            System.out.println(EmailConfig.SMTP_USER);
+            System.out.println(EmailConfig.SMTP_PASS);
             if (!EmailConfig.SMTP_USER.isEmpty()) {
                 session = Session.getInstance(props, new Authenticator() {
                     @Override
@@ -76,7 +79,10 @@ public class EmailSender {
             message.setRecipients(Message.RecipientType.TO, InternetAddress.parse(EmailConfig.DEFAULT_RECIPIENT));
             message.setSubject(subject);
             message.setText(body.toString());
-
+            props.put("mail.smtp.connectiontimeout", "5000");
+            props.put("mail.smtp.timeout", "5000");
+            props.put("mail.smtp.writetimeout", "5000");
+            props.put("mail.smtp.auth", "true");
             Transport.send(message);
             System.out.println("[EmailSender] ✓ Alert email sent to: " + EmailConfig.DEFAULT_RECIPIENT);
             return true;

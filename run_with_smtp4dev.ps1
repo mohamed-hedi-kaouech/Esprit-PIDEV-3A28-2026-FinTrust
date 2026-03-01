@@ -30,16 +30,16 @@ Write-Host "`n[3/3] Configuring environment and launching app..." -ForegroundCol
 $env:SMTP_HOST = "localhost"
 $env:SMTP_PORT = "25"
 $env:SMTP_USER = ""
-$env:SMTP_PASS = ""
-$env:SMTP_FROM = "alerts@pidev.local"
-$env:ALERT_EMAIL_TO = "admin@pidev.local"
+$env:SMTP_PASS = "xnir pkyn brkj yxcg"
+$env:SMTP_FROM = "mohamedhedi322@gmail.com"
+$env:ALERT_EMAIL_TO = "kaouechmohamedhedi29@gmail.com"
 $env:SMTP_USE_STARTTLS = "false"
 
 Write-Host "`nEnvironment variables configured:" -ForegroundColor Cyan
 Write-Host "  SMTP_HOST = localhost"
 Write-Host "  SMTP_PORT = 25"
-Write-Host "  SMTP_FROM = alerts@pidev.local"
-Write-Host "  ALERT_EMAIL_TO = admin@pidev.local"
+Write-Host "  SMTP_FROM = mohamedhedi322@gmail.com"
+Write-Host "  ALERT_EMAIL_TO = mohamedhedi322@gmail.com"
 
 Write-Host "`n========================================" -ForegroundColor Cyan
 Write-Host "Launching PIDEV..." -ForegroundColor Cyan

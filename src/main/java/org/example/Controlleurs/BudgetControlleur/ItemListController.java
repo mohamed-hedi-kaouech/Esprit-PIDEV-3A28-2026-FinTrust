@@ -234,6 +234,7 @@ public class ItemListController implements Initializable {
                 boolean duplicate = existing.stream().anyMatch(a -> a.isActive() && Double.compare(a.getSeuil(), seuil) == 0 && a.getMessage().equals(message));
                 if (!duplicate) {
                     Alerte a = new Alerte(currentCategory.getIdCategorie(), message, seuil);
+                    System.out.println(a);
                     alerteService.Add(a);
                     // notify other controllers (UI) about new alert so they can refresh
                     try { NotificationCenter.getInstance().postAlerte(a); } catch (Exception ignored) {}
