@@ -86,16 +86,15 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
     }
 
     public boolean update(ProductSubscription p) {
-        String req = "UPDATE `ProductSubscription` SET type = ?,Client=?, Product=?, subscriptionDate=?, expirationDate = ?, status = ? WHERE subscriptionId = ?";
+        String req = "UPDATE `ProductSubscription` SET type = ?, Product=?, subscriptionDate=?, expirationDate = ?, status = ? WHERE subscriptionId = ?";
         try {
             PreparedStatement ps = cnx.prepareStatement(req);
             ps.setString(1, p.getType().name());
-            ps.setInt(2, p.getClient());
-            ps.setInt(3, p.getProduct());
-            ps.setTimestamp(4, Timestamp.valueOf(p.getSubscriptionDate()));
-            ps.setTimestamp(5, Timestamp.valueOf(p.getExpirationDate()));
-            ps.setString(6, p.getStatus().name());
-            ps.setInt(7, p.getSubscriptionId());
+            ps.setInt(2, p.getProduct());
+            ps.setTimestamp(3, Timestamp.valueOf(p.getSubscriptionDate()));
+            ps.setTimestamp(4, Timestamp.valueOf(p.getExpirationDate()));
+            ps.setString(5, p.getStatus().name());
+            ps.setInt(6, p.getSubscriptionId());
             ps.executeUpdate();
             System.out.println("ProduitSubscription changée avec succes");
             return true;
