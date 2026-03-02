@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.PublicationControlleur.ClientController"
+            prefWidth="980.0"
+            prefHeight="680.0"
+            styleClass="app-root"
+            stylesheets="@/Styles/BlueTheme.css">
+
+    <VBox spacing="14.0" styleClass="page-shell"
+          AnchorPane.topAnchor="0.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0">
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="topbar-card">
+            <Button fx:id="backBtn"
+                    text="Retour"
+                    styleClass="btn-ghost"/>
+            <Label text="Espace Client Publications"
+                   styleClass="topbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+        </HBox>
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="search-row">
+            <TextField fx:id="searchField"
+                       promptText="Rechercher..."
+                       HBox.hgrow="ALWAYS"
+                       styleClass="search-field"/>
+            <ComboBox fx:id="sortModeCombo" prefWidth="190.0"/>
+            <Button text="Rechercher" onAction="#handleSearch" styleClass="btn-primary"/>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="transparent-scroll">
+            <VBox fx:id="clientListContainer" styleClass="cards-stack"/>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>

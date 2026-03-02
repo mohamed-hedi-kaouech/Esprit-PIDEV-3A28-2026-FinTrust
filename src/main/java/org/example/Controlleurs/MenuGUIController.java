@@ -20,7 +20,6 @@ import org.example.Utils.AccessGuard;
 
 import java.io.IOException;
 import java.net.URL;
-import java.util.Optional;
 import java.util.ResourceBundle;
 
 public class MenuGUIController implements Initializable {
@@ -119,9 +118,6 @@ public class MenuGUIController implements Initializable {
         }
     }
 
-    /**
-     * Navigate to Loan Management
-     */
     @FXML
     private void goToLoan() {
         try {
@@ -132,9 +128,6 @@ public class MenuGUIController implements Initializable {
         }
     }
 
-    /**
-     * Navigate to Wallet Management
-     */
     @FXML
     private void goToWallet() {
         if (!AccessGuard.canAccessFullModules()) {
@@ -145,7 +138,7 @@ public class MenuGUIController implements Initializable {
             navigateToScene("/Wallet/CreateWalletGUI.fxml", "Gestion des Wallets", "/Styles/StyleWallet.css");
         } catch (IOException e) {
             showErrorAlert("Erreur de Navigation",
-                    "Impossible d'accéder au module Gestion Wallets.\n" + e.getMessage());
+                    "Impossible d'acceder au module Gestion Wallets.\n" + e.getMessage());
         }
     }
 

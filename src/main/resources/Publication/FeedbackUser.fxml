@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane xmlns="http://javafx.com/javafx/17"
+            xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="org.example.Controlleurs.PublicationControlleur.FeedbackUserController"
+            prefWidth="980.0"
+            prefHeight="700.0"
+            styleClass="app-root"
+            stylesheets="@/Styles/BlueTheme.css">
+
+    <VBox spacing="12.0" styleClass="page-shell"
+          AnchorPane.topAnchor="0.0"
+          AnchorPane.leftAnchor="0.0"
+          AnchorPane.rightAnchor="0.0"
+          AnchorPane.bottomAnchor="0.0">
+
+        <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="topbar-card">
+            <Button text="Retour" fx:id="backButton" styleClass="btn-ghost"/>
+            <Label fx:id="titleLabel" text="Feedbacks" styleClass="topbar-title"/>
+            <Region HBox.hgrow="ALWAYS"/>
+            <Label text="👍" styleClass="topbar-count"/>
+            <Label fx:id="likeCount" text="0" styleClass="topbar-count"/>
+            <Label text="👎" styleClass="topbar-count"/>
+            <Label fx:id="dislikeCount" text="0" styleClass="topbar-count"/>
+            <Label text="⭐" styleClass="topbar-count"/>
+            <Label fx:id="avgRatingLabel" text="0.0/5" styleClass="topbar-count"/>
+            <Label text="Notes:" styleClass="topbar-count"/>
+            <Label fx:id="ratingCountLabel" text="0" styleClass="topbar-count"/>
+        </HBox>
+
+        <ScrollPane fitToWidth="true" VBox.vgrow="ALWAYS" styleClass="transparent-scroll">
+            <VBox fx:id="feedbackList" styleClass="cards-stack"/>
+        </ScrollPane>
+    </VBox>
+</AnchorPane>
