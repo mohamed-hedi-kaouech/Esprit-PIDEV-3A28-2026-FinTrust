@@ -15,7 +15,7 @@
             fx:controller="org.example.Controlleurs.ClientControlleur.ClientChatbotController">
 
     <top>
-        <HBox styleClass="header-panel assistant-chat-header" alignment="CENTER_LEFT" spacing="12">
+        <HBox styleClass="header-panel" alignment="CENTER_LEFT" spacing="12">
             <children>
                 <Label text="IA" styleClass="assistant-ia-icon"/>
                 <Label text="FinTrust Assistant IA" styleClass="logo-text"/>
