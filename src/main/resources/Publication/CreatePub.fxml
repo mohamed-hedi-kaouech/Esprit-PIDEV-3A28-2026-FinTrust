@@ -37,11 +37,6 @@
                     styleClass="btn-ghost"
                     text="Retour"/>
 
-            <Button onAction="#checkDbConnection"
-                    prefWidth="120.0"
-                    styleClass="btn-ghost"
-                    text="Statut DB"/>
-
             <Region HBox.hgrow="ALWAYS"/>
 
             <Label text="Créer une Nouvelle Publication" styleClass="topbar-title">

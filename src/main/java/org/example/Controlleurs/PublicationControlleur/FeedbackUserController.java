@@ -73,18 +73,18 @@ public class FeedbackUserController implements Initializable {
             }
 
             VBox commentCard = new VBox(6);
-            commentCard.setStyle("-fx-background-color: white; -fx-padding:10; -fx-border-color: #dbe9ff; -fx-border-radius:8; -fx-background-radius:8;");
+            commentCard.getStyleClass().add("comment-card");
 
             HBox row = new HBox(10);
             Label user = new Label("Client#" + f.getIdUser());
-            user.setStyle("-fx-font-weight: bold; -fx-text-fill: #0b5ed7;");
+            user.getStyleClass().add("comment-author");
 
             Label content = new Label(f.getCommentaire() == null ? "" : f.getCommentaire());
             content.setWrapText(true);
-            content.setStyle("-fx-text-fill: #163a6b; -fx-font-size: 13px;");
+            content.getStyleClass().add("comment-body");
 
             Label date = new Label(f.getDateFeedback().format(fmt));
-            date.setStyle("-fx-text-fill: #7a8a9a; -fx-font-size:11px;");
+            date.getStyleClass().add("comment-date");
 
             Button replyBtn = new Button("Répondre");
             replyBtn.getStyleClass().add("btn-outline");
@@ -99,12 +99,12 @@ public class FeedbackUserController implements Initializable {
             if (commentReplies != null) {
                 for (Feedback reply : commentReplies) {
                     HBox repRow = new HBox(8);
-                    repRow.setStyle("-fx-background-color: #eef5ff; -fx-padding:8; -fx-background-radius:6; -fx-border-color:#d4e5ff; -fx-border-radius:6;");
+                    repRow.getStyleClass().add("reply-row");
                     Label admin = new Label("Admin");
-                    admin.setStyle("-fx-font-weight: bold; -fx-text-fill: #1450a3;");
+                    admin.getStyleClass().add("reply-author");
                     Label repText = new Label(feedbackService.extractReplyBody(reply.getCommentaire()));
                     repText.setWrapText(true);
-                    repText.setStyle("-fx-text-fill: #1f4b83;");
+                    repText.getStyleClass().add("reply-body");
                     repRow.getChildren().addAll(admin, repText);
                     commentCard.getChildren().add(repRow);
                 }

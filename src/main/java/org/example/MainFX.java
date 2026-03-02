@@ -18,9 +18,9 @@ public class MainFX extends Application {
     @Override
     public void start(Stage primaryStage) {
         try {
-            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/MenuGUI.fxml")));
+            Parent root = FXMLLoader.load(Objects.requireNonNull(getClass().getResource("/Publication/ListePub.fxml")));
             Scene scene = new Scene(root);
-            primaryStage.setTitle("Product Manager");
+            primaryStage.setTitle("Gestion Publications");
             primaryStage.setScene(scene);
             primaryStage.show();
         } catch (IOException e) {

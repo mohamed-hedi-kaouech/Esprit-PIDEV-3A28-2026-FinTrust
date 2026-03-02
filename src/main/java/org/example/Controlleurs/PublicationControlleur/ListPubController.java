@@ -21,6 +21,9 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
+import javafx.animation.TranslateTransition;
 import javafx.geometry.Insets;
 import javafx.scene.control.TextField;
 import javafx.geometry.Pos;
@@ -42,6 +45,7 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
+import javafx.util.Duration;
 
 
 public class ListPubController implements Initializable {
@@ -366,6 +370,7 @@ public class ListPubController implements Initializable {
 
             dateLabel = new Label();
             dateLabel.getStyleClass().add("publication-date");
+            dateLabel.getStyleClass().add("date-chip");
             dateLabel.setFont(Font.font("System", 11));
 
             Region spacer2 = new Region();
@@ -382,6 +387,8 @@ public class ListPubController implements Initializable {
 
             likeButton = new Button("👍");
             dislikeButton = new Button("👎");
+            likeButton.getStyleClass().add("btn-like");
+            dislikeButton.getStyleClass().add("btn-dislike");
             likeButton.setDisable(true);
             dislikeButton.setDisable(true);
             likeButton.setFocusTraversable(false);
@@ -389,11 +396,18 @@ public class ListPubController implements Initializable {
 
             exportCsvButton = new Button("Donnees CSV");
             exportPdfButton = new Button("Rapport PDF (stats image)");
+            exportCsvButton.getStyleClass().add("btn-outline");
+            exportPdfButton.getStyleClass().add("btn-outline");
+            exportCsvButton.getStyleClass().add("btn-export-csv");
+            exportPdfButton.getStyleClass().add("btn-export-pdf");
 
             likeCountLabel = new Label("0");
             dislikeCountLabel = new Label("0");
+            likeCountLabel.getStyleClass().addAll("count-badge", "count-like");
+            dislikeCountLabel.getStyleClass().addAll("count-badge", "count-dislike");
 
             feedbackService = new FeedbackService();
+            setupInteractiveEffects();
 
             footerBox.getChildren().addAll(
                     dateLabel, spacer2,
@@ -445,9 +459,34 @@ public class ListPubController implements Initializable {
 
                 exportCsvButton.setOnAction(e -> exportFeedbackCsv(pub));
                 exportPdfButton.setOnAction(e -> exportFeedbackPdf(pub));
+                animateCardEntry();
 
                 setGraphic(container);
             }
+        }
+
+        private void setupInteractiveEffects() {
+            container.setOnMouseEntered(e -> animateHover(1.012, -3));
+            container.setOnMouseExited(e -> animateHover(1.0, 0));
+        }
+
+        private void animateHover(double scale, double y) {
+            ScaleTransition scaleTransition = new ScaleTransition(Duration.millis(140), container);
+            scaleTransition.setToX(scale);
+            scaleTransition.setToY(scale);
+            scaleTransition.play();
+
+            TranslateTransition translateTransition = new TranslateTransition(Duration.millis(140), container);
+            translateTransition.setToY(y);
+            translateTransition.play();
+        }
+
+        private void animateCardEntry() {
+            container.setOpacity(0);
+            FadeTransition fadeTransition = new FadeTransition(Duration.millis(240), container);
+            fadeTransition.setFromValue(0);
+            fadeTransition.setToValue(1);
+            fadeTransition.play();
         }
 
         private void exportFeedbackCsv(Publication pub) {

@@ -51,7 +51,7 @@ public class ClientController implements Initializable {
     private FeedbackService feedbackService;
     private final ObservableList<Publication> publications = FXCollections.observableArrayList();
     private final Map<Integer, SummaryResult> summaryCache = new HashMap<>();
-    private static final int CURRENT_USER_ID = 1;
+    private int currentUserId = 1;
     // ✅ Placeholder tant que l'authentification n'est pas intégrée
     // Plus tard : remplace par l'id de l'utilisateur connecté (Session / Singleton / etc.)
 
@@ -59,6 +59,7 @@ public class ClientController implements Initializable {
     public void initialize(URL location, ResourceBundle resources) {
         publicationService = new PublicationService();
         feedbackService = new FeedbackService();
+        currentUserId = feedbackService.resolveClientUserId(currentUserId);
 
         sortModeCombo.getItems().addAll("Tendance", "Mieux notees", "Recentes");
         sortModeCombo.setValue("Tendance");
@@ -141,15 +142,22 @@ public class ClientController implements Initializable {
 
         // Actions
         HBox actions = new HBox(10);
+        actions.getStyleClass().add("publication-action-row");
         Button likeBtn = new Button("👍");
         Button dislikeBtn = new Button("👎");
         Button commentBtn = new Button("Commenter");
         Button summaryBtn = new Button("Voir resume IA");
+        likeBtn.getStyleClass().add("btn-like");
+        dislikeBtn.getStyleClass().add("btn-dislike");
+        commentBtn.getStyleClass().add("btn-comment");
         summaryBtn.getStyleClass().add("btn-outline");
 
         Label likeCount = new Label();
         Label dislikeCount = new Label();
         Label avgRating = new Label();
+        likeCount.getStyleClass().addAll("count-badge", "count-like");
+        dislikeCount.getStyleClass().addAll("count-badge", "count-dislike");
+        avgRating.getStyleClass().addAll("count-badge", "count-rate");
         Label globalRatingLabel = new Label();
         globalRatingLabel.setStyle("-fx-text-fill: #0f4ea5; -fx-font-weight: 700;");
         Label globalSentimentLabel = new Label();
@@ -200,7 +208,7 @@ public class ClientController implements Initializable {
             trendScoreLabel.setText(String.format("Score: %.2f", calculateTrendingScore(p)));
 
             // refresh stars selected for current user
-            Feedback existingRating = feedbackService.getUserRating(p.getIdPublication(), CURRENT_USER_ID);
+            Feedback existingRating = feedbackService.getUserRating(p.getIdPublication(), currentUserId);
             int userRating = 0;
             if (existingRating != null && existingRating.getCommentaire() != null) {
                 try { userRating = Integer.parseInt(existingRating.getCommentaire().trim()); } catch (Exception ignored) {}
@@ -217,7 +225,7 @@ public class ClientController implements Initializable {
             star.setStyle("-fx-font-size: 18px; -fx-text-fill: #f5c518;");
 
             star.setOnMouseClicked(e -> {
-                feedbackService.upsertRating(p.getIdPublication(), CURRENT_USER_ID, ratingValue);
+                feedbackService.upsertRating(p.getIdPublication(), currentUserId, ratingValue);
                 refreshUI.run();
             });
 
@@ -230,12 +238,12 @@ public class ClientController implements Initializable {
 
         // Like / Dislike
         likeBtn.setOnAction(e -> {
-            feedbackService.toggleReaction(p.getIdPublication(), CURRENT_USER_ID, "LIKE");
+            feedbackService.toggleReaction(p.getIdPublication(), currentUserId, "LIKE");
             refreshUI.run();
         });
 
         dislikeBtn.setOnAction(e -> {
-            feedbackService.toggleReaction(p.getIdPublication(), CURRENT_USER_ID, "DISLIKE");
+            feedbackService.toggleReaction(p.getIdPublication(), currentUserId, "DISLIKE");
             refreshUI.run();
         });
 
@@ -278,32 +286,28 @@ public class ClientController implements Initializable {
             if (type.equals("LIKE") || type.equals("DISLIKE") || FeedbackService.ADMIN_REPLY_TYPE.equals(type)) continue;
 
             VBox commentCard = new VBox(4);
-            commentCard.setStyle("""
-    -fx-background-color: #f0f7ff;
-    -fx-background-radius: 8;
-    -fx-padding: 8;
-    -fx-border-color: #dbeeff;
-    -fx-border-radius: 8;
-""");
+            commentCard.getStyleClass().add("comment-card");
 
             HBox row = new HBox(8);
             Label user = new Label("User#" + f.getIdUser());
-            user.setStyle("-fx-text-fill: #0b5ed7; -fx-font-weight:600;");
+            user.getStyleClass().add("comment-author");
 
             Label content = new Label(formatFeedbackText(f));
             content.setWrapText(true);
-            content.setStyle("-fx-text-fill: #163a6b; -fx-font-size: 13px; -fx-font-weight: 600;");
+            content.getStyleClass().add("comment-body");
 
             Label date = new Label(f.getDateFeedback().format(fmt));
-            date.setStyle("-fx-text-fill:#6c7b89; -fx-font-size:11px;");
+            date.getStyleClass().add("comment-date");
 
             Region spacer = new Region();
             HBox.setHgrow(spacer, Priority.ALWAYS);
 
             // ✅ Le client peut modifier / supprimer SON commentaire et SA note
-            if (f.getIdUser() == CURRENT_USER_ID && (type.equals("COMMENT") || type.startsWith("RATE"))) {
+            if (f.getIdUser() == currentUserId && (type.equals("COMMENT") || type.startsWith("RATE"))) {
                 Button editBtn = new Button("✏");
                 Button delBtn = new Button("🗑");
+                editBtn.getStyleClass().add("btn-comment");
+                delBtn.getStyleClass().add("btn-dislike");
 
                 editBtn.setOnAction(e -> {
                     if (type.equals("COMMENT")) {
@@ -317,9 +321,9 @@ public class ClientController implements Initializable {
 
                 delBtn.setOnAction(e -> {
                     if (type.equals("COMMENT")) {
-                        feedbackService.deleteUserFeedback(p.getIdPublication(), CURRENT_USER_ID, "COMMENT");
+                        feedbackService.deleteUserFeedback(p.getIdPublication(), currentUserId, "COMMENT");
                     } else {
-                        feedbackService.deleteUserFeedback(p.getIdPublication(), CURRENT_USER_ID, "RATE");
+                        feedbackService.deleteUserFeedback(p.getIdPublication(), currentUserId, "RATE");
                     }
                     refreshFeedbackList(feedbackBox, p);
                 });
@@ -335,12 +339,12 @@ public class ClientController implements Initializable {
                 if (replies != null) {
                     for (Feedback reply : replies) {
                         HBox replyRow = new HBox(8);
-                        replyRow.setStyle("-fx-background-color: #eaf2ff; -fx-padding:8; -fx-background-radius:6; -fx-border-color:#d5e6ff; -fx-border-radius:6;");
+                        replyRow.getStyleClass().add("reply-row");
                         Label admin = new Label("Admin:");
-                        admin.setStyle("-fx-font-weight: bold; -fx-text-fill: #1450a3;");
+                        admin.getStyleClass().add("reply-author");
                         Label replyText = new Label(feedbackService.extractReplyBody(reply.getCommentaire()));
                         replyText.setWrapText(true);
-                        replyText.setStyle("-fx-text-fill: #234f86; -fx-font-size: 12px;");
+                        replyText.getStyleClass().add("reply-body");
                         replyRow.getChildren().addAll(admin, replyText);
                         commentCard.getChildren().add(replyRow);
                     }
@@ -368,7 +372,7 @@ public class ClientController implements Initializable {
     }
 
     private void openCommentDialog(Publication p) {
-        Feedback existing = feedbackService.getUserComment(p.getIdPublication(), CURRENT_USER_ID);
+        Feedback existing = feedbackService.getUserComment(p.getIdPublication(), currentUserId);
 
         Dialog<ButtonType> dialog = new Dialog<>();
         dialog.setTitle("Commentaire");
@@ -400,15 +404,15 @@ public class ClientController implements Initializable {
                     new Alert(Alert.AlertType.ERROR, "language innaproprié").showAndWait();
                     return;
                 }
-                feedbackService.upsertComment(p.getIdPublication(), CURRENT_USER_ID, cleaned);
+                feedbackService.upsertComment(p.getIdPublication(), currentUserId, cleaned);
             } else if (result == deleteBtn) {
-                feedbackService.deleteUserFeedback(p.getIdPublication(), CURRENT_USER_ID, "COMMENT");
+                feedbackService.deleteUserFeedback(p.getIdPublication(), currentUserId, "COMMENT");
             }
         });
     }
 
     private void openRatingDialog(Publication p) {
-        Feedback existing = feedbackService.getUserRating(p.getIdPublication(), CURRENT_USER_ID);
+        Feedback existing = feedbackService.getUserRating(p.getIdPublication(), currentUserId);
         int existingNote = 0;
         try {
             if (existing != null && existing.getCommentaire() != null) {
@@ -442,9 +446,9 @@ public class ClientController implements Initializable {
                     new Alert(Alert.AlertType.WARNING, "Veuillez choisir une note").showAndWait();
                     return;
                 }
-                feedbackService.upsertRating(p.getIdPublication(), CURRENT_USER_ID, note);
+                feedbackService.upsertRating(p.getIdPublication(), currentUserId, note);
             } else if (result == deleteBtn) {
-                feedbackService.deleteUserFeedback(p.getIdPublication(), CURRENT_USER_ID, "RATE");
+                feedbackService.deleteUserFeedback(p.getIdPublication(), currentUserId, "RATE");
             }
         });
     }

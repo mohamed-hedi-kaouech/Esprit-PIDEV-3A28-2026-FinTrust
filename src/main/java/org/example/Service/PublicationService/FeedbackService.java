@@ -69,11 +69,17 @@ public class FeedbackService {
             return false;
         }
 
+        int validUserId = resolveValidUserId(f.getIdUser());
+        if (validUserId <= 0) {
+            System.out.println("Erreur createFeedback : aucun user valide disponible pour id_user.");
+            return false;
+        }
+
         String sql = "INSERT INTO feedback (id_publication, id_user, commentaire, type_reaction, date_feedback) VALUES (?, ?, ?, ?, ?)";
 
         try (PreparedStatement pst = cnx.prepareStatement(sql)) {
             pst.setInt(1, f.getIdPublication());
-            pst.setInt(2, f.getIdUser());
+            pst.setInt(2, validUserId);
             pst.setString(3, f.getCommentaire());
             pst.setString(4, f.getTypeReaction());
             pst.setTimestamp(5, Timestamp.valueOf(f.getDateFeedback()));
@@ -91,6 +97,11 @@ public class FeedbackService {
 
     public boolean add(Feedback f) {
         return createFeedback(f);
+    }
+
+    public int resolveClientUserId(int preferredUserId) {
+        ensureConnection();
+        return resolveValidUserId(preferredUserId);
     }
 
     public List<Feedback> getOffline() {

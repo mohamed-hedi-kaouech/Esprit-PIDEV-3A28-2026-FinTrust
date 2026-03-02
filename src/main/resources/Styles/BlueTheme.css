@@ -370,3 +370,209 @@
     -fx-font-size: 14px;
     -fx-font-weight: 900;
 }
+
+/* Publication refresh: darker, softer, and more professional */
+.root,
+.app-root {
+    -fx-background-color: linear-gradient(to bottom right, #dfe9f8, #ebf3ff 45%, #dbe7f8);
+}
+
+.topbar-card {
+    -fx-background-color: linear-gradient(to right, #0a4a97, #1563b7, #2a84d6);
+    -fx-effect: dropshadow(gaussian, rgba(10, 43, 92, 0.34), 20, 0.24, 0, 8);
+}
+
+.search-row {
+    -fx-background-color: rgba(255, 255, 255, 0.9);
+    -fx-border-color: rgba(20, 68, 138, 0.2);
+}
+
+.publication-card,
+.card,
+.form-container,
+.table-view,
+.chart {
+    -fx-background-color: rgba(255, 255, 255, 0.95);
+    -fx-border-color: rgba(24, 74, 146, 0.18);
+    -fx-effect: dropshadow(gaussian, rgba(16, 46, 94, 0.16), 20, 0.2, 0, 6);
+}
+
+.publication-action-row {
+    -fx-padding: 6 0 0 0;
+    -fx-alignment: center-left;
+}
+
+.btn-like,
+.btn-dislike,
+.btn-comment,
+.btn-rate {
+    -fx-font-weight: 800;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-padding: 8 14 8 14;
+    -fx-cursor: hand;
+}
+
+.btn-like {
+    -fx-background-color: #e7f8ed;
+    -fx-text-fill: #1f7f43;
+    -fx-border-color: rgba(31, 127, 67, 0.28);
+}
+
+.btn-like:hover {
+    -fx-background-color: #dbf4e5;
+}
+
+.btn-like:disabled {
+    -fx-opacity: 0.72;
+}
+
+.btn-dislike {
+    -fx-background-color: #fdeced;
+    -fx-text-fill: #b44757;
+    -fx-border-color: rgba(180, 71, 87, 0.26);
+}
+
+.btn-dislike:hover {
+    -fx-background-color: #fbe2e5;
+}
+
+.btn-dislike:disabled {
+    -fx-opacity: 0.72;
+}
+
+.btn-comment {
+    -fx-background-color: #eaf2ff;
+    -fx-text-fill: #1d549f;
+    -fx-border-color: rgba(29, 84, 159, 0.25);
+}
+
+.btn-comment:hover {
+    -fx-background-color: #deebff;
+}
+
+.btn-rate {
+    -fx-background-color: #fff5e8;
+    -fx-text-fill: #9e670f;
+    -fx-border-color: rgba(158, 103, 15, 0.26);
+}
+
+.btn-rate:hover {
+    -fx-background-color: #ffeed8;
+}
+
+.count-badge {
+    -fx-font-weight: 800;
+    -fx-padding: 4 10 4 10;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+}
+
+.count-like {
+    -fx-text-fill: #206f41;
+    -fx-background-color: #effaf3;
+    -fx-border-color: rgba(32, 111, 65, 0.25);
+}
+
+.count-dislike {
+    -fx-text-fill: #ad4858;
+    -fx-background-color: #fff2f4;
+    -fx-border-color: rgba(173, 72, 88, 0.24);
+}
+
+.count-rate {
+    -fx-text-fill: #926213;
+    -fx-background-color: #fff8ef;
+    -fx-border-color: rgba(146, 98, 19, 0.22);
+}
+
+.comment-card {
+    -fx-background-color: #f3f8ff;
+    -fx-background-radius: 12;
+    -fx-padding: 10;
+    -fx-border-color: #d7e5fb;
+    -fx-border-radius: 12;
+}
+
+.comment-author {
+    -fx-text-fill: #0e4f9f;
+    -fx-font-weight: 800;
+}
+
+.comment-body {
+    -fx-text-fill: #204777;
+    -fx-font-size: 13px;
+    -fx-font-weight: 600;
+}
+
+.comment-date {
+    -fx-text-fill: #6c7f99;
+    -fx-font-size: 11px;
+}
+
+.reply-row {
+    -fx-background-color: #eaf3ff;
+    -fx-padding: 8;
+    -fx-background-radius: 8;
+    -fx-border-color: #d2e3fb;
+    -fx-border-radius: 8;
+}
+
+.reply-author {
+    -fx-font-weight: 800;
+    -fx-text-fill: #1b5ca8;
+}
+
+.reply-body {
+    -fx-text-fill: #2a4f80;
+    -fx-font-size: 12px;
+}
+
+/* Dynamic publication cards + export buttons */
+.publication-card {
+    -fx-background-insets: 0;
+}
+
+.publication-card:hover {
+    -fx-border-color: rgba(21, 91, 179, 0.34);
+    -fx-effect: dropshadow(gaussian, rgba(15, 62, 126, 0.24), 24, 0.24, 0, 8);
+}
+
+.btn-export-csv,
+.btn-export-pdf {
+    -fx-font-weight: 800;
+    -fx-background-radius: 999;
+    -fx-border-radius: 999;
+    -fx-padding: 8 14 8 14;
+}
+
+.btn-export-csv {
+    -fx-background-color: linear-gradient(to right, #e9f7ee, #dcf3e4);
+    -fx-text-fill: #1f7f43;
+    -fx-border-color: rgba(31, 127, 67, 0.28);
+}
+
+.btn-export-csv:hover {
+    -fx-background-color: linear-gradient(to right, #dff3e6, #d0ebda);
+    -fx-effect: dropshadow(gaussian, rgba(26, 110, 63, 0.2), 10, 0.16, 0, 2);
+}
+
+.btn-export-pdf {
+    -fx-background-color: linear-gradient(to right, #fdeced, #fce0e3);
+    -fx-text-fill: #b44757;
+    -fx-border-color: rgba(180, 71, 87, 0.26);
+}
+
+.btn-export-pdf:hover {
+    -fx-background-color: linear-gradient(to right, #fbe3e6, #f9d6dc);
+    -fx-effect: dropshadow(gaussian, rgba(153, 55, 70, 0.2), 10, 0.16, 0, 2);
+}
+
+.date-chip {
+    -fx-background-color: linear-gradient(to right, #eff4ff, #e6efff);
+    -fx-border-color: rgba(51, 95, 170, 0.25);
+    -fx-border-radius: 999;
+    -fx-background-radius: 999;
+    -fx-padding: 5 11 5 11;
+    -fx-font-weight: 700;
+}

@@ -25,11 +25,13 @@ public class FeedbackController implements Initializable {
 
     private PublicationService publicationService;
     private FeedbackService feedbackService;
+    private int currentUserId = 1;
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
         publicationService = new PublicationService();
         feedbackService = new FeedbackService();
+        currentUserId = feedbackService.resolveClientUserId(currentUserId);
         loadPublications();
     }
 
@@ -47,20 +49,29 @@ public class FeedbackController implements Initializable {
         container.getStyleClass().add("publication-card");
 
         HBox header = new HBox(10);
+        Label id = new Label("#" + p.getIdPublication());
+        id.getStyleClass().add("publication-id");
         Label title = new Label(p.getTitre());
+        title.getStyleClass().add("publication-title");
         title.setFont(Font.font("System Bold", 14));
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        header.getChildren().addAll(new Label("#"+p.getIdPublication()), title, spacer);
+        header.getChildren().addAll(id, title, spacer);
 
         Label content = new Label(p.getContenu());
+        content.getStyleClass().add("publication-content");
         content.setWrapText(true);
 
         HBox actions = new HBox(8);
+        actions.getStyleClass().add("publication-action-row");
         Button likeBtn = new Button("Like");
         Button dislikeBtn = new Button("Dislike");
         Button commentBtn = new Button("Commenter");
         Button rateBtn = new Button("Noter");
+        likeBtn.getStyleClass().add("btn-like");
+        dislikeBtn.getStyleClass().add("btn-dislike");
+        commentBtn.getStyleClass().add("btn-comment");
+        rateBtn.getStyleClass().add("btn-rate");
 
         likeBtn.setOnAction(e -> sendReaction(p, "LIKE", ""));
         dislikeBtn.setOnAction(e -> sendReaction(p, "DISLIKE", ""));
@@ -89,8 +100,7 @@ public class FeedbackController implements Initializable {
 
     private void sendReaction(Publication p, String type, String commentaire) {
         try {
-            // placeholder user id 1
-            Feedback f = new Feedback(p.getIdPublication(), 1, commentaire, type);
+            Feedback f = new Feedback(p.getIdPublication(), currentUserId, commentaire, type);
             boolean ok = feedbackService.createFeedback(f);
             if (ok) {
                 new Alert(Alert.AlertType.INFORMATION, "Feedback envoyé").showAndWait();
