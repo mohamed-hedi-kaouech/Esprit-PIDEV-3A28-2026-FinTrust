@@ -130,8 +130,7 @@ public class AdminUserFormController {
 
     @FXML
     private void goToBudget() {
-        setInfo("Module Budget: ouvrez depuis le menu principal.", false);
-        goToMenu();
+        navigateTo("/Budget/CategorieListeGUI.fxml", "Gestion des Budgets",null);
     }
 
     @FXML

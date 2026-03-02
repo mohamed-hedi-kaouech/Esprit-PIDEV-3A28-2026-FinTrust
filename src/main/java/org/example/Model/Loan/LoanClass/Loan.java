@@ -37,7 +37,6 @@ public class Loan {
         this.id_user=id_user;
     }
     public Loan(LoanType loanType, double amount, int duration) {
-
         this.loanType = loanType;
         this.amount = amount;
         this.duration = duration;
@@ -45,7 +44,6 @@ public class Loan {
         this.remainingPrincipal = amount;
         this.status = LoanStatus.PENDING;
         this.createdAt = LocalDateTime.now();
-        this.id_user=id_user;
     }
 
     // Empty constructor (for DB mapping)
@@ -112,7 +110,12 @@ public class Loan {
             interest_rate DECIMAL(5,2) NOT NULL,
             remaining_principal DECIMAL(12,2) NOT NULL,
             status VARCHAR(20) NOT NULL,
-            createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+            createdAt TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+            id_user INT ,
+            CONSTRAINT fk_user_loan
+                    FOREIGN KEY (id_user)
+                    REFERENCES users(id)
+                    ON DELETE CASCADE
         );
     """;
     }

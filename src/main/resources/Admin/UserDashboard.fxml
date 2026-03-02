@@ -53,8 +53,8 @@
                         style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
                 <Button text="Publications" onAction="#goToPublications" maxWidth="1.7976931348623157E308"
                         style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
-                <Button text="Budget" onAction="#goToBudget" maxWidth="1.7976931348623157E308"
-                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>
+<!--                <Button text="Budget" onAction="#goToBudget" maxWidth="1.7976931348623157E308"-->
+<!--                        style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>-->
 
                 <Button text="Loans" onAction="#goToLoan" maxWidth="1.7976931348623157E308"
                         style="-fx-background-color: #ebf3ff; -fx-text-fill: #1f4778; -fx-font-weight: 700; -fx-background-radius: 12; -fx-padding: 10 14;"/>

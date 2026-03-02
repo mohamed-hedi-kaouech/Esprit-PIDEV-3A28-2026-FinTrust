@@ -13,16 +13,12 @@ import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.layout.HBox;
-import javafx.scene.layout.Priority;
-import javafx.scene.layout.Region;
-import javafx.scene.layout.VBox;
+import javafx.scene.layout.*;
 import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import org.example.Model.Budget.Categorie;
-import org.example.Service.BudgetService.BudgetService;
 import org.example.Service.BudgetService.AlerteService;
-import javafx.scene.layout.GridPane;
+import org.example.Service.BudgetService.BudgetService;
 
 import java.io.IOException;
 import java.net.URL;
@@ -32,7 +28,7 @@ import java.util.Optional;
 import java.util.ResourceBundle;
 
 
-public class CategorieListeController implements Initializable {
+public class AdminCategorieListeController implements Initializable {
 
     // Stats Labels
     @FXML private Label lblTotalCategories;
@@ -358,7 +354,7 @@ public class CategorieListeController implements Initializable {
     private void goBackToMenu(ActionEvent event) {
         try {
             Parent root = FXMLLoader.load(
-                    getClass().getResource("/Client/ClientDashboard.fxml")
+                    getClass().getResource("/Admin/userDashboard.fxml")
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));

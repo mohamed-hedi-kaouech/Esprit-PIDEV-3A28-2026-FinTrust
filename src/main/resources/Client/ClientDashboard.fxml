@@ -11,7 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-            stylesheets="@../Styles/StyleWallet.css"
+            stylesheets="/Styles/StyleWallet.css"
             fx:controller="org.example.Controlleurs.ClientControlleur.ClientDashboardController">
 
     <top>
@@ -88,11 +88,11 @@
 
                     <HBox spacing="12" fillHeight="true">
                         <Button fx:id="profileButton" text="Profil" onAction="#goToProfile" styleClass="button-primary"/>
-                        <Button fx:id="walletButton" text="Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
-                        <Button fx:id="MarketButton" text="Market" onAction="#goToMarket" styleClass="button-secondary"/>
-                        <Button fx:id="AbonnementsButton" text="Abonnements" onAction="#goToAbonnements" styleClass="button-secondary"/>
                         <Button text="KYC" onAction="#goToKycForm" styleClass="button-secondary"/>
                         <Button text="Pause et Jeux" onAction="#goToSmartBreakFromProfile" styleClass="button-secondary"/>
+                        <Button fx:id="walletButton" text="Wallet" onAction="#goToWalletDashboard" styleClass="button-secondary"/>
+                        <Button fx:id="MarketButton" text="Product" onAction="#goToMarket" styleClass="button-secondary"/>
+                        <Button fx:id="AbonnementsButton" text="Abonnements" onAction="#goToAbonnements" styleClass="button-secondary"/>
                         <Button fx:id="loanButton" text="Loan" onAction="#goToLoan" styleClass="button-secondary"/>
                         <Button fx:id="budgetButton" text="Budget" onAction="#goToBudget" styleClass="button-secondary"/>
                         <Button fx:id="publicationButton" text="Publications" onAction="#goToPublications" styleClass="button-secondary"/>

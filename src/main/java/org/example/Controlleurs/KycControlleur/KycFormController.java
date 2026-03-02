@@ -1,5 +1,6 @@
 package org.example.Controlleurs.KycControlleur;
 
+import javafx.animation.Timeline;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -107,6 +108,7 @@ public class KycFormController {
     private KycStatus currentStatus;
     private GraphicsContext signatureGc;
     private boolean signatureDirty;
+    private Timeline submitProgressTimeline;
     private boolean submitInProgress;
 
     @FXML

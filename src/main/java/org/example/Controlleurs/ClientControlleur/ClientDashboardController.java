@@ -235,7 +235,7 @@ public class ClientDashboardController {
     @FXML
     private void goToBudget() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Budget/CategorieListeGUI.fxml", "Budget", "/Styles/StyleWallet.css");
+        navigateTo("/Budget/CategorieListeGUI.fxml", "Gestion des Budgets",null);
     }
 
     @FXML

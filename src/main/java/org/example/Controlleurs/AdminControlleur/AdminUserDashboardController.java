@@ -238,8 +238,7 @@ public class AdminUserDashboardController {
 
     @FXML
     private void goToBudget() {
-        setInfo("Module Budget: ouvrez depuis le menu principal.", false);
-        goToMenu();
+        loadScene("/Budget/AdminCategorieListeGUI.fxml", "Gestion Budget");
     }
 
     @FXML

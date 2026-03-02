@@ -170,9 +170,7 @@ public class AdminAnalyticsDashboardController {
 
     @FXML
     private void goToBudget() {
-        infoLabel.setText("Module Budget: ouvrez depuis le menu principal.");
-        infoLabel.setStyle("-fx-text-fill: #1d6b34;");
-        goToMenu();
+        navigateTo("/Budget/AdminCategorieListeGUI.fxml", "Gestion Budget","/Styles/StyleWallet.css");
     }
 
     @FXML
