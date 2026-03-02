@@ -1,8 +1,5 @@
 package org.example.Controlleurs.KycControlleur;
 
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
-import javafx.beans.property.SimpleObjectProperty;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.concurrent.Task;
 import javafx.fxml.FXML;
@@ -19,7 +16,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
 import javafx.stage.Stage;
-import javafx.util.Duration;
 import org.example.Model.Kyc.KycFile;
 import org.example.Model.Kyc.KycStatus;
 import org.example.Model.User.User;
@@ -111,7 +107,6 @@ public class KycFormController {
     private KycStatus currentStatus;
     private GraphicsContext signatureGc;
     private boolean signatureDirty;
-    private Timeline submitProgressTimeline;
     private boolean submitInProgress;
 
     @FXML
@@ -141,11 +136,10 @@ public class KycFormController {
         cinField.setPromptText("CIN (8 chiffres)");
 
         initSignatureCanvas();
+        bindKycCompletionTracking();
         loadState();
         loadExistingFiles();
-        if (submitProgressBar != null) {
-            submitProgressBar.setProgress(0);
-        }
+        updateKycCompletionProgress();
     }
 
     @FXML
@@ -153,6 +147,7 @@ public class KycFormController {
         resetSignatureCanvas();
         signatureDirty = false;
         signatureInfoLabel.setText("Signature effacee.");
+        updateKycCompletionProgress();
     }
 
     @FXML
@@ -173,6 +168,7 @@ public class KycFormController {
             setInfo("Signature KYC enregistree avec succes.", false);
             signatureDirty = false;
             loadState();
+            updateKycCompletionProgress();
         } catch (Exception e) {
             setInfo("Erreur sauvegarde signature: " + e.getMessage(), true);
         }
@@ -201,6 +197,7 @@ public class KycFormController {
         selectedFiles.clear();
         selectedFiles.addAll(files);
         refreshSelectedFilesList();
+        updateKycCompletionProgress();
         setInfo(files.size() + " fichier(s) selectionne(s).", false);
     }
 
@@ -227,8 +224,6 @@ public class KycFormController {
 
             String adresse = adresseField.getText();
             LocalDate dateNaissance = dateNaissancePicker.getValue();
-            startSubmitProgress();
-
             Task<KycSubmitResult> submitTask = new Task<>() {
                 @Override
                 protected KycSubmitResult call() throws Exception {
@@ -246,7 +241,6 @@ public class KycFormController {
                 KycSubmitResult result = submitTask.getValue();
                 if (result == null || !result.isSuccess()) {
                     String msg = result == null ? "Soumission KYC echouee." : result.getMessage();
-                    finishSubmitProgress(false, msg);
                     setInfo(msg, true);
                 } else {
                     session.setCurrentKycStatus(KycStatus.EN_ATTENTE);
@@ -254,9 +248,9 @@ public class KycFormController {
                     selectedFiles.clear();
                     loadState();
                     loadExistingFiles();
-                    finishSubmitProgress(true, "Soumission terminee.");
                     setInfo(result.getMessage(), false);
                 }
+                updateKycCompletionProgress();
                 submitInProgress = false;
                 if (submitKycBtn != null) submitKycBtn.setDisable(false);
             });
@@ -264,8 +258,8 @@ public class KycFormController {
             submitTask.setOnFailed(evt -> {
                 Throwable ex = submitTask.getException();
                 String msg = ex == null ? "Erreur soumission KYC." : ex.getMessage();
-                finishSubmitProgress(false, msg);
                 setInfo("Erreur soumission: " + msg, true);
+                updateKycCompletionProgress();
                 submitInProgress = false;
                 if (submitKycBtn != null) submitKycBtn.setDisable(false);
             });
@@ -343,6 +337,7 @@ public class KycFormController {
             signatureCanvas.setDisable(readOnly);
             saveSignatureBtn.setDisable(readOnly);
             clearSignatureBtn.setDisable(readOnly);
+            updateKycCompletionProgress();
         } catch (Exception e) {
             setInfo("Erreur chargement KYC: " + e.getMessage(), true);
         }
@@ -355,6 +350,7 @@ public class KycFormController {
             existingFiles.addAll(files);
             existingFilesTable.getItems().setAll(files);
             refreshSelectedFilesList();
+            updateKycCompletionProgress();
         } catch (Exception e) {
             setInfo("Erreur chargement fichiers: " + e.getMessage(), true);
         }
@@ -502,42 +498,53 @@ public class KycFormController {
         return (Stage) statusLabel.getScene().getWindow();
     }
 
-    private void startSubmitProgress() {
-        if (submitProgressBar == null || submitProgressLabel == null) return;
-        submitProgressBar.setProgress(0.02);
-        submitProgressLabel.setText("Envoi des documents... 2%");
-        submitProgressLabel.setStyle("-fx-text-fill: #0f4e96; -fx-font-weight: 700;");
-
-        if (submitProgressTimeline != null) {
-            submitProgressTimeline.stop();
-        }
-        submitProgressTimeline = new Timeline(new KeyFrame(Duration.millis(120), e -> {
-            double p = submitProgressBar.getProgress();
-            if (p < 0.92) {
-                p = Math.min(0.92, p + 0.025);
-                submitProgressBar.setProgress(p);
-                submitProgressLabel.setText("Envoi des documents... " + (int) Math.round(p * 100) + "%");
-            }
-        }));
-        submitProgressTimeline.setCycleCount(Timeline.INDEFINITE);
-        submitProgressTimeline.play();
+    private void bindKycCompletionTracking() {
+        cinField.textProperty().addListener((obs, oldVal, newVal) -> updateKycCompletionProgress());
+        adresseField.textProperty().addListener((obs, oldVal, newVal) -> updateKycCompletionProgress());
+        dateNaissancePicker.valueProperty().addListener((obs, oldVal, newVal) -> updateKycCompletionProgress());
     }
 
-    private void finishSubmitProgress(boolean success, String message) {
-        if (submitProgressTimeline != null) {
-            submitProgressTimeline.stop();
-        }
+    private void updateKycCompletionProgress() {
         if (submitProgressBar == null || submitProgressLabel == null) return;
 
-        if (success) {
-            submitProgressBar.setProgress(1.0);
-            submitProgressLabel.setText("Soumission terminee ✔");
-            submitProgressLabel.setStyle("-fx-text-fill: #0f7a3b; -fx-font-weight: 800;");
+        double progress = computeKycCompletion();
+        submitProgressBar.setProgress(progress);
+
+        int percent = (int) Math.round(progress * 100);
+        if (progress >= 1.0) {
+            if (!submitProgressBar.getStyleClass().contains("kyc-submit-progress-complete")) {
+                submitProgressBar.getStyleClass().add("kyc-submit-progress-complete");
+            }
+            submitProgressLabel.setText("KYC complet: " + percent + "%");
+            submitProgressLabel.setStyle("-fx-text-fill: #b91c1c; -fx-font-weight: 800;");
         } else {
-            submitProgressBar.setProgress(0);
-            submitProgressLabel.setText("Soumission echouee: " + (message == null ? "Erreur." : message));
-            submitProgressLabel.setStyle("-fx-text-fill: #b91c1c; -fx-font-weight: 700;");
+            submitProgressBar.getStyleClass().remove("kyc-submit-progress-complete");
+            submitProgressLabel.setText("Progression KYC: " + percent + "%");
+            submitProgressLabel.setStyle("-fx-text-fill: #0f4e96; -fx-font-weight: 700;");
         }
+    }
+
+    private double computeKycCompletion() {
+        int total = 5;
+        int done = 0;
+
+        String cin = cinField.getText() == null ? "" : cinField.getText().trim();
+        if (cin.matches("\\d{8}")) done++;
+
+        String adresse = adresseField.getText() == null ? "" : adresseField.getText().trim();
+        if (!adresse.isBlank()) done++;
+
+        if (dateNaissancePicker.getValue() != null) done++;
+
+        boolean hasSignature = signatureDirty
+                || (signatureInfoLabel != null
+                && signatureInfoLabel.getText() != null
+                && signatureInfoLabel.getText().startsWith("Signature:"));
+        if (hasSignature) done++;
+
+        boolean hasFiles = !selectedFiles.isEmpty() || !existingFiles.isEmpty();
+        if (hasFiles) done++;
+
+        return done / (double) total;
     }
 }
-

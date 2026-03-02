@@ -924,6 +924,10 @@
     -fx-background-radius: 10;
 }
 
+.kyc-submit-progress-complete > .bar {
+    -fx-background-color: linear-gradient(to right, #d62828, #ef4444);
+}
+
 .kyc-submit-progress-label {
     -fx-font-family: 'Inter';
     -fx-font-size: 13px;
