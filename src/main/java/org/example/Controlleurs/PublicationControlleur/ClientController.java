@@ -1,5 +1,6 @@
 package org.example.Controlleurs.PublicationControlleur;
 
+import java.io.IOException;
 import java.net.URL;
 import java.time.LocalDateTime;
 import java.time.temporal.ChronoUnit;
@@ -11,6 +12,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.ResourceBundle;
 
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Node;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import org.example.Model.Publication.Feedback;
 import org.example.Model.Publication.Publication;
 import org.example.Service.PublicationService.FeedbackService;
@@ -66,10 +72,6 @@ public class ClientController implements Initializable {
         sortModeCombo.valueProperty().addListener((obs, oldValue, newValue) -> refreshFeed());
 
         loadPublications();
-
-        // Fermeture de la fenêtre (vu que l'admin ouvre l'espace client en popup)
-        backBtn.setOnAction(e -> ((Stage) backBtn.getScene().getWindow()).close());
-
         searchField.textProperty().addListener((obs, o, n) -> refreshFeed());
     }
 
@@ -114,6 +116,22 @@ public class ClientController implements Initializable {
             clientListContainer.getChildren().add(buildClientCard(p));
         }
     }
+
+    @FXML
+    private void goBackToMenu(ActionEvent event) {
+        try {
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Client/ClientDashboard.fxml")
+            );
+            Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Manager");
+
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
     private VBox buildClientCard(Publication p) {
         VBox container = new VBox(10);
         container.setPadding(new Insets(12));

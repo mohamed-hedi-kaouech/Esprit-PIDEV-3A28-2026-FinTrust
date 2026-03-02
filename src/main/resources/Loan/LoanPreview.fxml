@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<AnchorPane prefWidth="1000" prefHeight="700"
+<AnchorPane prefWidth="1100" prefHeight="800"
             stylesheets="@/Styles/LoanStyle.css"
             xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml"

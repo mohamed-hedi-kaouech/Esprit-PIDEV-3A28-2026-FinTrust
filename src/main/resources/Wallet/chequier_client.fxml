@@ -7,7 +7,7 @@
 <VBox xmlns="http://javafx.com/javafx/17"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="org.example.Controlleurs.WalletControlleur.ChequierClientController"
-      spacing="20" prefWidth="850" prefHeight="550"
+      spacing="20" prefWidth="1100" prefHeight="800"
       style="-fx-background-color: #f4f7fc; -fx-padding: 20;">
 
     <Label text="📒 Mon Chéquier"

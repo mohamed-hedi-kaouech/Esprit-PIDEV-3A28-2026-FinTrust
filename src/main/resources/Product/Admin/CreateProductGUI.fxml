@@ -7,7 +7,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.text.*?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/StyleProduct.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.ProductControlleur.Admin.ProductCreationControlleur">
+<AnchorPane prefWidth="1100" prefHeight="800" stylesheets="/Styles/StyleProduct.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.ProductControlleur.Admin.ProductCreationControlleur">
 
     <!-- Header Section with Back Button -->
     <VBox alignment="CENTER" layoutX="0.0" layoutY="0.0" prefHeight="80.0" prefWidth="800.0" styleClass="header" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">

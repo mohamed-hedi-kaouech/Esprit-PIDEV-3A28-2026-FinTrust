@@ -230,11 +230,10 @@ public class AdminUserDashboardController {
     private void goToDashboardProduit() {
         loadScene("/Product/Admin/AdminDashboardGUI.fxml", "Dashboard Produit");
     }
+
+
     @FXML
-    private void goToPublications() {
-        setInfo("Module Publications: ouvrez depuis le menu principal.", false);
-        goToMenu();
-    }
+    private void goToPublications() {navigateTo("/Publication/ListePub.fxml", "Dashboard Publication", "/Styles/StyleWallet.css");}
 
     @FXML
     private void goToBudget() {

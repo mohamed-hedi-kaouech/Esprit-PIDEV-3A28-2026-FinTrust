@@ -11,7 +11,7 @@
 <?import javafx.geometry.Insets?>
 <AnchorPane xmlns:fx="http://javafx.com/fxml"
             fx:controller="org.example.Controlleurs.BudgetControlleur.CategorieCreateController"
-           prefWidth="900" prefHeight="600"
+            prefWidth="1100" prefHeight="800"
             stylesheets="/Styles/StyleBudgetWhite.css"
             styleClass="main-container">
     <!-- TOP BAR -->

@@ -6,8 +6,7 @@
 <?import javafx.scene.text.Font?>
 
 <AnchorPane
-        prefHeight="680.0"
-        prefWidth="960.0"
+        prefWidth="1100" prefHeight="800"
         style="-fx-background-color: #f4f6f9;"
         stylesheets="/Styles/StyleProduct.css"
         xmlns="http://javafx.com/javafx/17.0.12"

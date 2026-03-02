@@ -5,6 +5,7 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17"
+            prefWidth="1100" prefHeight="800"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.WalletControlleur.TransactionController"
             style="-fx-background-color: linear-gradient(to bottom, #f0f7ff, #e6f0ff);">

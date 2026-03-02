@@ -163,9 +163,7 @@ public class AdminAnalyticsDashboardController {
 
     @FXML
     private void goToPublications() {
-        infoLabel.setText("Module Publications: ouvrez depuis le menu principal.");
-        infoLabel.setStyle("-fx-text-fill: #1d6b34;");
-        goToMenu();
+        navigateTo("/Publication/ListePub.fxml", "Dashboard Publication", "/Styles/StyleWallet.css");
     }
 
     @FXML

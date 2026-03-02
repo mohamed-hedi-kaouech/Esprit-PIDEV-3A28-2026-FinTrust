@@ -8,7 +8,7 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.text.Font?>
 
-<AnchorPane prefHeight="600.0" prefWidth="900.0" stylesheets="/Styles/StyleProduct.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.ProductControlleur.Client.ClientMarketControlleur">
+<AnchorPane prefWidth="1100" prefHeight="800" stylesheets="/Styles/StyleProduct.css" xmlns="http://javafx.com/javafx/17.0.12" xmlns:fx="http://javafx.com/fxml/1" fx:controller="org.example.Controlleurs.ProductControlleur.Client.ClientMarketControlleur">
 
     <!-- Main Container -->
     <VBox spacing="20.0" AnchorPane.topAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.bottomAnchor="0.0">

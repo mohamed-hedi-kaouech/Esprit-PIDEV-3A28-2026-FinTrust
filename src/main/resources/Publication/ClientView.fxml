@@ -13,8 +13,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.PublicationControlleur.ClientController"
-            prefWidth="980.0"
-            prefHeight="680.0"
+            prefWidth="1100" prefHeight="800"
             styleClass="app-root"
             stylesheets="@/Styles/BlueTheme.css">
 
@@ -25,7 +24,7 @@
           AnchorPane.bottomAnchor="0.0">
 
         <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="topbar-card">
-            <Button fx:id="backBtn"
+            <Button fx:id="backBtn" onAction="#goBackToMenu"
                     text="Retour"
                     styleClass="btn-ghost"/>
             <Label text="Espace Client Publications"

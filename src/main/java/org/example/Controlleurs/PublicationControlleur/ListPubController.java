@@ -146,7 +146,9 @@ public class ListPubController implements Initializable {
     @FXML
     private void goBackToMenu(ActionEvent event) {
         try {
-            Parent root = FXMLLoader.load(getClass().getResource("/MenuGUI.fxml"));
+            Parent root = FXMLLoader.load(
+                    getClass().getResource("/Admin/UserDashboard.fxml")
+            );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
             stage.setTitle("Manager");

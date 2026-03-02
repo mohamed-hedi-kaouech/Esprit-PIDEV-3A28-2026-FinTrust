@@ -12,6 +12,7 @@
 
 <BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
             stylesheets="@../Styles/StyleWallet.css"
+            prefWidth="1100" prefHeight="800"
             fx:controller="org.example.Controlleurs.ClientControlleur.SmartBreakHubController">
 
     <top>

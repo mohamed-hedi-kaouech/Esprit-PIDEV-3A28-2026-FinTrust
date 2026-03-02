@@ -11,6 +11,7 @@
 <?import javafx.scene.layout.VBox?>
 
 <BorderPane xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="1100" prefHeight="800"
             stylesheets="@../Styles/StyleWallet.css"
             fx:controller="org.example.Controlleurs.ClientControlleur.ClientChatbotController">
 

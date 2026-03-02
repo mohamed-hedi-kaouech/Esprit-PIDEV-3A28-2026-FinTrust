@@ -253,7 +253,7 @@ public class ClientDashboardController {
     @FXML
     private void goToPublications() {
         if (!ensureKycApprovedOrShow()) return;
-        navigateTo("/Publication/PublicationManagerGUI.fxml", "Publications", "/Styles/StyleWallet.css");
+        navigateTo("/Publication/ClientView.fxml", "Publications", "/Styles/StyleWallet.css");
     }
 
     @FXML

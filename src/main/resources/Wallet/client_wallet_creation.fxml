@@ -9,7 +9,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.WalletControlleur.ClientWalletCreationController"
-            prefHeight="700" prefWidth="550"
+            prefWidth="1100" prefHeight="800"
             style="-fx-background-color: linear-gradient(to bottom, #f0f7ff, #e6f0ff);">
 
     <!-- Header avec bouton retour -->

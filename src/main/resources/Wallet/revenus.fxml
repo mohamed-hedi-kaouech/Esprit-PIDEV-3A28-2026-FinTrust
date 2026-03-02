@@ -9,7 +9,7 @@
 <BorderPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.WalletControlleur.RevenusController"
-            prefHeight="700" prefWidth="900"
+            prefWidth="1100" prefHeight="800"
             style="-fx-background-color: linear-gradient(to bottom right, #667eea, #764ba2);">
 
     <top>

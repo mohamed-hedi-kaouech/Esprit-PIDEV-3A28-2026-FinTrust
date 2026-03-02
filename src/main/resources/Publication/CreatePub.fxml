@@ -20,8 +20,7 @@
 <AnchorPane xmlns="http://javafx.com/javafx/17"
             xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="org.example.Controlleurs.PublicationControlleur.CreationPubController"
-            prefHeight="700.0"
-            prefWidth="980.0"
+            prefWidth="1100" prefHeight="800"
             styleClass="app-root"
             stylesheets="@/Styles/BlueTheme.css">
 

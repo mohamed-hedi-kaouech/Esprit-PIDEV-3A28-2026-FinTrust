@@ -6,13 +6,14 @@
 <?import javafx.scene.layout.VBox?>
 
 <AnchorPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            prefWidth="1000" prefHeight="800"
             fx:controller="org.example.Controlleurs.AdminControlleur.AdminUserEditController"
             styleClass="root">
 
     <children>
         <VBox alignment="CENTER" spacing="18"
               layoutX="0" layoutY="0"
-              prefWidth="400" prefHeight="420"
+              prefWidth="1100" prefHeight="800"
               style="-fx-padding: 36 36 36 36; -fx-background-radius: 18; -fx-background-color: white;">
 
             <Label text="Modifier Utilisateur" styleClass="section-title"/>
