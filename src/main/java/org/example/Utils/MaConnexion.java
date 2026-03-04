@@ -2,8 +2,8 @@ package org.example.Utils;
 
 import org.example.Model.Product.ClassProduct.ProductSubscription;
 import org.example.Model.Product.ClassProduct.Product;
-import org.example.Model.Wallet.ClassWallet.Transaction;  // CORRIGÉ: ajout de .ClassWallet
-import org.example.Model.Wallet.ClassWallet.Wallet;      // CORRIGÉ: ajout de .ClassWallet
+import org.example.Model.Wallet.ClassWallet.Transaction;
+import org.example.Model.Wallet.ClassWallet.Wallet;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -12,7 +12,7 @@ import java.sql.Statement;
 
 public class MaConnexion {
     //DB
-    final String URL = "jdbc:mysql://localhost:3306/PIDEV";
+    final String URL = "jdbc:mysql://localhost:3307/PIDEV";
     final String USR = "root";
     final String PWD = "";
 

@@ -36,12 +36,11 @@ class ProductSubscriptionServiceTest {
 
         // Récupérer l'ID du produit ajouté
         List<Product> products = productService.ReadAll();
-        Product last = products.get(products.size() - 1);
-        int productId = last.getProductId();
+        int productId = 1;
 
         service = new ProductSubscriptionService();
         testSubscription = new ProductSubscription();
-        testSubscription.setClient(1);
+        testSubscription.setClient(15);
         testSubscription.setProduct(productId);
         testSubscription.setType(SubscriptionType.MONTHLY);
         testSubscription.setSubscriptionDate(LocalDateTime.now());

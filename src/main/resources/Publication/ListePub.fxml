@@ -52,10 +52,6 @@
                     prefWidth="190.0"
                     styleClass="btn-outline"/>
 
-            <Button text="Client"
-                    onAction="#goToClientView"
-                    prefWidth="110.0"
-                    styleClass="btn-outline"/>
         </HBox>
 
         <HBox spacing="10.0" alignment="CENTER_LEFT" styleClass="search-row">

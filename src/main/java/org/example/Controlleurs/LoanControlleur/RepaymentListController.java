@@ -229,7 +229,7 @@ public class RepaymentListController {
 
                 EmailService emailService = new EmailService();
                 emailService.sendRepaymentConfirmation(
-                        System.getenv("MAIL_USER"),
+                        SessionContext.getInstance().getCurrentUser().getEmail(),
                         r.getLoanId(),
                         r.getMonth(),
                         r.getMonthlyPayment()

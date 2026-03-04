@@ -9,7 +9,7 @@ import java.time.Duration;
 
 public class AiInsightService {
 
-    private final String apiKey = System.getenv("OPENROUTER_API_KEY");
+    private final String apiKey = "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";
 
     private final HttpClient client = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(10))

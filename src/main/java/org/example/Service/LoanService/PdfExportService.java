@@ -13,7 +13,7 @@ import java.util.List;
 
 public class PdfExportService {
 
-    private final String apiKey = System.getenv("DOCRAPTOR_API_KEY");
+    private final String apiKey = "O3Mv1AZcBxrDeZ6i_0Qm";
 
     private final HttpClient http = HttpClient.newBuilder()
             .connectTimeout(Duration.ofSeconds(20))

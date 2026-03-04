@@ -7,8 +7,8 @@ import java.util.Properties;
 
 public class EmailService {
 
-    private final String username = System.getenv("MAIL_USER");
-    private final String password = System.getenv("MAIL_PASS");
+    private final String username = "mohamedhedi322@gmail.com";
+    private final String password = "xnir pkyn brkj yxcg";
 
     public void sendRepaymentConfirmation(String toEmail,
                                           int loanId,
