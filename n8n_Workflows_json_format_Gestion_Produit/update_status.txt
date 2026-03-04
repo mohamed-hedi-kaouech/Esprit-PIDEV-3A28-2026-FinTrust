@@ -1,0 +1,60 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "operation": "executeQuery",
+        "query": "UPDATE productsubscription\nSET status = 'CLOSED'\nWHERE expirationDate <= CURDATE() AND status != 'CLOSED';",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.mySql",
+      "typeVersion": 2.5,
+      "position": [
+        256,
+        -224
+      ],
+      "id": "92928643-5680-4183-9e69-8a430b48849c",
+      "name": "Status Update SQL",
+      "credentials": {
+        "mySql": {
+          "id": "2DPzq0PO5X4dYGjI",
+          "name": "MySQL account 2"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "rule": {
+          "interval": [
+            {}
+          ]
+        }
+      },
+      "type": "n8n-nodes-base.scheduleTrigger",
+      "typeVersion": 1.3,
+      "position": [
+        -32,
+        -224
+      ],
+      "id": "9d6f07df-0f46-449b-b9e9-2fc0abf62528",
+      "name": "Schedule Once a Day Trigger"
+    }
+  ],
+  "connections": {
+    "Schedule Once a Day Trigger": {
+      "main": [
+        [
+          {
+            "node": "Status Update SQL",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1b8e34ce5c83b73bb7b67b06e24b99e309fe8e71add3097bf7942c9c0edd03d1"
+  }
+}

@@ -1,0 +1,138 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "Rapport_Admin",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "2977eebe-dfd7-4f03-a00f-343752d933d1",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        -592,
+        -176
+      ],
+      "webhookId": "5fd1ee78-c068-4e4b-b471-343cd43914da"
+    },
+    {
+      "parameters": {
+        "jsCode": "const d = $input.first().json.body || $input.first().json;\n\n// Helper: progress bar HTML\nconst bar = (pct, color = '#3b9eff') =>\n  `<div style=\"background:#e8f4fd;border-radius:4px;height:8px;width:100%;margin-top:5px\">\n     <div style=\"width:${Math.min(pct,100)}%;height:8px;border-radius:4px;background:${color}\"></div>\n   </div>\n   <span style=\"font-size:10px;color:#90a4ae\">${pct.toFixed(1)}%</span>`;\n\nconst total = parseInt(d.totalSubs) || 0;\nconst active = parseInt(d.activeSubs) || 0;\nconst suspended = parseInt(d.suspendedSubs) || 0;\nconst closed = parseInt(d.closedSubs) || 0;\nconst draft = parseInt(d.draftSubs) || 0;\nconst revenue = parseFloat(d.totalRevenue) || 0;\nconst activeRate = parseFloat(d.activeRate) || 0;\nconst suspendedRate = total > 0 ? (suspended / total * 100) : 0;\nconst closedRate = total > 0 ? (closed / total * 100) : 0;\nconst draftRate = total > 0 ? (draft / total * 100) : 0;\n\nconst monthly = parseInt(d.monthlyCount) || 0;\nconst annual = parseInt(d.annualCount) || 0;\nconst transaction = parseInt(d.transactionCount) || 0;\nconst oneTime = parseInt(d.oneTimeCount) || 0;\n\nconst html = `<!DOCTYPE html>\n<html lang=\"fr\">\n<head>\n<meta charset=\"UTF-8\">\n<style>\n* { margin:0; padding:0; box-sizing:border-box; }\nbody { font-family:'Segoe UI',Arial,sans-serif; background:#f0f4f8; color:#1a2332; padding:36px; }\n\n.header {\n  background:linear-gradient(135deg,#0f1923 0%,#1a3a5c 100%);\n  color:white; padding:38px 44px; border-radius:16px;\n  margin-bottom:28px; position:relative; overflow:hidden;\n}\n.header::after {\n  content:''; position:absolute; bottom:-60px; right:-60px;\n  width:220px; height:220px; border-radius:50%;\n  background:rgba(59,158,255,0.06);\n}\n.logo { font-size:26px; font-weight:900; color:#3b9eff; letter-spacing:-1px; }\n.logo-sub { font-size:11px; color:#4a7fa5; margin-top:3px; }\n.badge {\n  display:inline-block;\n  background:rgba(59,158,255,0.15);\n  border:1px solid rgba(59,158,255,0.3);\n  color:#3b9eff; padding:5px 14px;\n  border-radius:20px; font-size:10px;\n  font-weight:700; text-transform:uppercase; letter-spacing:1px;\n}\n.title { font-size:24px; font-weight:700; margin:14px 0 5px; }\n.subtitle { font-size:12px; color:#4a7fa5; }\n\n.section {\n  font-size:13px; font-weight:700; color:#1a2332;\n  text-transform:uppercase; letter-spacing:1px;\n  margin:28px 0 14px; padding-left:12px;\n  border-left:4px solid #3b9eff;\n}\n.section.amber { border-left-color:#f5a623; }\n.section.green { border-left-color:#2ecc71; }\n\n.grid { display:grid; gap:14px; margin-bottom:6px; }\n.g4 { grid-template-columns:repeat(4,1fr); }\n.g5 { grid-template-columns:repeat(5,1fr); }\n.g3 { grid-template-columns:repeat(3,1fr); }\n\n.card {\n  background:white; border-radius:12px; padding:18px;\n  box-shadow:0 2px 10px rgba(0,0,0,0.06);\n  border-top:3px solid #3b9eff;\n}\n.card.amber { border-top-color:#f5a623; }\n.card.green { border-top-color:#2ecc71; }\n.card.red   { border-top-color:#e74c3c; }\n.card.grey  { border-top-color:#9b59b6; }\n.card.wide  { grid-column:span 3; background:linear-gradient(135deg,#e3f2fd,#f8faff); border-top-color:#2196F3; }\n\n.clabel { font-size:10px; color:#78909c; text-transform:uppercase; letter-spacing:0.7px; margin-bottom:7px; }\n.cval   { font-size:26px; font-weight:800; color:#1a2332; line-height:1; }\n.cval.blue   { color:#2196F3; }\n.cval.amber  { color:#f5a623; }\n.cval.green  { color:#2ecc71; }\n.cval.red    { color:#e74c3c; }\n.cval.purple { color:#9b59b6; }\n.csub   { font-size:11px; color:#90a4ae; margin-top:5px; }\n\ntable { width:100%; border-collapse:collapse; background:white; border-radius:12px; overflow:hidden; box-shadow:0 2px 10px rgba(0,0,0,0.06); margin-top:14px; }\nthead tr { background:#0f1923; color:white; }\nth { padding:11px 16px; text-align:left; font-size:10px; font-weight:600; text-transform:uppercase; letter-spacing:0.7px; }\ntd { padding:10px 16px; font-size:12px; border-bottom:1px solid #f0f4f8; color:#37474f; }\ntr:last-child td { border-bottom:none; }\ntr:nth-child(even) td { background:#f8fafc; }\n\n.pill {\n  display:inline-block; padding:3px 10px;\n  border-radius:20px; font-size:10px; font-weight:700;\n  text-transform:uppercase;\n}\n.pill-active    { background:#e8f5e9; color:#2e7d32; }\n.pill-suspended { background:#fff3e0; color:#e65100; }\n.pill-closed    { background:#fce4ec; color:#b71c1c; }\n.pill-draft     { background:#e8eaf6; color:#3949ab; }\n.pill-rec       { background:#e3f2fd; color:#1565c0; }\n.pill-once      { background:#fff8e1; color:#f57f17; }\n\n.footer {\n  margin-top:36px; padding-top:18px;\n  border-top:1px solid #dee2e6;\n  display:flex; justify-content:space-between; align-items:center;\n}\n.footer-txt { font-size:11px; color:#90a4ae; }\n.conf {\n  background:#fff3e0; color:#e65100;\n  padding:4px 12px; border-radius:4px;\n  font-size:10px; font-weight:700; text-transform:uppercase; letter-spacing:1px;\n}\n</style>\n</head>\n<body>\n\n<!-- HEADER -->\n<div class=\"header\">\n  <div style=\"display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:14px\">\n    <div>\n      <div class=\"logo\">BankFinTrust</div>\n      <div class=\"logo-sub\">Product Suite · Administration</div>\n    </div>\n    <span class=\"badge\">Rapport Officiel</span>\n  </div>\n  <div class=\"title\">Rapport Statistique — Produits &amp; Abonnements</div>\n  <div class=\"subtitle\">Généré le ${d.generatedAt} · Données en temps réel</div>\n</div>\n\n<!-- PRODUCTS -->\n<div class=\"section\">📦 Produits Bancaires</div>\n<div class=\"grid g4\">\n  <div class=\"card\">\n    <div class=\"clabel\">Total Produits</div>\n    <div class=\"cval blue\">${d.totalProducts}</div>\n    <div class=\"csub\">dans le catalogue</div>\n  </div>\n  <div class=\"card amber\">\n    <div class=\"clabel\">Prix Moyen</div>\n    <div class=\"cval amber\">${d.avgPrice} DT</div>\n    <div class=\"csub\">par produit</div>\n  </div>\n  <div class=\"card green\">\n    <div class=\"clabel\">Prix Minimum</div>\n    <div class=\"cval green\">${d.minPrice} DT</div>\n    <div class=\"csub\">&nbsp;</div>\n  </div>\n  <div class=\"card red\">\n    <div class=\"clabel\">Prix Maximum</div>\n    <div class=\"cval red\">${d.maxPrice} DT</div>\n    <div class=\"csub\">&nbsp;</div>\n  </div>\n</div>\n\n<!-- SUBSCRIPTIONS -->\n<div class=\"section amber\">📋 Abonnements</div>\n<div class=\"grid g5\">\n  <div class=\"card\">\n    <div class=\"clabel\">Total</div>\n    <div class=\"cval\">${total}</div>\n    <div class=\"csub\">tous statuts</div>\n  </div>\n  <div class=\"card green\">\n    <div class=\"clabel\">Actifs</div>\n    <div class=\"cval green\">${active}</div>\n    <div class=\"csub\">${activeRate.toFixed(1)}% du total</div>\n  </div>\n  <div class=\"card amber\">\n    <div class=\"clabel\">Suspendus</div>\n    <div class=\"cval amber\">${suspended}</div>\n    <div class=\"csub\">${suspendedRate.toFixed(1)}% du total</div>\n  </div>\n  <div class=\"card red\">\n    <div class=\"clabel\">Fermés</div>\n    <div class=\"cval red\">${closed}</div>\n    <div class=\"csub\">${closedRate.toFixed(1)}% du total</div>\n  </div>\n  <div class=\"card grey\">\n    <div class=\"clabel\">Brouillons</div>\n    <div class=\"cval purple\">${draft}</div>\n    <div class=\"csub\">${draftRate.toFixed(1)}% du total</div>\n  </div>\n</div>\n\n<!-- Status breakdown table -->\n<table>\n  <thead><tr><th>Statut</th><th>Nombre</th><th>Proportion</th><th>Barre</th></tr></thead>\n  <tbody>\n    <tr><td><span class=\"pill pill-active\">ACTIVE</span></td><td><strong>${active}</strong></td><td>${activeRate.toFixed(1)}%</td><td>${bar(activeRate,'#2ecc71')}</td></tr>\n    <tr><td><span class=\"pill pill-suspended\">SUSPENDED</span></td><td><strong>${suspended}</strong></td><td>${suspendedRate.toFixed(1)}%</td><td>${bar(suspendedRate,'#f5a623')}</td></tr>\n    <tr><td><span class=\"pill pill-closed\">CLOSED</span></td><td><strong>${closed}</strong></td><td>${closedRate.toFixed(1)}%</td><td>${bar(closedRate,'#e74c3c')}</td></tr>\n    <tr><td><span class=\"pill pill-draft\">DRAFT</span></td><td><strong>${draft}</strong></td><td>${draftRate.toFixed(1)}%</td><td>${bar(draftRate,'#9b59b6')}</td></tr>\n  </tbody>\n</table>\n\n<!-- By type table -->\n<table style=\"margin-top:16px\">\n  <thead><tr><th>Type</th><th>Nombre</th><th>Proportion</th><th>Nature</th></tr></thead>\n  <tbody>\n    <tr><td>🔄 MONTHLY</td><td><strong>${monthly}</strong></td><td>${total>0?(monthly/total*100).toFixed(1):0}%</td><td><span class=\"pill pill-rec\">Récurrent</span></td></tr>\n    <tr><td>📅 ANNUAL</td><td><strong>${annual}</strong></td><td>${total>0?(annual/total*100).toFixed(1):0}%</td><td><span class=\"pill pill-rec\">Récurrent</span></td></tr>\n    <tr><td>💳 TRANSACTION</td><td><strong>${transaction}</strong></td><td>${total>0?(transaction/total*100).toFixed(1):0}%</td><td><span class=\"pill pill-draft\">À l'usage</span></td></tr>\n    <tr><td>1️⃣ ONE_TIME</td><td><strong>${oneTime}</strong></td><td>${total>0?(oneTime/total*100).toFixed(1):0}%</td><td><span class=\"pill pill-once\">Ponctuel</span></td></tr>\n  </tbody>\n</table>\n\n<!-- REVENUE -->\n<div class=\"section green\">💎 Analyse Financière</div>\n<div class=\"grid g3\">\n  <div class=\"card wide\">\n    <div style=\"display:flex;justify-content:space-between;align-items:center\">\n      <div>\n        <div class=\"clabel\">Revenu Total Estimé (Abonnements Actifs)</div>\n        <div class=\"cval blue\" style=\"font-size:34px\">${revenue.toFixed(2)} DT</div>\n        <div class=\"csub\">Basé sur ${active} abonnements actifs × prix produit</div>\n      </div>\n      <div style=\"font-size:44px\">💰</div>\n    </div>\n  </div>\n</div>\n\n<!-- FOOTER -->\n<div class=\"footer\">\n  <div class=\"footer-txt\"><strong>BankFinTrust Product Suite</strong> · Rapport automatique<br>Document strictement confidentiel.</div>\n  <span class=\"conf\">Confidentiel</span>\n  <div class=\"footer-txt\" style=\"text-align:right\">Généré le ${d.generatedAt}<br>Administration · BankFinTrust v2.0</div>\n</div>\n\n</body></html>`;\n\nreturn [{ json: { html, generatedAt: d.generatedAt } }];\n"
+      },
+      "id": "9be8f851-2175-41fd-b3eb-e449de3a6ab5",
+      "name": "Build HTML",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        -352,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "mohamedhedi322@gmail.com",
+        "toEmail": "kaouechmohamedhedi29@gmail.com",
+        "subject": "=📊 Rapport BankFinTrust — {{ $('Build HTML').item.json.generatedAt }}",
+        "emailFormat": "html",
+        "html": "={{ $json.html }}",
+        "options": {}
+      },
+      "id": "40cce2d4-9b96-4a45-8ea6-a0b6a72d3cae",
+      "name": "Send Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        128,
+        -176
+      ],
+      "webhookId": "fedf8489-0645-44ab-a656-bd74d54e5b77",
+      "credentials": {
+        "smtp": {
+          "id": "yIHsHL0RMDcUPf3m",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={ \"status\": \"success\", \"message\": \"Rapport envoye\", \"generatedAt\": \"{{ $('Build HTML').item.json.generatedAt }}\" }",
+        "options": {}
+      },
+      "id": "2cb3de88-8ffc-40e6-8ec4-3453d82357fa",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1,
+      "position": [
+        368,
+        -176
+      ]
+    },
+    {
+      "parameters": {
+        "html": "{{ $json.html }}"
+      },
+      "id": "ad6742bf-e68c-4121-af5a-40feb442cca9",
+      "name": "HTML",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        -112,
+        -176
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Build HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Build HTML": {
+      "main": [
+        [
+          {
+            "node": "HTML",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send Email": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "HTML": {
+      "main": [
+        [
+          {
+            "node": "Send Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1b8e34ce5c83b73bb7b67b06e24b99e309fe8e71add3097bf7942c9c0edd03d1"
+  }
+}

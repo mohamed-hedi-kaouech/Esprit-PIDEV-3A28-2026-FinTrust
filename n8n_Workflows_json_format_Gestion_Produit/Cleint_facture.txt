@@ -1,0 +1,251 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "generate-bankfintrust-invoice",
+        "options": {}
+      },
+      "id": "e8a9cbf8-ba98-4223-9b99-eaa0499d8d6f",
+      "name": "Webhook Subscription",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -1072,
+        -304
+      ],
+      "webhookId": "202d8371-51cd-4f91-8fe8-e8f45f363ff4"
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "invoiceNumber",
+              "value": "=INV-{{$now.format(\"yyyyLLdd-HHmmss\")}}"
+            },
+            {
+              "name": "customerName",
+              "value": "={{$json.body.customerName}}"
+            },
+            {
+              "name": "customerEmail",
+              "value": "={{$json.body.customerEmail}}"
+            },
+            {
+              "name": "productDescription",
+              "value": "={{$json.body.productDescription}}"
+            },
+            {
+              "name": "productCategory",
+              "value": "={{$json.body.productCategory}}"
+            }
+          ],
+          "number": [
+            {
+              "name": "price",
+              "value": "={{$json.body.price}}"
+            },
+            {
+              "name": "TVA",
+              "value": "={{$json.body.TVA}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "id": "72fadf39-63f4-401b-86c8-918e9b8e11a6",
+      "name": "Prepare Invoice Data",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 2,
+      "position": [
+        -768,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "html": "<!DOCTYPE html>\n<html>\n<head>\n<meta charset=\"UTF-8\">\n<style>\n\nbody {\n    font-family: Arial, sans-serif;\n    padding: 40px;\n    background-color: #f9fbfd;\n    color: #333;\n}\n\n.invoice-box {\n    background: #ffffff;\n    padding: 40px;\n    border-radius: 10px;\n    box-shadow: 0 5px 20px rgba(0,0,0,0.08);\n}\n\n/* Header */\n.header {\n    display: flex;\n    justify-content: space-between;\n    align-items: center;\n    border-bottom: 3px solid #2ecc71;\n    padding-bottom: 15px;\n    margin-bottom: 30px;\n}\n\n.bank-name {\n    font-size: 26px;\n    font-weight: bold;\n    color: #2ecc71;\n}\n\n.invoice-title {\n    font-size: 20px;\n    font-weight: bold;\n    text-align: right;\n}\n\n/* Info section */\n.info-section {\n    display: flex;\n    justify-content: space-between;\n    margin-bottom: 30px;\n}\n\n.info-box {\n    width: 48%;\n}\n\n.info-box h4 {\n    margin-bottom: 10px;\n    color: #2ecc71;\n}\n\n/* Table */\n.table {\n    width: 100%;\n    border-collapse: collapse;\n    margin-top: 20px;\n}\n\n.table th {\n    background-color: #2ecc71;\n    color: white;\n    padding: 12px;\n    text-align: left;\n}\n\n.table td {\n    border: 1px solid #ddd;\n    padding: 12px;\n}\n\n/* Totals */\n.totals {\n    width: 40%;\n    float: right;\n    margin-top: 20px;\n    border-collapse: collapse;\n}\n\n.totals td {\n    padding: 10px;\n}\n\n.totals .label {\n    text-align: right;\n}\n\n.totals .value {\n    text-align: right;\n    font-weight: bold;\n}\n\n.grand-total {\n    font-size: 18px;\n    border-top: 2px solid #2ecc71;\n}\n\n/* Footer */\n.footer {\n    margin-top: 80px;\n    text-align: center;\n    font-size: 12px;\n    color: #888;\n    border-top: 1px solid #ddd;\n    padding-top: 15px;\n}\n\n</style>\n</head>\n<body>\n\n<div class=\"invoice-box\">\n\n    <!-- Header -->\n    <div class=\"header\">\n        <div class=\"bank-name\">\n            BankFinTrust\n        </div>\n        <div class=\"invoice-title\">\n            INVOICE<br>\n            <small># {{ $json.invoiceNumber }}</small>\n        </div>\n    </div>\n\n    <!-- Information Section -->\n    <div class=\"info-section\">\n        <div class=\"info-box\">\n            <h4>Bill To:</h4>\n            <p>\n                <strong>{{ $json.customerName }}</strong><br>\n                {{ $json.customerEmail }}\n            </p>\n        </div>\n\n        <div class=\"info-box\" style=\"text-align:right;\">\n            <h4>Invoice Details:</h4>\n            <p>\n                Date: {{ $now }}<br>\n            </p>\n        </div>\n    </div>\n\n    <!-- Product Table -->\n    <table class=\"table\">\n        <tr>\n            <th>Description</th>\n            <th>Category</th>\n            <th>Unit Price (DT)</th>\n            <th>Quantity</th>\n            <th>Total (DT)</th>\n        </tr>\n        <tr>\n            <td>{{ $json.productDescription }}</td>\n            <td>{{ $json.productCategory }}</td>\n            <td>{{ $json.price }}</td>\n            <td>1</td>\n            <td>{{ $json.price }}</td>\n        </tr>\n    </table>\n\n    <!-- Totals -->\n    <table class=\"totals\">\n        <tr>\n            <td class=\"label\">Subtotal:</td>\n            <td class=\"value\">{{ $json.price }} DT</td>\n        </tr>\n        <tr>\n            <td class=\"label\">TVA ({{ $json.TVA }}%):</td>\n            <td class=\"value\">\n                {{ ($json.price * $json.TVA / 100).toFixed(2) }} DT\n            </td>\n        </tr>\n        <tr class=\"grand-total\">\n            <td class=\"label\">Total Due:</td>\n            <td class=\"value\">\n                {{ ($json.price + ($json.price * $json.TVA / 100)).toFixed(2) }} DT\n            </td>\n        </tr>\n    </table>\n\n    <div style=\"clear: both;\"></div>\n\n    <!-- Footer -->\n    <div class=\"footer\">\n        BankFinTrust © 2026<br>\n        Regulated Financial Institution – Tunisia<br>\n        Thank you for your subscription.\n    </div>\n\n</div>\n\n</body>\n</html>"
+      },
+      "id": "db6798af-7d17-4bc7-a6df-f431208a2862",
+      "name": "Convert to PDF",
+      "type": "n8n-nodes-base.html",
+      "typeVersion": 1,
+      "position": [
+        -464,
+        -304
+      ]
+    },
+    {
+      "parameters": {
+        "fromEmail": "bank@bankfintrust.com",
+        "toEmail": "={{ $('Prepare Invoice Data').item.json.customerEmail }}",
+        "subject": "=BankFinTrust Invoice-{{ $('Prepare Invoice Data').item.json.invoiceNumber }} /date-{{ $('Convert HTML to PDF').item.json.file_deletion_date }}",
+        "emailFormat": "html",
+        "html": "={{ $('Convert HTML to PDF').item.json.pdf_url }}",
+        "options": {}
+      },
+      "id": "a20e2e19-6080-4ab5-9fb6-f9353abbbef6",
+      "name": "Send Invoice Email",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        400,
+        -448
+      ],
+      "webhookId": "6d328a81-90b0-483a-a74e-129d022c7fea",
+      "credentials": {
+        "smtp": {
+          "id": "yIHsHL0RMDcUPf3m",
+          "name": "SMTP account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "html_content": "={{ $json.html }}"
+      },
+      "type": "n8n-nodes-htmlcsstopdf.htmlcsstopdf",
+      "typeVersion": 1,
+      "position": [
+        -160,
+        -288
+      ],
+      "id": "20b6072a-8f6c-49ac-890a-01186a70cb65",
+      "name": "Convert HTML to PDF",
+      "credentials": {
+        "htmlcsstopdfApi": {
+          "id": "T80az7Ellrf9xewx",
+          "name": "HTML to PDF account"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "conditions": {
+          "options": {
+            "caseSensitive": true,
+            "leftValue": "",
+            "typeValidation": "strict",
+            "version": 3
+          },
+          "conditions": [
+            {
+              "id": "3040f2c1-be81-4481-9d07-9f266063f67b",
+              "leftValue": "={{ $json.success }}",
+              "rightValue": true,
+              "operator": {
+                "type": "boolean",
+                "operation": "equals"
+              }
+            }
+          ],
+          "combinator": "and"
+        },
+        "options": {}
+      },
+      "type": "n8n-nodes-base.if",
+      "typeVersion": 2.3,
+      "position": [
+        96,
+        -288
+      ],
+      "id": "da3fbbf0-4f74-4d66-a60b-5137193ad123",
+      "name": "If"
+    },
+    {
+      "parameters": {
+        "fromEmail": "bank@bankfintrust.com",
+        "toEmail": "=mohamedhedi322@gmail.com",
+        "subject": "=ERROR facture-{{ $('Prepare Invoice Data').item.json.invoiceNumber }}",
+        "text": "Please find attached your invoice.",
+        "options": {}
+      },
+      "id": "78edaefb-2204-4e9a-b4ee-400ed437885d",
+      "name": "Send Invoice Email1",
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2,
+      "position": [
+        384,
+        -160
+      ],
+      "webhookId": "6d328a81-90b0-483a-a74e-129d022c7fea",
+      "credentials": {
+        "smtp": {
+          "id": "yIHsHL0RMDcUPf3m",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook Subscription": {
+      "main": [
+        [
+          {
+            "node": "Prepare Invoice Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Prepare Invoice Data": {
+      "main": [
+        [
+          {
+            "node": "Convert to PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert to PDF": {
+      "main": [
+        [
+          {
+            "node": "Convert HTML to PDF",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Convert HTML to PDF": {
+      "main": [
+        [
+          {
+            "node": "If",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "If": {
+      "main": [
+        [
+          {
+            "node": "Send Invoice Email",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Send Invoice Email1",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1b8e34ce5c83b73bb7b67b06e24b99e309fe8e71add3097bf7942c9c0edd03d1"
+  }
+}

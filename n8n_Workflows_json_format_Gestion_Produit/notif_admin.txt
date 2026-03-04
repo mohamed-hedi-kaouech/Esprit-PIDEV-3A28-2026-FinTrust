@@ -1,0 +1,73 @@
+{
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "775c96dd-935c-455d-a9d4-5cb84ff1ea8a",
+        "options": {
+          "rawBody": true
+        }
+      },
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2.1,
+      "position": [
+        -416,
+        -128
+      ],
+      "id": "5d81066a-6048-4ab7-832b-315306309f96",
+      "name": "Webhook",
+      "webhookId": "775c96dd-935c-455d-a9d4-5cb84ff1ea8a",
+      "alwaysOutputData": false,
+      "retryOnFail": false,
+      "executeOnce": true,
+      "onError": "continueRegularOutput"
+    },
+    {
+      "parameters": {
+        "fromEmail": "mohamedhedi322@gmail.com",
+        "toEmail": "kaouechmohamedhedi29@gmail.com",
+        "subject": "New Product Subscription",
+        "html": "=<!DOCTYPE html>\n<html>\n<head>\n    <meta charset=\"UTF-8\">\n    <title>New Subscription</title>\n</head>\n<body style=\"margin:0; padding:0; background-color:#f4f6f9; font-family:Arial, sans-serif;\">\n\n    <table width=\"100%\" cellpadding=\"0\" cellspacing=\"0\" style=\"padding:30px 0;\">\n        <tr>\n            <td align=\"center\">\n                \n                <table width=\"500\" cellpadding=\"0\" cellspacing=\"0\" \n                       style=\"background:#ffffff; border-radius:12px; padding:30px; box-shadow:0 4px 15px rgba(0,0,0,0.08);\">\n                    \n                    <!-- Header -->\n                    <tr>\n                        <td align=\"center\" style=\"padding-bottom:20px;\">\n                            <h2 style=\"margin:0; color:#2ecc71;\">\n                                🔔 New Subscription Product\n                            </h2>\n                        </td>\n                    </tr>\n\n                    <!-- Body -->\n                    <tr>\n                        <td style=\"font-size:16px; color:#333333; line-height:1.6;\">\n                            \n                            <p>\n                                A new subscription product has been created:\n                            </p>\n\n                            <p style=\"margin:15px 0; font-size:18px;\">\n                                <strong>Category:</strong> \n                                <span style=\"color:#2c3e50;\">\n                                    {{ $json.body.ProductCategorie }}\n                                </span>\n                            </p>\n\n                            <p style=\"margin:10px 0;\">\n                                <strong>Type:</strong> \n                                {{ $json.body.ProductType }}\n                            </p>\n\n                            <p style=\"margin:10px 0;\">\n                                <strong>Price:</strong> \n                                <span style=\"color:#27ae60; font-weight:bold;\">\n                                    {{ $json.body.Price }} DT\n                                </span>\n                            </p>\n\n                        </td>\n                    </tr>\n\n                    <!-- Footer -->\n                    <tr>\n                        <td align=\"center\" style=\"padding-top:25px; font-size:12px; color:#999999;\">\n                            This is an automated notification from your Subscription System.\n                        </td>\n                    </tr>\n\n                </table>\n\n            </td>\n        </tr>\n    </table>\n\n</body>\n</html>",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.emailSend",
+      "typeVersion": 2.1,
+      "position": [
+        -176,
+        -128
+      ],
+      "id": "089ddf6c-bcd1-480f-bd75-9ea6830c96f2",
+      "name": "Send an Email",
+      "webhookId": "1648b40e-24e9-4472-addf-c3e7f84abf6a",
+      "credentials": {
+        "smtp": {
+          "id": "yIHsHL0RMDcUPf3m",
+          "name": "SMTP account"
+        }
+      }
+    }
+  ],
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Send an Email",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Send an Email": {
+      "main": [
+        []
+      ]
+    }
+  },
+  "pinData": {},
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "1b8e34ce5c83b73bb7b67b06e24b99e309fe8e71add3097bf7942c9c0edd03d1"
+  }
+}
