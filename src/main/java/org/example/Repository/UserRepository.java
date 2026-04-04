@@ -21,7 +21,7 @@ public class UserRepository {
 
     public Optional<User> findByEmail(String email) {
         String sql = "SELECT id, nom, prenom, email, numTel, password, role, status, " +
-                "COALESCE(created_at, createdAt) AS created_date " +
+                "COALESCE(createdAt) AS created_date " +
                 "FROM users WHERE email = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, email);
@@ -36,7 +36,7 @@ public class UserRepository {
 
     public Optional<User> findById(int id) {
         String sql = "SELECT id, nom, prenom, email, numTel, password, role, status, " +
-                "COALESCE(created_at, createdAt) AS created_date " +
+                "COALESCE(createdAt) AS created_date " +
                 "FROM users WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, id);
@@ -75,7 +75,7 @@ public class UserRepository {
     }
 
     public User save(User user) {
-        String sql = "INSERT INTO users (nom, prenom, email, numTel, password, role, status, createdAt, created_at) " +
+        String sql = "INSERT INTO users (nom, prenom, email, numTel, password, role, status, createdAt, createdAt) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
             ps.setString(1, user.getNom());
@@ -101,8 +101,8 @@ public class UserRepository {
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
         String sql = "SELECT id, nom, prenom, email, numTel, password, role, status, " +
-                "COALESCE(created_at, createdAt) AS created_date " +
-                "FROM users ORDER BY COALESCE(created_at, createdAt) DESC";
+                "COALESCE(createdAt) AS created_date " +
+                "FROM users ORDER BY COALESCE(createdAt) DESC";
         try (PreparedStatement ps = cnx.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
             while (rs.next()) users.add(mapRow(rs));

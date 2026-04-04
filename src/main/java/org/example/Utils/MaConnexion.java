@@ -12,7 +12,7 @@ import java.sql.Statement;
 
 public class MaConnexion {
     //DB
-    final String URL = "jdbc:mysql://localhost:3307/PIDEV";
+    final String URL = "jdbc:mysql://localhost:3307/PIDEV1";
     final String USR = "root";
     final String PWD = "";
 
