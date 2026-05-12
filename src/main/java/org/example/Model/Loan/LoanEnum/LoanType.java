@@ -57,8 +57,17 @@ public enum LoanType {
     // Safe DB Conversion
     // ======================
     public static LoanType fromString(String value) {
+        if (value == null || value.isBlank()) {
+            throw new IllegalArgumentException("Invalid LoanType: " + value);
+        }
+
+        String normalized = value.trim().toUpperCase();
+        if ("PERSONNEL".equals(normalized)) {
+            normalized = "PERSONAL";
+        }
+
         for (LoanType type : LoanType.values()) {
-            if (type.name().equalsIgnoreCase(value)) {
+            if (type.name().equalsIgnoreCase(normalized)) {
                 return type;
             }
         }

@@ -5,11 +5,19 @@ import org.example.Model.User.UserRole;
 import org.example.Model.User.UserStatus;
 import org.example.Utils.MaConnexion;
 
-import java.sql.*;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.ResultSetMetaData;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.sql.Timestamp;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.LinkedHashSet;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 
 public class UserRepository {
 
@@ -20,13 +28,13 @@ public class UserRepository {
     }
 
     public Optional<User> findByEmail(String email) {
-        String sql = "SELECT id, nom, prenom, email, numTel, password, role, status, " +
-                "COALESCE(created_at, createdAt) AS created_date " +
-                "FROM users WHERE email = ?";
+        String sql = "SELECT * FROM users WHERE email = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setString(1, email);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return Optional.of(mapRow(rs));
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la recherche utilisateur", e);
@@ -35,13 +43,13 @@ public class UserRepository {
     }
 
     public Optional<User> findById(int id) {
-        String sql = "SELECT id, nom, prenom, email, numTel, password, role, status, " +
-                "COALESCE(created_at, createdAt) AS created_date " +
-                "FROM users WHERE id = ?";
+        String sql = "SELECT * FROM users WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, id);
             try (ResultSet rs = ps.executeQuery()) {
-                if (rs.next()) return Optional.of(mapRow(rs));
+                if (rs.next()) {
+                    return Optional.of(mapRow(rs));
+                }
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors de la recherche utilisateur par id", e);
@@ -75,40 +83,71 @@ public class UserRepository {
     }
 
     public User save(User user) {
-        String sql = "INSERT INTO users (nom, prenom, email, numTel, password, role, status, createdAt, created_at) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+        LocalDateTime createdAt = user.getCreatedAt() != null ? user.getCreatedAt() : LocalDateTime.now();
+        user.setCreatedAt(createdAt);
+
+        Set<String> columns = loadTableColumns("users");
+        List<String> insertColumns = new ArrayList<>();
+        List<Object> values = new ArrayList<>();
+
+        addInsertValue(columns, insertColumns, values, user.getNom(), "nom");
+        addInsertValue(columns, insertColumns, values, user.getPrenom(), "prenom");
+        addInsertValue(columns, insertColumns, values, user.getEmail(), "email");
+        addInsertValue(columns, insertColumns, values, user.getNumTel(), "numTel", "num_tel", "telephone", "phone");
+        addInsertValue(columns, insertColumns, values, user.getPasswordHash(), "password", "password_hash", "mot_de_passe");
+        addInsertValue(columns, insertColumns, values, user.getRole() == null ? null : user.getRole().name(), "role");
+        addInsertValue(columns, insertColumns, values, user.getStatus() == null ? null : user.getStatus().name(), "status");
+        addInsertValue(columns, insertColumns, values, Timestamp.valueOf(createdAt), "createdAt", "created_at", "created_date");
+        addInsertValue(columns, insertColumns, values, Timestamp.valueOf(LocalDateTime.now()), "updatedAt", "updated_at", "updated_date");
+
+        if (insertColumns.isEmpty()) {
+            throw new RuntimeException("Impossible de creer l'utilisateur: aucune colonne compatible detectee dans la table users.");
+        }
+
+        String placeholders = String.join(", ", java.util.Collections.nCopies(insertColumns.size(), "?"));
+        String sql = "INSERT INTO users (" + String.join(", ", insertColumns) + ") VALUES (" + placeholders + ")";
         try (PreparedStatement ps = cnx.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-            ps.setString(1, user.getNom());
-            ps.setString(2, user.getPrenom());
-            ps.setString(3, user.getEmail());
-            ps.setString(4, user.getNumTel());
-            ps.setString(5, user.getPasswordHash());
-            ps.setString(6, user.getRole().name());
-            ps.setString(7, user.getStatus().name());
-            ps.setTimestamp(8, Timestamp.valueOf(user.getCreatedAt()));
-            ps.setTimestamp(9, Timestamp.valueOf(user.getCreatedAt()));
+            for (int i = 0; i < values.size(); i++) {
+                ps.setObject(i + 1, values.get(i));
+            }
             ps.executeUpdate();
 
             try (ResultSet keys = ps.getGeneratedKeys()) {
-                if (keys.next()) user.setId(keys.getInt(1));
+                if (keys.next()) {
+                    user.setId(keys.getInt(1));
+                }
             }
             return user;
         } catch (SQLException e) {
-            throw new RuntimeException("Erreur lors de la creation utilisateur", e);
+            String detail = e.getMessage() == null ? "" : e.getMessage();
+            if (detail.toLowerCase().contains("duplicate")) {
+                throw new RuntimeException("Email deja existant: " + user.getEmail(), e);
+            }
+            throw new RuntimeException(
+                    "Erreur SQL creation utilisateur [state=" + e.getSQLState()
+                            + ", code=" + e.getErrorCode()
+                            + "]: " + detail,
+                    e
+            );
         }
     }
 
     public List<User> findAll() {
         List<User> users = new ArrayList<>();
-        String sql = "SELECT id, nom, prenom, email, numTel, password, role, status, " +
-                "COALESCE(created_at, createdAt) AS created_date " +
-                "FROM users ORDER BY COALESCE(created_at, createdAt) DESC";
+        String sql = "SELECT * FROM users";
         try (PreparedStatement ps = cnx.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            while (rs.next()) users.add(mapRow(rs));
+            while (rs.next()) {
+                users.add(mapRow(rs));
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du chargement des utilisateurs", e);
         }
+        users.sort((a, b) -> {
+            LocalDateTime left = a.getCreatedAt() != null ? a.getCreatedAt() : LocalDateTime.MIN;
+            LocalDateTime right = b.getCreatedAt() != null ? b.getCreatedAt() : LocalDateTime.MIN;
+            return right.compareTo(left);
+        });
         return users;
     }
 
@@ -127,7 +166,9 @@ public class UserRepository {
         String sql = "SELECT COUNT(*) FROM users WHERE role = 'ADMIN'";
         try (PreparedStatement ps = cnx.prepareStatement(sql);
              ResultSet rs = ps.executeQuery()) {
-            if (rs.next()) return rs.getLong(1);
+            if (rs.next()) {
+                return rs.getLong(1);
+            }
             return 0;
         } catch (SQLException e) {
             throw new RuntimeException("Erreur lors du comptage des admins", e);
@@ -135,13 +176,14 @@ public class UserRepository {
     }
 
     public void seedDefaultAdminIfMissing(String nom, String email, String passwordHash) {
-        if (countAdmins() > 0) return;
+        if (countAdmins() > 0) {
+            return;
+        }
 
         User admin = new User(nom, email, passwordHash, UserRole.ADMIN, UserStatus.ACCEPTE, LocalDateTime.now());
         save(admin);
     }
 
-    // ✅ Profil client (nom/email/tel)
     public void updateProfile(int id, String nom, String email, String numTel) {
         String sql = "UPDATE users SET nom = ?, email = ?, numTel = ? WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -152,7 +194,7 @@ public class UserRepository {
 
             int rows = ps.executeUpdate();
             if (rows == 0) {
-                throw new RuntimeException("Aucun utilisateur mis à jour (ID introuvable).");
+                throw new RuntimeException("Aucun utilisateur mis a jour (ID introuvable).");
             }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur update profile: " + e.getMessage(), e);
@@ -174,7 +216,6 @@ public class UserRepository {
         }
     }
 
-    // ✅ Update admin (nom/email/tel/status)
     public void updateByAdmin(int id, String nom, String email, String numTel, UserStatus status) {
         String sql = "UPDATE users SET nom = ?, email = ?, numTel = ?, status = ? WHERE id = ?";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
@@ -185,58 +226,165 @@ public class UserRepository {
             ps.setInt(5, id);
 
             int rows = ps.executeUpdate();
-            if (rows == 0) throw new RuntimeException("Utilisateur introuvable (ID=" + id + ")");
+            if (rows == 0) {
+                throw new RuntimeException("Utilisateur introuvable (ID=" + id + ")");
+            }
         } catch (SQLException e) {
             throw new RuntimeException("Erreur update admin: " + e.getMessage(), e);
         }
     }
 
-    // ✅ Delete user + suppression KYC avant
     public void deleteById(int userId) {
         try {
             cnx.setAutoCommit(false);
 
-            // si tu as kyc_files liées à kyc_id
-            try (PreparedStatement ps = cnx.prepareStatement(
-                    "DELETE FROM kyc_files WHERE kyc_id IN (SELECT id FROM kyc WHERE user_id = ?)")) {
+            try (PreparedStatement ps = cnx.prepareStatement("DELETE FROM kyc_files WHERE kyc_id IN (SELECT id FROM kyc WHERE user_id = ?)")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // table kyc
             try (PreparedStatement ps = cnx.prepareStatement("DELETE FROM kyc WHERE user_id = ?")) {
                 ps.setInt(1, userId);
                 ps.executeUpdate();
             }
 
-            // enfin users
             try (PreparedStatement ps = cnx.prepareStatement("DELETE FROM users WHERE id = ?")) {
                 ps.setInt(1, userId);
                 int rows = ps.executeUpdate();
-                if (rows == 0) throw new RuntimeException("Utilisateur introuvable (ID=" + userId + ")");
+                if (rows == 0) {
+                    throw new RuntimeException("Utilisateur introuvable (ID=" + userId + ")");
+                }
             }
 
             cnx.commit();
         } catch (Exception e) {
-            try { cnx.rollback(); } catch (SQLException ignored) {}
+            try {
+                cnx.rollback();
+            } catch (SQLException ignored) {
+            }
             throw new RuntimeException("Erreur suppression utilisateur: " + e.getMessage(), e);
         } finally {
-            try { cnx.setAutoCommit(true); } catch (SQLException ignored) {}
+            try {
+                cnx.setAutoCommit(true);
+            } catch (SQLException ignored) {
+            }
         }
     }
 
     private User mapRow(ResultSet rs) throws SQLException {
         User user = new User();
-        user.setId(rs.getInt("id"));
-        user.setNom(rs.getString("nom"));
-        user.setPrenom(rs.getString("prenom"));
-        user.setEmail(rs.getString("email"));
-        user.setNumTel(rs.getString("numTel"));
-        user.setPasswordHash(rs.getString("password"));
-        user.setRole(UserRole.valueOf(rs.getString("role")));
-        user.setStatus(UserStatus.valueOf(rs.getString("status")));
-        Timestamp createdAt = rs.getTimestamp("created_date");
+        user.setId(rs.getInt(firstAvailableColumn(rs, "id")));
+        user.setNom(readString(rs, "nom"));
+        user.setPrenom(readString(rs, "prenom"));
+        user.setEmail(readString(rs, "email"));
+        user.setNumTel(readString(rs, "numTel", "num_tel", "telephone", "phone"));
+        user.setPasswordHash(readString(rs, "password", "password_hash", "mot_de_passe"));
+
+        String roleValue = readString(rs, "role");
+        if (roleValue != null && !roleValue.isBlank()) {
+            user.setRole(parseRole(roleValue));
+        }
+
+        String statusValue = readString(rs, "status");
+        if (statusValue != null && !statusValue.isBlank()) {
+            user.setStatus(parseStatus(statusValue));
+        }
+
+        Timestamp createdAt = readTimestamp(rs, "created_date", "created_at", "createdAt");
         user.setCreatedAt(createdAt == null ? LocalDateTime.now() : createdAt.toLocalDateTime());
         return user;
+    }
+
+    private Set<String> loadTableColumns(String tableName) {
+        String sql = "SELECT * FROM " + tableName + " WHERE 1 = 0";
+        try (PreparedStatement ps = cnx.prepareStatement(sql);
+             ResultSet rs = ps.executeQuery()) {
+            ResultSetMetaData metaData = rs.getMetaData();
+            Set<String> columns = new LinkedHashSet<>();
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                String label = metaData.getColumnLabel(i);
+                String name = metaData.getColumnName(i);
+                if (label != null && !label.isBlank()) {
+                    columns.add(label);
+                }
+                if (name != null && !name.isBlank()) {
+                    columns.add(name);
+                }
+            }
+            return columns;
+        } catch (SQLException e) {
+            throw new RuntimeException("Erreur lors de la lecture du schema users: " + e.getMessage(), e);
+        }
+    }
+
+    private void addInsertValue(Set<String> availableColumns,
+                                List<String> insertColumns,
+                                List<Object> values,
+                                Object value,
+                                String... candidates) {
+        String column = firstMatchingColumn(availableColumns, candidates);
+        if (column == null) {
+            return;
+        }
+        insertColumns.add(column);
+        values.add(value);
+    }
+
+    private String firstMatchingColumn(Set<String> availableColumns, String... candidates) {
+        for (String candidate : candidates) {
+            for (String available : availableColumns) {
+                if (candidate.equalsIgnoreCase(available)) {
+                    return available;
+                }
+            }
+        }
+        return null;
+    }
+
+    private String readString(ResultSet rs, String... candidates) throws SQLException {
+        String column = firstAvailableColumn(rs, candidates);
+        return column == null ? null : rs.getString(column);
+    }
+
+    private Timestamp readTimestamp(ResultSet rs, String... candidates) throws SQLException {
+        String column = firstAvailableColumn(rs, candidates);
+        return column == null ? null : rs.getTimestamp(column);
+    }
+
+    private String firstAvailableColumn(ResultSet rs, String... candidates) throws SQLException {
+        ResultSetMetaData metaData = rs.getMetaData();
+        for (String candidate : candidates) {
+            for (int i = 1; i <= metaData.getColumnCount(); i++) {
+                String label = metaData.getColumnLabel(i);
+                String name = metaData.getColumnName(i);
+                if (candidate.equalsIgnoreCase(label) || candidate.equalsIgnoreCase(name)) {
+                    return label != null && !label.isBlank() ? label : name;
+                }
+            }
+        }
+        return null;
+    }
+
+    private UserRole parseRole(String rawValue) {
+        String value = rawValue == null ? "" : rawValue.trim().toUpperCase();
+        return switch (value) {
+            case "ADMIN", "ADMINISTRATEUR" -> UserRole.ADMIN;
+            case "CLIENT", "USER", "UTILISATEUR" -> UserRole.CLIENT;
+            default -> UserRole.valueOf(value);
+        };
+    }
+
+    public static UserStatus normalizeStatusValue(String rawValue) {
+        String value = rawValue == null ? "" : rawValue.trim().toUpperCase();
+        return switch (value) {
+            case "ACTIF", "ACTIVE", "ACCEPTE", "APPROUVE", "VALIDE" -> UserStatus.ACCEPTE;
+            case "EN_ATTENTE", "PENDING", "ATTENTE", "EN COURS", "EN_COURS" -> UserStatus.EN_ATTENTE;
+            case "REFUSE", "REFUSED", "REJETE", "INACTIF", "INACTIVE", "BLOQUE", "BLOQUEE", "SUSPENDU", "SUSPENDUE", "SUSPENDED" -> UserStatus.REFUSE;
+            default -> UserStatus.valueOf(value);
+        };
+    }
+
+    private UserStatus parseStatus(String rawValue) {
+        return normalizeStatusValue(rawValue);
     }
 }

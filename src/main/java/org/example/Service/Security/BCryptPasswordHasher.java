@@ -13,10 +13,10 @@ public class BCryptPasswordHasher implements PasswordHasher {
         if (rawPassword == null || hashedPassword == null || hashedPassword.isBlank()) {
             return false;
         }
-        String hash = hashedPassword.trim();
+        String hash = normalizeBcryptHash(hashedPassword.trim());
         try {
-            // BCrypt standard hash (new format used by the app).
-            if (hash.startsWith("$2a$") || hash.startsWith("$2b$") || hash.startsWith("$2y$")) {
+            // BCrypt hashes coming from Java or Symfony.
+            if (hash.startsWith("$2a$") || hash.startsWith("$2b$")) {
                 return BCrypt.checkpw(rawPassword, hash);
             }
             // Legacy/plaintext fallback (old data compatibility only).
@@ -25,5 +25,12 @@ public class BCryptPasswordHasher implements PasswordHasher {
             // Corrupted or legacy non-BCrypt value -> fallback equality check.
             return rawPassword.equals(hash);
         }
+    }
+
+    private String normalizeBcryptHash(String hash) {
+        if (hash.startsWith("$2y$")) {
+            return "$2a$" + hash.substring(4);
+        }
+        return hash;
     }
 }

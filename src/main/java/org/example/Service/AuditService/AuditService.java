@@ -78,6 +78,7 @@ public class AuditService {
     }
 
     private void ensureTables() {
+        if (!MaConnexion.isSchemaAutoInitEnabled()) return;
         String loginAuditSql = """
                 CREATE TABLE IF NOT EXISTS user_login_audit (
                     id INT PRIMARY KEY AUTO_INCREMENT,

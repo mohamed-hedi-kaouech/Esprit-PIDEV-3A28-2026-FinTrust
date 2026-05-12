@@ -15,7 +15,9 @@ public class PasswordResetRepository {
 
     public PasswordResetRepository() {
         this.cnx = MaConnexion.getInstance().getCnx();
-        ensureTable();
+        if (MaConnexion.isSchemaAutoInitEnabled()) {
+            ensureTable();
+        }
     }
 
     public void invalidateActiveByUserId(int userId) {
@@ -29,11 +31,14 @@ public class PasswordResetRepository {
     }
 
     public void createResetCode(int userId, String codeHash, LocalDateTime expiresAt) {
-        String sql = "INSERT INTO password_reset(user_id, code_hash, expires_at) VALUES (?, ?, ?)";
+        String sql = "INSERT INTO password_reset(user_id, code_hash, expires_at, created_at, attempts) VALUES (?, ?, ?, ?, ?)";
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
+            LocalDateTime createdAt = LocalDateTime.now();
             ps.setInt(1, userId);
             ps.setString(2, codeHash);
             ps.setTimestamp(3, Timestamp.valueOf(expiresAt));
+            ps.setTimestamp(4, Timestamp.valueOf(createdAt));
+            ps.setInt(5, 0);
             ps.executeUpdate();
         } catch (Exception e) {
             throw new RuntimeException("Erreur insertion password_reset: " + e.getMessage(), e);

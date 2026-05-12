@@ -23,7 +23,13 @@ public class KycRepository {
     }
 
     public Optional<Kyc> findByUserId(int userId) {
-        String sql = "SELECT id, user_id, cin, adresse, date_naissance, signature_path, signature_uploaded_at, statut, commentaire_admin, date_submission FROM kyc WHERE user_id = ?";
+        String sql = """
+                SELECT id, user_id, cin, adresse, date_naissance, signature_path, signature_uploaded_at, statut, commentaire_admin, date_submission
+                FROM kyc
+                WHERE user_id = ?
+                ORDER BY date_submission DESC, id DESC
+                LIMIT 1
+                """;
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {
             ps.setInt(1, userId);
             try (ResultSet rs = ps.executeQuery()) {

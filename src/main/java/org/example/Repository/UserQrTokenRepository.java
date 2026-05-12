@@ -13,7 +13,9 @@ public class UserQrTokenRepository {
 
     public UserQrTokenRepository() {
         this.cnx = MaConnexion.getInstance().getCnx();
-        ensureTable();
+        if (MaConnexion.isSchemaAutoInitEnabled()) {
+            ensureTable();
+        }
     }
 
     public Optional<Integer> consumeActiveToken(String token) {

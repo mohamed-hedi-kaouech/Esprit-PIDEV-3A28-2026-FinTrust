@@ -324,10 +324,15 @@ public class PublicationService {
                 rs.getString("categorie"),
                 rs.getString("statut"),
                 rs.getBoolean("est_visible"),
-                rs.getTimestamp("date_publication").toLocalDateTime()
+                getNullableDateTime(rs, "date_publication")
         );
 
         p.setIdPublication(rs.getInt("id_publication"));
         return p;
+    }
+
+    private java.time.LocalDateTime getNullableDateTime(ResultSet rs, String columnName) throws SQLException {
+        Timestamp timestamp = rs.getTimestamp(columnName);
+        return timestamp != null ? timestamp.toLocalDateTime() : null;
     }
 }

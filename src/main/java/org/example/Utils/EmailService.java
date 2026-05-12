@@ -24,7 +24,7 @@ public class EmailService {
                 .build();
 
         MediaType mediaType = MediaType.parse("application/pdf");
-        RequestBody fileBody = RequestBody.create(file.toFile(), mediaType);
+        RequestBody fileBody = RequestBody.create(mediaType, file.toFile());
 
         MultipartBody requestBody = new MultipartBody.Builder()
                 .setType(MultipartBody.FORM)

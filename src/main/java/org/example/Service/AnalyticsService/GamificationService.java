@@ -27,7 +27,9 @@ public class GamificationService {
         this.cnx = MaConnexion.getInstance().getCnx();
         this.userRepository = new UserRepository();
         this.analyticsService = new AnalyticsService();
-        ensureTables();
+        if (MaConnexion.isSchemaAutoInitEnabled()) {
+            ensureTables();
+        }
     }
 
     public GamificationSnapshot refreshAndGetSnapshot() {
@@ -208,10 +210,10 @@ public class GamificationService {
 
     private List<String> getClientBadges(int userId) {
         String sql = """
-                SELECT badge_label
+                SELECT DISTINCT badge_label
                 FROM user_badges
                 WHERE user_id = ?
-                ORDER BY awarded_at DESC
+                ORDER BY badge_label ASC
                 """;
         List<String> rows = new ArrayList<>();
         try (PreparedStatement ps = cnx.prepareStatement(sql)) {

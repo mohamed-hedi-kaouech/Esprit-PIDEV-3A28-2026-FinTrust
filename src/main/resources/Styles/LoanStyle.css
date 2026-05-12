@@ -1,45 +1,49 @@
     /* ================= ROOT ================= */
 
     .root {
-        -fx-background-color: linear-gradient(to bottom right, #f8fafc, #eef2f7);
-        -fx-font-family: "Segoe UI";
+        -fx-background-color: linear-gradient(to bottom right, #f4f8ff, #eef4fb 42%, #f8fbff);
+        -fx-font-family: "Plus Jakarta Sans", "Inter", "Segoe UI", sans-serif;
     }
 
     /* ================= PAGE TITLE ================= */
 
     .page-title {
-        -fx-font-size: 26px;
-        -fx-font-weight: 700;
-        -fx-text-fill: #1e293b;
+        -fx-font-size: 28px;
+        -fx-font-weight: 800;
+        -fx-text-fill: #0f2747;
     }
 
     /* ================= HEADER ================= */
 
     .header-container {
-        -fx-background-color: white;
-        -fx-background-radius: 16px;
-        -fx-padding: 25px;
-        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.07), 20, 0.3, 0, 8);
+        -fx-background-color: linear-gradient(to bottom, rgba(255,255,255,0.98), rgba(248,251,255,0.98));
+        -fx-background-radius: 26px;
+        -fx-border-color: #d9e8fb;
+        -fx-border-width: 1.2px;
+        -fx-border-radius: 26px;
+        -fx-padding: 28px;
+        -fx-effect: dropshadow(gaussian, rgba(18,52,92,0.10), 30, 0.22, 0, 10);
     }
 
     /* ================= BUTTONS ================= */
 
     .button {
-        -fx-background-radius: 12;
-        -fx-font-weight: 600;
+        -fx-background-radius: 16;
+        -fx-font-weight: 700;
         -fx-cursor: hand;
-        -fx-padding: 8 18 8 18;
+        -fx-padding: 11 22 11 22;
+        -fx-effect: dropshadow(gaussian, rgba(16,24,40,0.10), 12, 0.18, 0, 4);
     }
 
     /* PRIMARY BUTTON */
 
     .btn-primary {
-        -fx-background-color: #2563eb;
+        -fx-background-color: linear-gradient(to right, #2b6df6, #1d4ed8);
         -fx-text-fill: white;
     }
 
     .btn-primary:hover {
-        -fx-background-color: #1d4ed8;
+        -fx-background-color: linear-gradient(to right, #245fe2, #173ea9);
         -fx-scale-x: 1.03;
         -fx-scale-y: 1.03;
     }
@@ -88,12 +92,12 @@
     /* BACK */
 
     .btn-back {
-        -fx-background-color: #6b7280;
+        -fx-background-color: linear-gradient(to bottom, #667085, #475467);
         -fx-text-fill: white;
     }
 
     .btn-back:hover {
-        -fx-background-color: #4b5563;
+        -fx-background-color: linear-gradient(to bottom, #596579, #344054);
     }
 
     /* ================= FORM ================= */
@@ -140,12 +144,14 @@
     /* ================= TABLE ================= */
 
     .table-view {
-        -fx-background-color: white;
-        -fx-background-radius: 18px;
-        -fx-border-radius: 18px;
+        -fx-background-color: linear-gradient(to bottom, #ffffff, #f9fbff);
+        -fx-background-radius: 22px;
+        -fx-border-color: #d8e7fb;
+        -fx-border-width: 1px;
+        -fx-border-radius: 22px;
         -fx-padding: 15px;
         -fx-table-cell-border-color: transparent;
-        -fx-effect: dropshadow(gaussian, rgba(0,0,0,0.06), 22, 0.3, 0, 10);
+        -fx-effect: dropshadow(gaussian, rgba(16,24,40,0.08), 24, 0.22, 0, 10);
     }
 
     /* Remove ugly default borders */
@@ -157,16 +163,16 @@
 
     /* Header container */
     .table-view .column-header-background {
-        -fx-background-color: #f8fafc;
+        -fx-background-color: linear-gradient(to bottom, #f8fbff, #edf4ff);
         -fx-background-radius: 18px 18px 0 0;
-        -fx-padding: 10 0 10 0;
+        -fx-padding: 12 0 12 0;
     }
 
     /* Header text */
     .table-view .column-header .label {
-        -fx-text-fill: #1e293b;
+        -fx-text-fill: #0f2747;
         -fx-font-size: 14px;
-        -fx-font-weight: 700;
+        -fx-font-weight: 800;
     }
 
     /* Rows */
@@ -184,13 +190,13 @@
 
     /* Hover effect */
     .table-row-cell:hover {
-        -fx-background-color: #e0f2fe;
+        -fx-background-color: #edf5ff;
         -fx-cursor: hand;
     }
 
     /* Selected row */
     .table-row-cell:selected {
-        -fx-background-color: #bfdbfe;
+        -fx-background-color: #dbeafe;
     }
 
     /* Table cells */
@@ -198,7 +204,7 @@
         -fx-alignment: CENTER-LEFT;
         -fx-padding: 14 16 14 16;
         -fx-font-size: 14px;
-        -fx-text-fill: #334155;
+        -fx-text-fill: #253b56;
     }
 
     /* Numeric alignment (optional if you set via controller) */

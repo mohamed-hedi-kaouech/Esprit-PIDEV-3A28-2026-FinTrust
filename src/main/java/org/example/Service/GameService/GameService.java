@@ -21,7 +21,9 @@ public class GameService {
 
     public GameService() {
         this.cnx = MaConnexion.getInstance().getCnx();
-        ensureGamificationTables();
+        if (MaConnexion.isSchemaAutoInitEnabled()) {
+            ensureGamificationTables();
+        }
     }
 
     public GameSessionStart startSession(int userId, String context) {

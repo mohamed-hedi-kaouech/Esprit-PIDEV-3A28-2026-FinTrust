@@ -209,8 +209,8 @@ public class KycFormController {
                 setInfo("Soumission deja en cours...", false);
                 return;
             }
-            if (selectedFiles.isEmpty()) {
-                setInfo("Selectionnez des fichiers avant soumission.", true);
+            if (selectedFiles.isEmpty() && existingFiles.isEmpty()) {
+                setInfo("Ajoutez ou conservez au moins un document avant soumission.", true);
                 return;
             }
             if (currentStatus == KycStatus.APPROUVE) {

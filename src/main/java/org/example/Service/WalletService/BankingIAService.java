@@ -231,8 +231,8 @@ public class BankingIAService {
                 .url(API_URL)
                 .header("Authorization", "Bearer " + API_KEY)
                 .post(RequestBody.create(
-                        json.toString(),
-                        MediaType.parse("application/json")
+                        MediaType.parse("application/json"),
+                        json.toString()
                 ))
                 .build();
 

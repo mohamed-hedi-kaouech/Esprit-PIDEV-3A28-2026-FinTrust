@@ -23,6 +23,8 @@ import org.example.Utils.SessionContext;
 import java.io.File;
 import java.io.IOException;
 import java.net.URL;
+import java.util.LinkedHashSet;
+import java.util.List;
 
 public class ClientDashboardController {
 
@@ -80,14 +82,7 @@ public class ClientDashboardController {
             kycCommentLabel.setText("Votre KYC est en attente. Acces limite.");
         }
 
-        boolean allowed = (status == KycStatus.APPROUVE);
-        walletButton.setDisable(!allowed);
-        profileButton.setDisable(!allowed);
-        loanButton.setDisable(!allowed);
-        budgetButton.setDisable(!allowed);
-        MarketButton.setDisable(!allowed);
-        AbonnementsButton.setDisable(!allowed);
-        publicationButton.setDisable(!allowed);
+        setNavigationButtonsDisabled(false);
 
         refreshNotifBadge();
         refreshRewards(user);
@@ -105,7 +100,7 @@ public class ClientDashboardController {
                 if (snapshot.badges() == null || snapshot.badges().isEmpty()) {
                     rewardBadgesLabel.setText("Aucun badge pour le moment");
                 } else {
-                    rewardBadgesLabel.setText(String.join("  |  ", snapshot.badges()));
+                    rewardBadgesLabel.setText(String.join("  |  ", uniqueBadges(snapshot.badges())));
                 }
             }
         } catch (Exception e) {
@@ -114,6 +109,16 @@ public class ClientDashboardController {
             if (rewardMedalLabel != null) rewardMedalLabel.setText("Niveau Starter");
             if (rewardBadgesLabel != null) rewardBadgesLabel.setText("Badges indisponibles");
         }
+    }
+
+    private List<String> uniqueBadges(List<String> badges) {
+        return badges.stream()
+                .filter(badge -> badge != null && !badge.isBlank())
+                .map(String::trim)
+                .collect(java.util.stream.Collectors.collectingAndThen(
+                        java.util.stream.Collectors.toCollection(LinkedHashSet::new),
+                        List::copyOf
+                ));
     }
 
     private void refreshNotifBadge() {
@@ -133,14 +138,14 @@ public class ClientDashboardController {
 
     @FXML
     private void goToProfile() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
         navigateTo("/Client/ClientProfile.fxml", "Profil Client", "/Styles/StyleWallet.css");
     }
 
     // ✅ MÉTHODE CORRIGÉE POUR UTILISER L'INTERFACE CLIENT SIMPLIFIÉE
     @FXML
     private void goToWalletDashboard() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
 
         User user = session.getCurrentUser();
         if (user == null) {
@@ -228,31 +233,31 @@ public class ClientDashboardController {
 
     @FXML
     private void goToLoan() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
         navigateTo("/Loan/LoanListUser.fxml", "Loans", "/Styles/StyleWallet.css");
     }
 
     @FXML
     private void goToBudget() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
         navigateTo("/Budget/CategorieListeGUI.fxml", "Gestion des Budgets",null);
     }
 
     @FXML
     public void goToMarket() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
         navigateTo("/Product/Client/ClientMarketGUI.fxml", "Produit", "/Styles/StyleProduct.css");
     }
 
     @FXML
     public void goToAbonnements() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
         navigateTo("/Product/Client/ClientListeProductGUI.fxml", "Abonnements", "/Styles/StyleProduct.css");
     }
 
     @FXML
     private void goToPublications() {
-        if (!ensureKycApprovedOrShow()) return;
+        if (!ensureClientLoggedIn()) return;
         navigateTo("/Publication/ClientView.fxml", "Publications", "/Styles/StyleWallet.css");
     }
 
@@ -287,12 +292,23 @@ public class ClientDashboardController {
         refreshClientQr(user);
     }
 
-    private boolean ensureKycApprovedOrShow() {
-        if (session.getCurrentKycStatus() != KycStatus.APPROUVE) {
-            showError("Acces refuse", "Votre KYC doit etre approuve pour acceder a cette section.");
+    private boolean ensureClientLoggedIn() {
+        User user = session.getCurrentUser();
+        if (user == null || user.getRole() != UserRole.CLIENT) {
+            showError("Acces refuse", "Utilisateur client non connecte.");
             return false;
         }
         return true;
+    }
+
+    private void setNavigationButtonsDisabled(boolean disabled) {
+        if (walletButton != null) walletButton.setDisable(disabled);
+        if (profileButton != null) profileButton.setDisable(disabled);
+        if (loanButton != null) loanButton.setDisable(disabled);
+        if (budgetButton != null) budgetButton.setDisable(disabled);
+        if (MarketButton != null) MarketButton.setDisable(disabled);
+        if (AbonnementsButton != null) AbonnementsButton.setDisable(disabled);
+        if (publicationButton != null) publicationButton.setDisable(disabled);
     }
 
     @FXML

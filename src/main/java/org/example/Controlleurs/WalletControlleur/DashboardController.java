@@ -46,7 +46,7 @@ public class DashboardController implements Initializable {
     @FXML private PieChart pieChartWallets;
     @FXML private Label lblLastUpdate;
 
-    // ✅ Composants pour les stats
+    // âœ… Composants pour les stats
     @FXML private BarChart<String, Number> barChartInscriptions;
     @FXML private Label lblComptes2024;
     @FXML private Label lblComptes2025;
@@ -64,7 +64,7 @@ public class DashboardController implements Initializable {
         walletService = new WalletService();
         transactionService = new TransactionService();
 
-        // addLogo(); // ← COMMENTÉ
+        // addLogo(); // â† COMMENTÃ‰
 
         lblDate.setText(LocalDate.now().format(DateTimeFormatter.ofPattern("EEEE dd MMMM yyyy")));
         lblWelcome.setText("Bonjour, Administrateur");
@@ -76,7 +76,7 @@ public class DashboardController implements Initializable {
 
     private void addLogo() {
         try {
-            String logoPath = "C:/Users/Feryel Hajji/Downloads/Capture_d_écran_2026-02-16_154906-removebg-preview.png";
+            String logoPath = "C:/Users/Feryel Hajji/Downloads/Capture_d_Ã©cran_2026-02-16_154906-removebg-preview.png";
             File file = new File(logoPath);
             if (file.exists()) {
                 Image logoImage = new Image(file.toURI().toString());
@@ -99,7 +99,7 @@ public class DashboardController implements Initializable {
                 logoContainer.getChildren().clear();
                 logoContainer.getChildren().add(logoBox);
             } else {
-                System.out.println("Logo non trouvé au chemin: " + logoPath);
+                System.out.println("Logo non trouvÃ© au chemin: " + logoPath);
                 Label bankName = new Label("FinTrust");
                 bankName.getStyleClass().add("logo-text");
                 logoContainer.getChildren().add(bankName);
@@ -119,7 +119,7 @@ public class DashboardController implements Initializable {
         updateStatistics(wallets, transactions);
         displayWallets(wallets);
         displayRecentTransactions(transactions);
-        lblLastUpdate.setText("Dernière mise à jour: " + LocalDate.now().format(dateFormatter) + " " +
+        lblLastUpdate.setText("DerniÃ¨re mise Ã  jour: " + LocalDate.now().format(dateFormatter) + " " +
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("HH:mm")));
     }
 
@@ -224,7 +224,7 @@ public class DashboardController implements Initializable {
 
         Label statusLabel;
         if (wallet.isEstBloque()) {
-            statusLabel = new Label("🔒 BLOQUÉ");
+            statusLabel = new Label("ðŸ”’ BLOQUÃ‰");
             statusLabel.getStyleClass().addAll("status-badge", "status-badge-blocked");
         } else {
             statusLabel = new Label(wallet.getStatut().toString());
@@ -256,7 +256,7 @@ public class DashboardController implements Initializable {
         footer.getStyleClass().add("wallet-footer");
         footer.setPadding(new Insets(10, 0, 0, 0));
 
-        Label dateLabel = new Label("Créé le " + wallet.getDate_creation().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
+        Label dateLabel = new Label("CrÃ©Ã© le " + wallet.getDate_creation().format(DateTimeFormatter.ofPattern("dd/MM/yyyy")));
         dateLabel.getStyleClass().add("wallet-footer-label");
 
         footer.getChildren().add(dateLabel);
@@ -277,14 +277,14 @@ public class DashboardController implements Initializable {
             controller.setWallet(wallet);
 
             Stage stage = new Stage();
-            stage.setTitle("Détails du wallet - " + wallet.getNom_proprietaire());
+            stage.setTitle("DÃ©tails du wallet - " + wallet.getNom_proprietaire());
             stage.setScene(new Scene(root));
             stage.show();
 
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur",
-                    "Impossible d'ouvrir les détails du wallet : " + e.getMessage());
+                    "Impossible d'ouvrir les dÃ©tails du wallet : " + e.getMessage());
         }
     }
 
@@ -310,8 +310,8 @@ public class DashboardController implements Initializable {
         item.setPadding(new Insets(12, 15, 12, 15));
         item.setAlignment(Pos.CENTER_LEFT);
 
-        Label iconLabel = new Label(transaction.getType().equals("DEPOT") ? "↓" :
-                transaction.getType().equals("RETRAIT") ? "↑" : "↔");
+        Label iconLabel = new Label(transaction.getType().equals("DEPOT") ? "â†“" :
+                transaction.getType().equals("RETRAIT") ? "â†‘" : "â†”");
         iconLabel.getStyleClass().addAll("transaction-icon",
                 transaction.getType().equals("DEPOT") ? "transaction-icon-depot" :
                         transaction.getType().equals("RETRAIT") ? "transaction-icon-retrait" :
@@ -351,7 +351,7 @@ public class DashboardController implements Initializable {
         String walletName = wallet != null ? wallet.getNom_proprietaire() : "Wallet";
 
         switch (transaction.getType()) {
-            case "DEPOT": return "Dépôt - " + walletName;
+            case "DEPOT": return "DÃ©pÃ´t - " + walletName;
             case "RETRAIT": return "Retrait - " + walletName;
             case "TRANSFERT": return "Transfert - " + walletName;
             default: return "Transaction - " + walletName;
@@ -372,11 +372,11 @@ public class DashboardController implements Initializable {
         });
     }
 
-    // ✅ MÉTHODE CORRIGÉE POUR LA GESTION DES UTILISATEURS
+    // âœ… MÃ‰THODE CORRIGÃ‰E POUR LA GESTION DES UTILISATEURS
     @FXML
     private void handleGestionUsers() {
         try {
-            // Charger le dashboard user de ta collègue
+            // Charger le dashboard user de ta collÃ¨gue
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Admin/UserDashboard.fxml"));
             Parent root = loader.load();
 
@@ -397,45 +397,52 @@ public class DashboardController implements Initializable {
     }
 
     @FXML
-    private void handleGestionClients() {
-        ouvrirModule("Gestion des clients", "/Wallet/gestion_clients.fxml");
+    private void handleGestionClients(ActionEvent event) {
+        ouvrirModule("Gestion des clients", "/Admin/UserDashboard.fxml", event);
     }
 
     @FXML
-    private void handleGestionPublications() {
-        ouvrirModule("Gestion des publications", "/Wallet/publications.fxml");
+    private void handleGestionPublications(ActionEvent event) {
+        ouvrirModule("Gestion des publications", "/Publication/ListePub.fxml", event);
     }
 
     @FXML
-    private void handleGestionProduits() {
-        ouvrirModule("Gestion des produits", "/Wallet/produits.fxml");
+    private void handleGestionProduits(ActionEvent event) {
+        ouvrirModule("Gestion des produits", "/Product/Admin/AdminDashboardGUI.fxml", event);
     }
 
     @FXML
-    private void handleGestionBudgets() {
-        ouvrirModule("Gestion des budgets", "/Wallet/budgets.fxml");
+    private void handleGestionBudgets(ActionEvent event) {
+        ouvrirModule("Gestion des budgets", "/Budget/AdminCategorieListeGUI.fxml", event);
     }
 
     @FXML
-    private void handleGestionLoans() {
-        ouvrirModule("Gestion des prêts", "/Wallet/loans.fxml");
+    private void handleGestionLoans(ActionEvent event) {
+        ouvrirModule("Gestion des prets", "/Loan/AdminDashboard.fxml", event);
     }
 
-    private void ouvrirModule(String titre, String fxmlPath) {
+    private void ouvrirModule(String titre, String fxmlPath, ActionEvent event) {
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource(fxmlPath));
+            URL fxmlUrl = getClass().getResource(fxmlPath);
+            if (fxmlUrl == null) {
+                throw new IllegalArgumentException("FXML introuvable : " + fxmlPath);
+            }
+            FXMLLoader loader = new FXMLLoader(fxmlUrl);
             Parent root = loader.load();
-            Stage stage = new Stage();
-            stage.setTitle(titre);
-            stage.setScene(new Scene(root));
-            stage.show();
+            Stage currentStage = (Stage) ((Node) event.getSource()).getScene().getWindow();
+            Scene currentScene = currentStage.getScene();
+            currentStage.setTitle(titre);
+            currentScene.setRoot(root);
+            currentStage.sizeToScene();
+            currentStage.centerOnScreen();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.INFORMATION, "Module en développement",
-                    "Le module " + titre + " sera bientôt disponible");
+            showAlert(Alert.AlertType.INFORMATION, "Module en dÃ©veloppement",
+                    "Le module " + titre + " sera bientÃ´t disponible");
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir " + titre);
+            showAlert(Alert.AlertType.ERROR, "Erreur",
+                    e.getMessage() != null ? e.getMessage() : "Impossible d'ouvrir " + titre);
         }
     }
 
@@ -445,13 +452,13 @@ public class DashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/RiskDashboard.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("🧠 Risk Intelligence Dashboard");
+            stage.setTitle("ðŸ§  Risk Intelligence Dashboard");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.INFORMATION, "Module en développement",
-                    "Le Risk Dashboard sera bientôt disponible");
+            showAlert(Alert.AlertType.INFORMATION, "Module en dÃ©veloppement",
+                    "Le Risk Dashboard sera bientÃ´t disponible");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir le Risk Dashboard");
@@ -483,7 +490,7 @@ public class DashboardController implements Initializable {
         }
 
         if (walletConnecte == null) {
-            showAlert(Alert.AlertType.WARNING, "Attention", "Créez d'abord un wallet");
+            showAlert(Alert.AlertType.WARNING, "Attention", "CrÃ©ez d'abord un wallet");
             return;
         }
 
@@ -510,7 +517,7 @@ public class DashboardController implements Initializable {
         loadDashboardData();
         setupCharts();
         setupStatsInscriptions();
-        showAlert(Alert.AlertType.INFORMATION, "Succès", "Données actualisées");
+        showAlert(Alert.AlertType.INFORMATION, "SuccÃ¨s", "DonnÃ©es actualisÃ©es");
     }
 
     @FXML
@@ -532,12 +539,12 @@ public class DashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/chequier_admin.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("📒 Administration des chèques");
+            stage.setTitle("ðŸ“’ Administration des chÃ¨ques");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la gestion des chèques");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la gestion des chÃ¨ques");
         }
     }
 
@@ -548,7 +555,7 @@ public class DashboardController implements Initializable {
 
         switch(text) {
             case "Accueil":
-                showAlert(Alert.AlertType.INFORMATION, "Navigation", "Vous êtes déjà sur l'accueil");
+                showAlert(Alert.AlertType.INFORMATION, "Navigation", "Vous Ãªtes dÃ©jÃ  sur l'accueil");
                 break;
             case "Wallets":
                 walletsContainer.requestFocus();
@@ -556,7 +563,7 @@ public class DashboardController implements Initializable {
             case "Transactions":
                 transactionsContainer.requestFocus();
                 break;
-            case "Chéquiers":
+            case "ChÃ©quiers":
                 handleGestionCheques();
                 break;
         }
@@ -565,9 +572,9 @@ public class DashboardController implements Initializable {
     @FXML
     private void handleLogout(ActionEvent event) {
         Alert confirm = new Alert(Alert.AlertType.CONFIRMATION);
-        confirm.setTitle("Déconnexion");
+        confirm.setTitle("DÃ©connexion");
         confirm.setHeaderText("Quitter votre session ?");
-        confirm.setContentText("Voulez-vous vraiment vous déconnecter ?");
+        confirm.setContentText("Voulez-vous vraiment vous dÃ©connecter ?");
 
         if (confirm.showAndWait().get() == ButtonType.OK) {
             try {
@@ -578,33 +585,33 @@ public class DashboardController implements Initializable {
                 stage.show();
             } catch (Exception e) {
                 e.printStackTrace();
-                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de se déconnecter");
+                showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible de se dÃ©connecter");
             }
         }
     }
 
     @FXML
     private void handleAbout() {
-        showAlert(Alert.AlertType.INFORMATION, "À propos",
-                "FinTrust - Haute Finance Numérique\nVersion 2.0\n© 2026 Tous droits réservés");
+        showAlert(Alert.AlertType.INFORMATION, "Ã€ propos",
+                "FinTrust - Haute Finance NumÃ©rique\nVersion 2.0\nÂ© 2026 Tous droits rÃ©servÃ©s");
     }
 
     @FXML
     private void handleSouscrire() {
         showAlert(Alert.AlertType.INFORMATION, "Souscription",
-                "Pour souscrire à nos services, veuillez contacter votre conseiller.");
+                "Pour souscrire Ã  nos services, veuillez contacter votre conseiller.");
     }
 
     @FXML
     private void handleContact() {
         showAlert(Alert.AlertType.INFORMATION, "Contact",
-                "Support : support@fintrust.tn\nTél: +216 71 123 456");
+                "Support : support@fintrust.tn\nTÃ©l: +216 71 123 456");
     }
 
     @FXML
     private void handleSecurity() {
-        showAlert(Alert.AlertType.INFORMATION, "Sécurité",
-                "Connexion sécurisée avec authentification à deux facteurs\nDonnées chiffrées de bout en bout");
+        showAlert(Alert.AlertType.INFORMATION, "SÃ©curitÃ©",
+                "Connexion sÃ©curisÃ©e avec authentification Ã  deux facteurs\nDonnÃ©es chiffrÃ©es de bout en bout");
     }
 
     @FXML
@@ -628,7 +635,7 @@ public class DashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/revenus.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("💰 Revenus FinTrust");
+            stage.setTitle("ðŸ’° Revenus FinTrust");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
@@ -651,23 +658,23 @@ public class DashboardController implements Initializable {
                 if (desc.contains("retrait")) totalRetraits += t.getMontant();
                 else if (desc.contains("transfert")) totalTransferts += t.getMontant();
                 else if (desc.contains("rejet")) totalRejets += t.getMontant();
-                else if (desc.contains("agios") || desc.contains("découvert")) totalAgios += t.getMontant();
+                else if (desc.contains("agios") || desc.contains("dÃ©couvert")) totalAgios += t.getMontant();
             }
 
             double totalGeneral = transactions.stream().mapToDouble(Transaction::getMontant).sum();
 
             String stats = String.format(
-                    "📊 STATISTIQUES DES REVENUS\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n\n" +
-                            "💳 Frais de retrait:     %10.2f TND\n↗️ Frais de transfert:   %10.2f TND\n" +
-                            "❌ Frais de rejet:       %10.2f TND\n💰 Agios sur découvert:  %10.2f TND\n" +
-                            "📦 Autres frais:         %10.2f TND\n━━━━━━━━━━━━━━━━━━━━━━━━━━\n💎 TOTAL:                %10.2f TND",
+                    "ðŸ“Š STATISTIQUES DES REVENUS\nâ”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\n\n" +
+                            "ðŸ’³ Frais de retrait:     %10.2f TND\nâ†—ï¸ Frais de transfert:   %10.2f TND\n" +
+                            "âŒ Frais de rejet:       %10.2f TND\nðŸ’° Agios sur dÃ©couvert:  %10.2f TND\n" +
+                            "ðŸ“¦ Autres frais:         %10.2f TND\nâ”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”â”\nðŸ’Ž TOTAL:                %10.2f TND",
                     totalRetraits, totalTransferts, totalRejets, totalAgios,
                     totalGeneral - (totalRetraits + totalTransferts + totalRejets + totalAgios),
                     totalGeneral
             );
 
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
-            alert.setTitle("📈 Statistiques FinTrust");
+            alert.setTitle("ðŸ“ˆ Statistiques FinTrust");
             alert.setHeaderText("Analyse des revenus bancaires");
             alert.setContentText(stats);
             alert.showAndWait();
@@ -683,13 +690,13 @@ public class DashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/statistiques.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("📈 Statistiques FinTrust");
+            stage.setTitle("ðŸ“ˆ Statistiques FinTrust");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (IOException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.INFORMATION, "Module en développement",
-                    "Les statistiques détaillées seront bientôt disponibles");
+            showAlert(Alert.AlertType.INFORMATION, "Module en dÃ©veloppement",
+                    "Les statistiques dÃ©taillÃ©es seront bientÃ´t disponibles");
         } catch (Exception e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir les statistiques");
@@ -702,12 +709,13 @@ public class DashboardController implements Initializable {
             FXMLLoader loader = new FXMLLoader(getClass().getResource("/Wallet/comptes_bloques.fxml"));
             Parent root = loader.load();
             Stage stage = new Stage();
-            stage.setTitle("🔒 Comptes bloqués");
+            stage.setTitle("ðŸ”’ Comptes bloquÃ©s");
             stage.setScene(new Scene(root));
             stage.show();
         } catch (Exception e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la liste des comptes bloqués");
+            showAlert(Alert.AlertType.ERROR, "Erreur", "Impossible d'ouvrir la liste des comptes bloquÃ©s");
         }
     }
 }
+

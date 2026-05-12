@@ -5,6 +5,7 @@ import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.net.URL;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.YearMonth;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
@@ -50,6 +51,9 @@ import javafx.util.Duration;
 
 public class ListPubController implements Initializable {
 
+    private static final DateTimeFormatter PUBLICATION_DATE_FORMAT =
+            DateTimeFormatter.ofPattern("dd/MM/yyyy HH:mm");
+
     @FXML private ListView<Publication> publicationListView;
     @FXML private TextField searchField;
     @FXML private Label totalPublicationsLabel;
@@ -67,8 +71,8 @@ public class ListPubController implements Initializable {
             ex.printStackTrace();
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Avertissement");
-            alert.setHeaderText("Impossible de se connecter à la base de données");
-            alert.setContentText("Les publications ne pourront pas être chargées pour le moment.");
+            alert.setHeaderText("Impossible de se connecter Ã  la base de donnÃ©es");
+            alert.setContentText("Les publications ne pourront pas Ãªtre chargÃ©es pour le moment.");
             StringWriter sw = new StringWriter();
             ex.printStackTrace(new PrintWriter(sw));
             javafx.scene.control.TextArea textArea = new javafx.scene.control.TextArea(sw.toString());
@@ -91,27 +95,27 @@ public class ListPubController implements Initializable {
             );
             Stage stage = (Stage) ((Node) event.getSource()).getScene().getWindow();
             stage.setScene(new Scene(root));
-            stage.setTitle("Créer Publication");
+            stage.setTitle("CrÃ©er Publication");
 
         } catch (IOException e) {
             e.printStackTrace();
         }
     }
 
-    // 🔹 Méthode appelée quand on clique sur le bouton "Client"
-    // Ouvre une fenêtre séparée (pratique tant que le projet n'est pas encore intégré).
+    // ðŸ”¹ MÃ©thode appelÃ©e quand on clique sur le bouton "Client"
+    // Ouvre une fenÃªtre sÃ©parÃ©e (pratique tant que le projet n'est pas encore intÃ©grÃ©).
     @FXML
     public void goToClientView(ActionEvent event) {
 
         try {
-            // ✅ Le FXML est dans /resources/Publication/ClientView.fxml
+            // âœ… Le FXML est dans /resources/Publication/ClientView.fxml
             FXMLLoader loader = new FXMLLoader(
                     getClass().getResource("/Publication/ClientView.fxml")
             );
 
             Parent root = loader.load();
 
-            // Ouvrir dans une nouvelle fenêtre pour ne pas casser l'interface admin
+            // Ouvrir dans une nouvelle fenÃªtre pour ne pas casser l'interface admin
             Stage popup = new Stage();
             popup.setTitle("Espace Client - Publications");
             popup.setScene(new Scene(root));
@@ -120,7 +124,7 @@ public class ListPubController implements Initializable {
 
         } catch (IOException e) {
             e.printStackTrace();
-            System.out.println("❌ Erreur lors du chargement de /Publication/ClientView.fxml");
+            System.out.println("âŒ Erreur lors du chargement de /Publication/ClientView.fxml");
         }
     }
 
@@ -209,6 +213,13 @@ public class ListPubController implements Initializable {
         }
     }
 
+    private String formatDate(LocalDateTime date) {
+        if (date == null) {
+            return "Non definie";
+        }
+        return date.format(PUBLICATION_DATE_FORMAT);
+    }
+
     @FXML
     private void handleSearch() {
         filterPublications(searchField.getText());
@@ -255,9 +266,9 @@ public class ListPubController implements Initializable {
         LocalDate end = ym.plusMonths(1).atDay(1);
         boolean ok = service.exportMonthlyStatsToCSV(start, end, file);
         if (ok) {
-            showSuccessAlert("Export réussi", "Stats mensuelles exportées: " + file.getName());
+            showSuccessAlert("Export rÃ©ussi", "Stats mensuelles exportÃ©es: " + file.getName());
         } else {
-            showErrorAlert("Export échoué", "Impossible d'exporter les stats mensuelles.");
+            showErrorAlert("Export Ã©chouÃ©", "Impossible d'exporter les stats mensuelles.");
         }
     }
 
@@ -282,12 +293,12 @@ public class ListPubController implements Initializable {
         Alert confirmAlert = new Alert(Alert.AlertType.CONFIRMATION);
         confirmAlert.setTitle("Confirmation de suppression");
         confirmAlert.setHeaderText("Supprimer la publication");
-        confirmAlert.setContentText("Êtes-vous sûr de vouloir supprimer cette publication?\n\nTitre: " + pub.getTitre() + "\n\nCette action est irréversible!");
+        confirmAlert.setContentText("ÃŠtes-vous sÃ»r de vouloir supprimer cette publication?\n\nTitre: " + pub.getTitre() + "\n\nCette action est irrÃ©versible!");
 
         Optional<ButtonType> result = confirmAlert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             if (PS.delete(pub.getIdPublication())) { // use correct getter
-                showSuccessAlert("Succès", "La publication a été supprimée avec succès!");
+                showSuccessAlert("SuccÃ¨s", "La publication a Ã©tÃ© supprimÃ©e avec succÃ¨s!");
                 loadPublicationData();
             } else {
                 showErrorAlert("Erreur", "Erreur lors de la suppression de la publication.");
@@ -387,8 +398,8 @@ public class ListPubController implements Initializable {
             feedbackButton = new Button("Feedback");
             feedbackButton.getStyleClass().add("btn-feedback");
 
-            likeButton = new Button("👍");
-            dislikeButton = new Button("👎");
+            likeButton = new Button("ðŸ‘");
+            dislikeButton = new Button("ðŸ‘Ž");
             likeButton.getStyleClass().add("btn-like");
             dislikeButton.getStyleClass().add("btn-dislike");
             likeButton.setDisable(true);
@@ -432,8 +443,7 @@ public class ListPubController implements Initializable {
                 titreLabel.setText(pub.getTitre());
                 contenuLabel.setText(pub.getContenu());
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
-                dateLabel.setText("📅 Créé le: " + pub.getDatePublication().format(formatter));
+                dateLabel.setText("Cree le: " + formatDate(pub.getDatePublication()));
 
                 updateButton.setOnAction(e -> handleUpdate(pub));
                 deleteButton.setOnAction(e -> handleDelete(pub));
@@ -450,7 +460,7 @@ public class ListPubController implements Initializable {
                         controller.setPublication(pub);
 
                         Stage stage = new Stage();
-                        stage.setTitle("Feedbacks — " + pub.getTitre());
+                        stage.setTitle("Feedbacks â€” " + pub.getTitre());
                         stage.setScene(new Scene(root));
                         stage.initOwner(publicationListView.getScene().getWindow());
                         stage.show();
@@ -503,9 +513,9 @@ public class ListPubController implements Initializable {
 
             boolean ok = feedbackService.exportFeedbacksToCSV(pub.getIdPublication(), file);
             if (ok) {
-                showSuccessAlert("Export CSV réussi", "Fichier généré: " + file.getName());
+                showSuccessAlert("Export CSV rÃ©ussi", "Fichier gÃ©nÃ©rÃ©: " + file.getName());
             } else {
-                showErrorAlert("Export échoué", "Impossible d'exporter le CSV.");
+                showErrorAlert("Export Ã©chouÃ©", "Impossible d'exporter le CSV.");
             }
         }
 
@@ -521,9 +531,9 @@ public class ListPubController implements Initializable {
 
             boolean ok = feedbackService.exportPublicationReportToPDF(pub.getIdPublication(), pub.getTitre(), file);
             if (ok) {
-                showSuccessAlert("Export PDF réussi", "Rapport statistique image généré: " + file.getName());
+                showSuccessAlert("Export PDF rÃ©ussi", "Rapport statistique image gÃ©nÃ©rÃ©: " + file.getName());
             } else {
-                showErrorAlert("Export échoué", "Impossible d'exporter le PDF.");
+                showErrorAlert("Export Ã©chouÃ©", "Impossible d'exporter le PDF.");
             }
         }
 

@@ -249,8 +249,8 @@ public class WalletService {
                 " (DB: " + bloqueInt + ")" +
                 " - User ID: " + wallet.getIdUser());
 
-        wallet.setDevise(WalletDevise.valueOf(rs.getString("devise")));
-        wallet.setStatut(WalletStatut.valueOf(rs.getString("statut")));
+        wallet.setDevise(parseWalletDevise(rs.getString("devise")));
+        wallet.setStatut(parseWalletStatut(rs.getString("statut")));
         wallet.setDateCreation(rs.getTimestamp("date_creation").toLocalDateTime());
 
         return wallet;
@@ -408,5 +408,24 @@ public class WalletService {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private WalletDevise parseWalletDevise(String rawValue) {
+        String value = rawValue == null ? "" : rawValue.trim().toUpperCase();
+        if (value.isBlank()) {
+            return WalletDevise.TND;
+        }
+        return WalletDevise.valueOf(value);
+    }
+
+    private WalletStatut parseWalletStatut(String rawValue) {
+        String value = rawValue == null ? "" : rawValue.trim().toUpperCase();
+        return switch (value) {
+            case "ACTIF", "ACTIVE" -> WalletStatut.ACTIVE;
+            case "BROUILLON", "DRAFT" -> WalletStatut.DRAFT;
+            case "SUSPENDU", "SUSPENDED" -> WalletStatut.SUSPENDED;
+            case "FERME", "FERMEE", "CLOSED" -> WalletStatut.CLOSED;
+            default -> WalletStatut.valueOf(value);
+        };
     }
 }

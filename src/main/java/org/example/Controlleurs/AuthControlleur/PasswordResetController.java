@@ -13,6 +13,7 @@ import org.example.Model.User.UserRole;
 import org.example.Service.UserService.LoginResult;
 import org.example.Service.UserService.PasswordResetResult;
 import org.example.Service.UserService.UserService;
+import org.example.Utils.MaConnexion;
 import org.example.Utils.SessionContext;
 
 import java.net.URL;
@@ -31,10 +32,21 @@ public class PasswordResetController {
     @FXML
     private Label messageLabel;
 
-    private final UserService userService = new UserService();
+    private UserService userService;
 
     @FXML
     private void initialize() {
+        try {
+            userService = new UserService();
+        } catch (Exception e) {
+            e.printStackTrace();
+            if (messageLabel != null) {
+                messageLabel.setText("Base de donnees indisponible. Verifiez MySQL (" + MaConnexion.getDatabaseLabel() + ").");
+                messageLabel.setStyle("-fx-text-fill: #cc2e2e;");
+            }
+            return;
+        }
+
         if (messageLabel != null) {
             messageLabel.setText("Reinitialisation disponible par EMAIL uniquement.");
             messageLabel.setStyle("-fx-text-fill: #1d6b34;");
@@ -43,6 +55,12 @@ public class PasswordResetController {
 
     @FXML
     private void handleSendCode() {
+        if (userService == null) {
+            messageLabel.setText("Connexion impossible: base de donnees indisponible.");
+            messageLabel.setStyle("-fx-text-fill: #cc2e2e;");
+            return;
+        }
+
         String email = emailField.getText() == null ? "" : emailField.getText().trim();
         PasswordResetResult result = userService.requestPasswordResetCode(email, UserService.RESET_BY_EMAIL);
         if (!result.isSuccess()) {
@@ -59,6 +77,12 @@ public class PasswordResetController {
 
     @FXML
     private void handleResetPassword() {
+        if (userService == null) {
+            messageLabel.setText("Connexion impossible: base de donnees indisponible.");
+            messageLabel.setStyle("-fx-text-fill: #cc2e2e;");
+            return;
+        }
+
         String email = emailField.getText() == null ? "" : emailField.getText().trim();
         String code = codeField.getText() == null ? "" : codeField.getText().trim();
         String newPassword = newPasswordField.getText() == null ? "" : newPasswordField.getText().trim();

@@ -16,6 +16,7 @@ import org.example.Service.AuditService.AuditService;
 import org.example.Service.Security.CaptchaService;
 import org.example.Service.UserService.LoginResult;
 import org.example.Service.UserService.UserService;
+import org.example.Utils.MaConnexion;
 import org.example.Utils.SessionContext;
 
 import java.net.URL;
@@ -49,7 +50,7 @@ public class AuthLoginController {
             userService = new UserService();
         } catch (Exception e) {
             e.printStackTrace();
-            showMessage("Base de donnees indisponible. Verifiez MySQL (localhost:3306 / PIDEV).", true);
+            showMessage("Base de donnees indisponible. Verifiez MySQL (" + MaConnexion.getDatabaseLabel() + ").", true);
         }
         try {
             auditService = new AuditService();

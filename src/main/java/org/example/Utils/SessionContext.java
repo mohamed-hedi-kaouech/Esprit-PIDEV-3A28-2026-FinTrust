@@ -9,6 +9,7 @@ public class SessionContext {
     private static SessionContext instance;
 
     private User currentUser;
+    private User adminUserBeingEdited;
     private KycStatus currentKycStatus;
     private String currentKycComment;
     private String smartBreakContext = "PROFILE";
@@ -32,6 +33,14 @@ public class SessionContext {
 
     public KycStatus getCurrentKycStatus() {
         return currentKycStatus;
+    }
+
+    public User getAdminUserBeingEdited() {
+        return adminUserBeingEdited;
+    }
+
+    public void setAdminUserBeingEdited(User adminUserBeingEdited) {
+        this.adminUserBeingEdited = adminUserBeingEdited;
     }
 
     public void setCurrentKycStatus(KycStatus currentKycStatus) {
@@ -100,6 +109,7 @@ public class SessionContext {
 
     public void logout() {
         currentUser = null;
+        adminUserBeingEdited = null;
         currentKycStatus = null;
         currentKycComment = null;
         smartBreakContext = "PROFILE";

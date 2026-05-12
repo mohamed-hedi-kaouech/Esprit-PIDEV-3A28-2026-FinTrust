@@ -28,8 +28,10 @@ public class ChatbotService {
     public ChatbotService() {
         this.cnx = MaConnexion.getInstance().getCnx();
         this.userRepository = new UserRepository();
-        ensureSchema();
-        seedFaq();
+        if (MaConnexion.isSchemaAutoInitEnabled()) {
+            ensureSchema();
+            seedFaq();
+        }
     }
 
     public String sendMessage(int userId, String message) {

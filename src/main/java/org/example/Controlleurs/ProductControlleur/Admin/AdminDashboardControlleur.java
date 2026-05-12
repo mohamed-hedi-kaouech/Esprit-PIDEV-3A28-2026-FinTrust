@@ -434,8 +434,8 @@ public class AdminDashboardControlleur implements Initializable {
                         .build();
 
                 okhttp3.RequestBody body = okhttp3.RequestBody.create(
-                        jsonBody,
-                        okhttp3.MediaType.parse("application/json")
+                        okhttp3.MediaType.parse("application/json"),
+                        jsonBody
                 );
 
                 okhttp3.Request request = new okhttp3.Request.Builder()

@@ -45,11 +45,11 @@ public class EmailService {
         }
 
         // 1) Charger config (SecretConfig -> env -> system properties)
-        String username = "mohamedhedi322@gmail.com";
+        String username = getCfg("FINTRUST_SMTP_USERNAME");
 
-        String pw = "xnir pkyn brkj yxcg";
+        String pw = getCfg("FINTRUST_SMTP_APP_PASSWORD");
         if (isBlank(pw)) {
-            pw = "xnir pkyn brkj yxcg"; // compat
+            pw = getCfg("FINTRUST_SMTP_PASSWORD");
         }
 
         // Nettoyage: si l’app password est collé avec espaces
@@ -57,11 +57,11 @@ public class EmailService {
             pw = pw.replace(" ", "").trim();
         }
 
-        String from = "mohamedhedi322@gmail.com";
-        String host = "smtp.gmail.com";
-        String port = "587";
-        String startTls = "true";
-        String debug = "true";
+        String from = getCfg("FINTRUST_SMTP_FROM");
+        String host = getCfg("FINTRUST_SMTP_HOST");
+        String port = getCfg("FINTRUST_SMTP_PORT");
+        String startTls = getCfg("FINTRUST_SMTP_STARTTLS");
+        String debug = getCfg("FINTRUST_SMTP_DEBUG");
 
         // Defaults Gmail
         if (isBlank(host)) host = "smtp.gmail.com";

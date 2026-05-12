@@ -204,9 +204,7 @@ public class LoanService implements InterfaceGlobal<Loan> {
 
         loan.setLoanId(rs.getInt("loanId"));
         loan.setId_user(rs.getInt("id_user"));
-        loan.setLoanType(
-                LoanType.valueOf(rs.getString("loanType"))
-        );
+        loan.setLoanType(LoanType.fromString(rs.getString("loanType")));
         loan.setAmount(rs.getDouble("amount"));
         loan.setDuration(rs.getInt("duration"));
         loan.setStatus(

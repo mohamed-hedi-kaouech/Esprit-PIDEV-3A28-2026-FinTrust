@@ -57,6 +57,21 @@ public class AdminUserFormController {
 
     @FXML
     private void handleCreateUser() {
+        if (nomField.getText() == null || nomField.getText().isBlank()
+                || emailField.getText() == null || emailField.getText().isBlank()
+                || passwordField.getText() == null || passwordField.getText().isBlank()
+                || confirmPasswordField.getText() == null || confirmPasswordField.getText().isBlank()
+                || roleCombo.getValue() == null
+                || statusCombo.getValue() == null) {
+            setInfo("Veuillez remplir tous les champs.", true);
+            return;
+        }
+
+        if (!passwordField.getText().equals(confirmPasswordField.getText())) {
+            setInfo("La confirmation du mot de passe ne correspond pas.", true);
+            return;
+        }
+
         SignupResult result;
         try {
             result = userService.createUserByAdmin(
@@ -69,6 +84,7 @@ public class AdminUserFormController {
                     statusCombo.getValue()
             );
         } catch (Exception e) {
+            e.printStackTrace();
             setInfo("Erreur creation utilisateur: " + e.getMessage(), true);
             return;
         }

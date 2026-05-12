@@ -144,7 +144,7 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
                 ps.setSubscriptionId(res.getInt("subscriptionId"));
                 ps.setClient(res.getInt("client"));
                 ps.setProduct(res.getInt("product"));
-                ps.setType(SubscriptionType.valueOf(res.getString("type")));
+                ps.setType(parseSubscriptionType(res.getString("type")));
                 ps.setSubscriptionDate(res.getTimestamp("subscriptionDate").toLocalDateTime());
                 ps.setExpirationDate(res.getTimestamp("expirationDate").toLocalDateTime());
                 ps.setStatus(SubscriptionStatus.valueOf(res.getString("status")));
@@ -171,7 +171,7 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
                     psObj.setSubscriptionId(res.getInt("subscriptionId"));
                     psObj.setClient(res.getInt("client"));
                     psObj.setProduct(res.getInt("product"));
-                    psObj.setType(SubscriptionType.valueOf(res.getString("type")));
+                    psObj.setType(parseSubscriptionType(res.getString("type")));
                     psObj.setSubscriptionDate(res.getTimestamp("subscriptionDate").toLocalDateTime());
                     psObj.setExpirationDate(res.getTimestamp("expirationDate").toLocalDateTime());
                     psObj.setStatus(SubscriptionStatus.valueOf(res.getString("status")));
@@ -198,7 +198,7 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
                 ps.setSubscriptionId(res.getInt("subscriptionId"));
                 ps.setClient(res.getInt("client"));
                 ps.setProduct(res.getInt("product"));
-                ps.setType(SubscriptionType.valueOf(res.getString("type")));
+                ps.setType(parseSubscriptionType(res.getString("type")));
                 ps.setSubscriptionDate(
                         res.getDate("subscriptionDate").toLocalDate().atStartOfDay()
                 );
@@ -310,7 +310,7 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
 
                 SubProduct dto = new SubProduct(
                         rs.getInt("subscriptionId"),
-                        SubscriptionType.valueOf(rs.getString("type")),
+                        parseSubscriptionType(rs.getString("type")),
                         rs.getDate("subscriptionDate").toLocalDate(),
                         rs.getDate("expirationDate").toLocalDate(),
                         SubscriptionStatus.valueOf(rs.getString("status")),
@@ -328,5 +328,16 @@ public class ProductSubscriptionService implements InterfaceGlobal<ProductSubscr
         }
 
         return list;
+    }
+
+    private SubscriptionType parseSubscriptionType(String rawValue) {
+        String value = rawValue == null ? "" : rawValue.trim().toUpperCase();
+        return switch (value) {
+            case "ANNUALLY", "YEARLY", "ANNUAL" -> SubscriptionType.ANNUAL;
+            case "MONTHLY", "MONTH" -> SubscriptionType.MONTHLY;
+            case "TRANSACTION", "TRANSACTIONAL" -> SubscriptionType.TRANSACTION;
+            case "ONE_TIME", "ONETIME", "ONE-TIME" -> SubscriptionType.ONE_TIME;
+            default -> SubscriptionType.valueOf(value);
+        };
     }
 }

@@ -21,6 +21,7 @@ public class NotificationService {
     }
 
     private void ensureSchema() {
+        if (!MaConnexion.isSchemaAutoInitEnabled()) return;
         if (schemaReady) return;
         synchronized (NotificationService.class) {
             if (schemaReady) return;

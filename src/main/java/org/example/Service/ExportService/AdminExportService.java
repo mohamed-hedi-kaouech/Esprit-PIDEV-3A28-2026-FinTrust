@@ -2,6 +2,7 @@ package org.example.Service.ExportService;
 
 import org.example.Model.User.User;
 import org.example.Model.User.UserStatus;
+import org.example.Repository.UserRepository;
 import org.example.Service.AnalyticsService.AnalyticsService;
 import org.example.Service.AnalyticsService.FailedLoginUser;
 import org.example.Service.AnalyticsService.OtpAnalyticsSnapshot;
@@ -313,7 +314,7 @@ public class AdminExportService {
                 if ("ADMIN".equalsIgnoreCase(roleRaw)) totalAdmins += count;
 
                 try {
-                    UserStatus status = UserStatus.valueOf(statusRaw);
+                    UserStatus status = UserRepository.normalizeStatusValue(statusRaw);
                     statuses.put(status, statuses.getOrDefault(status, 0) + count);
                 } catch (Exception ignored) {
                 }

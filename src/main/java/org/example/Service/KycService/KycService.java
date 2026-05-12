@@ -109,10 +109,14 @@ public class KycService {
                                                    LocalDate dateNaissance,
                                                    List<UploadDoc> docs) {
         ensureClient(actor);
-        if (docs == null || docs.isEmpty()) {
+        Kyc kyc = kycRepository.createIfMissing(actor.getId());
+        int existingFilesCount = kycRepository.findFilesByKycId(kyc.getId()).size();
+        List<UploadDoc> safeDocs = docs == null ? List.of() : docs;
+
+        if (safeDocs.isEmpty() && existingFilesCount == 0) {
             return KycSubmitResult.failure("Ajoutez au moins un document.");
         }
-        if (docs.size() > MAX_FILES_PER_SUBMISSION) {
+        if (safeDocs.size() > MAX_FILES_PER_SUBMISSION) {
             return KycSubmitResult.failure("Nombre maximum de fichiers depasse (10). ");
         }
         if (dateNaissance == null) {
@@ -137,7 +141,7 @@ public class KycService {
         }
 
         Set<String> dedupe = new HashSet<>();
-        for (UploadDoc doc : docs) {
+        for (UploadDoc doc : safeDocs) {
             if (doc == null || doc.getData() == null || doc.getData().length == 0) {
                 return KycSubmitResult.failure("Un fichier est vide ou invalide.");
             }
@@ -153,8 +157,7 @@ public class KycService {
             }
         }
 
-        Kyc kyc = kycRepository.createIfMissing(actor.getId());
-        for (UploadDoc doc : docs) {
+        for (UploadDoc doc : safeDocs) {
             kycRepository.upsertKycFile(
                     kyc.getId(),
                     safeName(doc.getFileName()),

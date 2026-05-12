@@ -92,6 +92,7 @@ public class UserService {
             safeAuditOtpRequest(user.getId(), email, RESET_BY_EMAIL, requestId, true, "sent");
         } catch (Exception e) {
             safeAuditOtpRequest(user.getId(), email, RESET_BY_EMAIL, requestId, false, shortMsg(e.getMessage()));
+            return PasswordResetResult.failure("Echec d'envoi email: " + shortMsg(e.getMessage()));
         }
         return PasswordResetResult.success("Si un compte existe, un code a ete envoye par email.");
     }

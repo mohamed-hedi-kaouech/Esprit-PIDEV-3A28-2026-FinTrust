@@ -1,11 +1,7 @@
 /* StyleWallet.css - Design FinTrust avec rectanges colorés */
 
-/* Import de polices Google Fonts */
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap');
-
 .root {
-    -fx-font-family: 'Inter', 'Plus Jakarta Sans', 'Segoe UI', sans-serif;
+    -fx-font-family: 'Segoe UI', 'Tahoma', 'Verdana', sans-serif;
     -fx-background-color: linear-gradient(to bottom right, #f4f8ff, #eef4fb 45%, #f7fbff);
 }
 
@@ -1174,7 +1170,7 @@
 }
 
 .analytics-chart .default-color0.chart-bar {
-    -fx-bar-fill: linear-gradient(to top, #1a4f9c, #3d7feb);
+    -fx-bar-fill: #2f74e5;
 }
 
 .analytics-table {
